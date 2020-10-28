@@ -20,8 +20,9 @@
 #' \item{\code{he}}{: function taking argument \code{theta} and returning a numeric
 #' matrix representing the hessian of the log-posterior at \code{theta}}
 #' }
-#' The user may wish to use \code{numDeriv::grad} or \code{numDeriv::hessian} to
-#' obtain these.
+#' The user may wish to use \code{numDeriv::grad} and/or \code{numDeriv::hessian} to
+#' obtain these. Alternatively, the user may consider the \code{TMB} package. This
+#' list is deliberately formatted to match the output of \code{TMB::MakeADFun}.
 #' @param startingvalue Value to start the optimization. \code{ff$fn(startingvalue)},
 #' \code{ff$gr(startingvalue)}, and \code{ff$he(startingvalue)} must all return
 #' appropriate values without error.
@@ -37,7 +38,8 @@
 #' }
 #' @return A list with elements
 #' \itemize{
-#' \item{\code{solution}: }{the mode of the log posterior}
+#' \item{\code{ff}: }{the function list that was provided}
+#' \item{\code{mode}: }{the mode of the log posterior}
 #' \item{\code{hessian}: }{the hessian of the log posterior at the mode}
 #' \item{\code{convergence}: }{specific to the optimizer used, a message indicating whether it converged}
 #' }
@@ -48,7 +50,7 @@
 #'   sum(y) * eta - (length(y) + 1) * exp(eta) - sum(lgamma(y+1)) + eta
 #' }
 #'
-#' y <- rpois(10,5) # Mode should be sum(y) / (10 + 1)
+#' y <- rpois(10,5) # Mode should be (sum(y) + 1) / (length(y) + 1)
 #'
 #' objfunc <- function(x) logfteta(x,y)
 #' funlist <- list(
@@ -60,6 +62,8 @@
 #' optimize_theta(funlist,1.5)
 #' optimize_theta(funlist,1.5,control = list(method = "trust"))
 #' optimize_theta(funlist,1.5,control = list(method = "BFGS"))
+#'
+#' @family quadrature
 #'
 #' @importFrom stats optim
 #' @importFrom utils installed.packages
@@ -82,7 +86,8 @@ optimize_theta <- function(ff,startingvalue,control = default_control()) {
       method = "Sparse"
     )
     out <- list(
-      solution = opt$solution,
+      ff = ff,
+      mode = opt$solution,
       hessian = opt$hessian,
       convergence = opt$status
     )
@@ -102,7 +107,8 @@ optimize_theta <- function(ff,startingvalue,control = default_control()) {
       rinit = 1
     )
     out <- list(
-      solution = opt$argument,
+      ff = ff,
+      mode = opt$argument,
       hessian = opt$hessian,
       convergence = opt$converged
     )
@@ -110,7 +116,8 @@ optimize_theta <- function(ff,startingvalue,control = default_control()) {
   else if (method == "BFGS") {
     opt <- optim(startingvalue,optfunc,optgrad,method = "BFGS")
     out <- list(
-      solution = opt$par,
+      ff = ff,
+      mode = opt$par,
       hessian = opthess(opt$par),
       convergence = opt$convergence
     )

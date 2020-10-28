@@ -16,8 +16,9 @@ vector representing the gradient of the log-posterior at \code{theta}}
 \item{\code{he}}{: function taking argument \code{theta} and returning a numeric
 matrix representing the hessian of the log-posterior at \code{theta}}
 }
-The user may wish to use \code{numDeriv::grad} or \code{numDeriv::hessian} to
-obtain these.}
+The user may wish to use \code{numDeriv::grad} and/or \code{numDeriv::hessian} to
+obtain these. Alternatively, the user may consider the \code{TMB} package. This
+list is deliberately formatted to match the output of \code{TMB::MakeADFun}.}
 
 \item{startingvalue}{Value to start the optimization. \code{ff$fn(startingvalue)},
 \code{ff$gr(startingvalue)}, and \code{ff$he(startingvalue)} must all return
@@ -37,7 +38,8 @@ appropriate values without error.}
 \value{
 A list with elements
 \itemize{
-\item{\code{solution}: }{the mode of the log posterior}
+\item{\code{ff}: }{the function list that was provided}
+\item{\code{mode}: }{the mode of the log posterior}
 \item{\code{hessian}: }{the hessian of the log posterior at the mode}
 \item{\code{convergence}: }{specific to the optimizer used, a message indicating whether it converged}
 }
@@ -55,7 +57,7 @@ logfteta <- function(eta,y) {
   sum(y) * eta - (length(y) + 1) * exp(eta) - sum(lgamma(y+1)) + eta
 }
 
-y <- rpois(10,5) # Mode should be sum(y) / (10 + 1)
+y <- rpois(10,5) # Mode should be (sum(y) + 1) / (length(y) + 1)
 
 objfunc <- function(x) logfteta(x,y)
 funlist <- list(
@@ -69,3 +71,8 @@ optimize_theta(funlist,1.5,control = list(method = "trust"))
 optimize_theta(funlist,1.5,control = list(method = "BFGS"))
 
 }
+\seealso{
+Other quadrature: 
+\code{\link{normalize_logpost}()}
+}
+\concept{quadrature}
