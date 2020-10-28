@@ -77,3 +77,6 @@ norm_trust_2d_7 <- normalize_logpost(opt_trust_2d,7,1)
 norm_bfgs_2d_3 <- normalize_logpost(opt_bfgs_2d,3,1)
 norm_bfgs_2d_5 <- normalize_logpost(opt_bfgs_2d,5,1)
 norm_bfgs_2d_7 <- normalize_logpost(opt_bfgs_2d,7,1)
+
+# Parameter vector reordering
+norm_sparse_2d_reorder_3 <- normalize_logpost(opt_sparsetrust_2d,3,2)

@@ -106,7 +106,17 @@ test_that("Normalization works",{
     expect_equal(round(norm_bfgs_2d_5$lognormconst,2),round(truelognormconst2d,2))
     expect_equal(round(norm_bfgs_2d_7$lognormconst,2),round(truelognormconst2d,2))
 
+    # Parameter vector reordering works
+    # Note: some of these tests only work because the parameters are independent in this example!
+    expect_equal(unique(round(norm_sparse_2d_3$nodesandweights$theta1,3)),unique(round(norm_sparse_2d_reorder_3$nodesandweights$theta1,3)))
+    expect_equal(unique(round(norm_sparse_2d_3$nodesandweights$theta2,3)),unique(round(norm_sparse_2d_reorder_3$nodesandweights$theta2,3)))
 
+    expect_equal(sort(norm_sparse_2d_3$nodesandweights$logpost),sort(norm_sparse_2d_reorder_3$nodesandweights$logpost))
+    expect_equal(sort(norm_sparse_2d_3$nodesandweights$logpost_normalized),sort(norm_sparse_2d_reorder_3$nodesandweights$logpost_normalized))
 
+    expect_equal(norm_sparse_2d_3$grid$features$m,norm_sparse_2d_reorder_3$grid$features$m[c(2,1)])
+    expect_equal(norm_sparse_2d_3$grid$features$C,norm_sparse_2d_reorder_3$grid$features$C[c(2,1),c(2,1)])
+
+    expect_equal(norm_sparse_2d_3$lognormconst,norm_sparse_2d_reorder_3$lognormconst)
 
 })
