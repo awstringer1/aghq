@@ -12,7 +12,7 @@
 #'
 #' @param optresults The results of calling \code{aghq::optimize_theta()}: see return value of that function.
 #' @param k Integer, the number of quadrature points to use. I suggest at least 3. k = 1 corresponds to a Laplace
-#' approximation, and in that case \code{aghq::normalize_logpost} just calls \code{aghq::laplace_approximation}.
+#' approximation.
 #' @param whichfirst Integer between 1 and the dimension of the parameter space, default 1.
 #' The user shouldn't have to worry about this: it's used internally to re-order the parameter vector
 #' before doing the quadrature, which is useful when calculating marginal posteriors.

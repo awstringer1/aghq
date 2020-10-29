@@ -80,3 +80,37 @@ norm_bfgs_2d_7 <- normalize_logpost(opt_bfgs_2d,7,1)
 
 # Parameter vector reordering
 norm_sparse_2d_reorder_3 <- normalize_logpost(opt_sparsetrust_2d,3,2)
+
+
+# Marginal posteriors
+margpost_1d_1 <- marginal_posterior(opt_sparsetrust,3,1)
+margpost_2d_1 <- marginal_posterior(opt_sparsetrust_2d,3,1)
+margpost_2d_2 <- marginal_posterior(opt_sparsetrust_2d,3,2)
+margpost_2d_2_k7 <- marginal_posterior(opt_sparsetrust_2d,7,2)
+
+# Moments
+truemean1d <- truemode # note: this isn't exactly right...
+truemean2d <- truemode2d
+trueexpmean1d <- exp(truemean1d) # ...but this is
+trueexpmean2d <- exp(truemean2d)
+truesd1d <- sqrt(1+sum(y)) / (1 + length(y))
+truesd2d <- c(sqrt(1+sum(y1)) / (1 + length(y1)),sqrt(1+sum(y2)) / (1 + length(y2)))
+
+aghqnormconst1d <- compute_moment(norm_sparse_7)
+aghqnormconst2d <- compute_moment(norm_sparse_2d_7)
+
+aghqmean1d <- compute_moment(norm_sparse_7,function(x) x)
+aghqmean2d <- compute_moment(norm_sparse_2d_7,function(x) x)
+
+aghqexpmean1d <- compute_moment(norm_sparse_7,function(x) exp(x))
+aghqexpmean2d <- compute_moment(norm_sparse_2d_7,function(x) exp(x))
+
+aghqexpsd1d <- sqrt(compute_moment(norm_sparse_7,function(x) (exp(x) - trueexpmean1d)^2))
+aghqexpsd2d_1 <- sqrt(compute_moment(norm_sparse_2d_7,function(x) (exp(x) - trueexpmean2d[1])^2))[1]
+aghqexpsd2d_2 <- sqrt(compute_moment(norm_sparse_2d_7,function(x) (exp(x) - trueexpmean2d[2])^2))[2]
+
+# Interpolation
+margpostinterp <- interpolate_marginal_posterior(margpost_2d_1)
+
+# pdf and cdf
+thepdfandcdf <- compute_pdf_and_cdf(margpost_2d_1)
