@@ -73,6 +73,7 @@ optimize_theta(funlist,1.5,control = list(method = "BFGS"))
 }
 \seealso{
 Other quadrature: 
+\code{\link{aghq}()},
 \code{\link{normalize_logpost}()}
 }
 \concept{quadrature}

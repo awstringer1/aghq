@@ -25,6 +25,42 @@ so a fine grid is laid down and the CDF is approximated at each grid point
 using a simpler integration rule and a polynomial interpolant. This method tends
 to work well, but won't always.
 }
+\examples{
+logfteta2d <- function(eta,y) {
+  # eta is now (eta1,eta2)
+  # y is now (y1,y2)
+  n <- length(y)
+  n1 <- ceiling(n/2)
+  n2 <- floor(n/2)
+  y1 <- y[1:n1]
+  y2 <- y[(n1+1):(n1+n2)]
+  eta1 <- eta[1]
+  eta2 <- eta[2]
+  sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+    sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+}
+set.seed(84343124)
+n1 <- 5
+n2 <- 5
+n <- n1+n2
+y1 <- rpois(n1,5)
+y2 <- rpois(n2,5)
+objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+funlist2d <- list(
+  fn = objfunc2d,
+  gr = function(x) numDeriv::grad(objfunc2d,x),
+  he = function(x) numDeriv::hessian(objfunc2d,x)
+)
+opt_sparsetrust_2d <- optimize_theta(funlist2d,c(1.5,1.5))
+margpost <- marginal_posterior(opt_sparsetrust_2d,3,1) # margpost for theta1
+thepdfandcdf <- compute_pdf_and_cdf(margpost)
+par(mfrow = c(1,2))
+with(thepdfandcdf,{
+  plot(pdf~theta,type='l')
+  plot(cdf~theta,type='l')
+})
+
+}
 \seealso{
 Other summaries: 
 \code{\link{compute_moment}()},

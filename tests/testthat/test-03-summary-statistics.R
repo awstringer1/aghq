@@ -53,5 +53,8 @@ test_that("Marginal posteriors computed correctly",{
   expect_equal(names(thequantiles),c("2.5%","97.5%"))
   expect_false(any(is.infinite(thequantiles)))
   expect_lt(thequantiles[1],thequantiles[2])
+  expect_lt(abs(exp(thequantiles[1]) - qgamma(.025,1+sum(y1),1+n1)),.07)
+  expect_lt(abs(exp(thequantiles[2]) - qgamma(.975,1+sum(y1),1+n1)),.09)
+
 })
 

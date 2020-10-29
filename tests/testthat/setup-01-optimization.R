@@ -117,3 +117,11 @@ thepdfandcdf <- compute_pdf_and_cdf(margpost_2d_1)
 
 # quantiles
 thequantiles <- compute_quantiles(margpost_2d_1)
+exp(thequantiles)
+qgamma(.025,1+sum(y1),1+n1)
+qgamma(.975,1+sum(y1),1+n1)
+
+# Quadrature!
+thequadrature <- aghq(funlist2d,3,c(0,0))
+thesummary <- summary(thequadrature)
+
