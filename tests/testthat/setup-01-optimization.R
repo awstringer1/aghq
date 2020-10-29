@@ -114,3 +114,6 @@ margpostinterp <- interpolate_marginal_posterior(margpost_2d_1)
 
 # pdf and cdf
 thepdfandcdf <- compute_pdf_and_cdf(margpost_2d_1)
+
+# quantiles
+thequantiles <- compute_quantiles(margpost_2d_1)

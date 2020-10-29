@@ -248,5 +248,12 @@ compute_pdf_and_cdf <- function(margpost,finegrid = NULL) {
 #' @export
 #'
 compute_quantiles <- function(margpost,q = c(.025,.975)) {
-  0
+  pdfandcdf <- compute_pdf_and_cdf(margpost)
+  out <- numeric(length(q))
+  names(out) <- paste0(as.character(100 * q),"%")
+
+  for (i in 1:length(q)) {
+    out[i] <- pdfandcdf$theta[max(which(pdfandcdf$cdf < q[i]))]
+  }
+  out
 }

@@ -48,5 +48,10 @@ test_that("Marginal posteriors computed correctly",{
   expect_true(all(thepdfandcdf$cdf >= 0))
   expect_equal(thepdfandcdf$cdf[1],0)
   expect_equal(round(thepdfandcdf$cdf[1000],2),1)
+
+  # Quantiles
+  expect_equal(names(thequantiles),c("2.5%","97.5%"))
+  expect_false(any(is.infinite(thequantiles)))
+  expect_lt(thequantiles[1],thequantiles[2])
 })
 
