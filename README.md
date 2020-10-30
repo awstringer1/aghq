@@ -1,5 +1,4 @@
-# AGHQ
-Adaptive Gauss Hermite Quadrature for Bayesian Inference
+# AGHQ: Adaptive Gauss Hermite Quadrature for Bayesian Inference
 
 This package implements Bayesian inference using Adaptive Gauss-Hermite Quadrature, as specified in our paper. See also the accompanying software paper.
 
