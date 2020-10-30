@@ -54,6 +54,7 @@ summary(thequadrature)
 \seealso{
 Other quadrature: 
 \code{\link{aghq}()},
+\code{\link{laplace_approximation}()},
 \code{\link{normalize_logpost}()},
 \code{\link{optimize_theta}()},
 \code{\link{plot.aghq}()},
@@ -61,6 +62,7 @@ Other quadrature:
 
 Other quadrature: 
 \code{\link{aghq}()},
+\code{\link{laplace_approximation}()},
 \code{\link{normalize_logpost}()},
 \code{\link{optimize_theta}()},
 \code{\link{plot.aghq}()},

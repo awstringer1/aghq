@@ -333,3 +333,59 @@ plot.aghq <- function(x,...) {
          ylab = "CDF")
   }
 }
+
+#' Laplace Approximation
+#'
+#' Wrapper function to implement a Laplace approximation to the posterior. A
+#' Laplace approximation is AGHQ with \code{k = 1} quadrature points, and indeed,
+#' this function just calls \code{aghq::aghq(...,k=1)}. However, the returned
+#' object is of a different class \code{laplace}, and different summary and
+#' plot methods are given for it. It is included because the
+#' Laplace approximation is an established method with which users may be familiar,
+#' and also, because it is especially useful for high-dimensional problems where
+#' the curse of dimensionality renders the use of \code{k > 1} quadrature points
+#' infeasible. The summary and plot methods reflect the fact that the user may
+#' be using this for a high-dimensional problem.
+#'
+#' @inheritParams aghq
+#'
+#' @return An object of class \code{laplace} with summary and plot methods.
+#'
+#' @examples
+#'
+#' logfteta2d <- function(eta,y) {
+#'   # eta is now (eta1,eta2)
+#'   # y is now (y1,y2)
+#'   n <- length(y)
+#'   n1 <- ceiling(n/2)
+#'   n2 <- floor(n/2)
+#'   y1 <- y[1:n1]
+#'   y2 <- y[(n1+1):(n1+n2)]
+#'   eta1 <- eta[1]
+#'   eta2 <- eta[2]
+#'   sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+#'     sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+#' }
+#' set.seed(84343124)
+#' n1 <- 5
+#' n2 <- 5
+#' n <- n1+n2
+#' y1 <- rpois(n1,5)
+#' y2 <- rpois(n2,5)
+#
+#' objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+#' funlist2d <- list(
+#'   fn = objfunc2d,
+#'   gr = function(x) numDeriv::grad(objfunc2d,x),
+#'   he = function(x) numDeriv::hessian(objfunc2d,x)
+#' )
+#'
+#' thequadrature <- aghq(funlist2d,3,c(0,0))
+#'
+#' @family quadrature
+#'
+#' @export
+#'
+laplace_approximation <- function(ff,startingvalue,optresults = NULL,control = default_control()) {
+  0
+}

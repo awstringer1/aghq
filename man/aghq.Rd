@@ -111,6 +111,7 @@ thequadrature <- aghq(funlist2d,3,c(0,0))
 }
 \seealso{
 Other quadrature: 
+\code{\link{laplace_approximation}()},
 \code{\link{normalize_logpost}()},
 \code{\link{optimize_theta}()},
 \code{\link{plot.aghq}()},
