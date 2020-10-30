@@ -68,6 +68,9 @@ norm_bfgs_7 <- normalize_logpost(opt_bfgs,7,1)
 \seealso{
 Other quadrature: 
 \code{\link{aghq}()},
-\code{\link{optimize_theta}()}
+\code{\link{optimize_theta}()},
+\code{\link{plot.aghq}()},
+\code{\link{print.aghqsummary}()},
+\code{\link{summary.aghq}()}
 }
 \concept{quadrature}

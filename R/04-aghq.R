@@ -108,16 +108,69 @@ aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control(
 #' prints these along with diagnostic and other information about
 #' the quadrature.
 #'
+#' @param object The return value from \code{aghq::aghq}.
+#' @param ... not used.
+#'
+#' @return A list of class \code{aghqsummary}, which has a print method. Elements:
+#' \itemize{
+#' \item{mode: }{the mode of the log posterior}
+#' \item{hessian: }{the hessian of the log posterior at the mode}
+#' \item{covariance: }{the inverse of the hessian of the log posterior at the mode}
+#' \item{cholesky: }{the upper cholesky trinagle of the hessian of the log posterior at the mode}
+#' \item{quadpoints: }{the number of quadrature points used in each dimension}
+#' \item{dim: }{the dimension of the parameter space}
+#' \item{summarytable: }{a table containing the mean, median, mode, standard deviation
+#' and quantiles of each parameter, computed according to the posterior normalized
+#' using AGHQ}
+#' }
+#'
+#' @family quadrature
+#'
+#' @examples
+#'
+#' logfteta2d <- function(eta,y) {
+#'   # eta is now (eta1,eta2)
+#'   # y is now (y1,y2)
+#'   n <- length(y)
+#'   n1 <- ceiling(n/2)
+#'   n2 <- floor(n/2)
+#'   y1 <- y[1:n1]
+#'   y2 <- y[(n1+1):(n1+n2)]
+#'   eta1 <- eta[1]
+#'   eta2 <- eta[2]
+#'   sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+#'     sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+#' }
+#' set.seed(84343124)
+#' n1 <- 5
+#' n2 <- 5
+#' n <- n1+n2
+#' y1 <- rpois(n1,5)
+#' y2 <- rpois(n2,5)
+#
+#' objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+#' funlist2d <- list(
+#'   fn = objfunc2d,
+#'   gr = function(x) numDeriv::grad(objfunc2d,x),
+#'   he = function(x) numDeriv::hessian(objfunc2d,x)
+#' )
+#'
+#' thequadrature <- aghq(funlist2d,3,c(0,0))
+#' # Summarize and automatically call its print() method when called interactively:
+#' summary(thequadrature)
+#' # or, compute the summary and save for further processing:
+#' ss <- summary(thequadrature)
+#' str(ss)
 #'
 #' @export
 #'
-summary.aghq <- function(aghqobj) {
-  d <- length(aghqobj$optresults$mode)
+summary.aghq <- function(object,...) {
+  d <- length(object$optresults$mode)
 
   # Moments
-  themeans <- compute_moment(aghqobj$normalized_posterior,function(x) x)
+  themeans <- compute_moment(object$normalized_posterior,function(x) x)
   thesds <- numeric(d)
-  for (j in 1:d) thesds[j] <- sqrt(compute_moment(aghqobj$normalized_posterior,function(x) (x - themeans[j])^2)[j])
+  for (j in 1:d) thesds[j] <- sqrt(compute_moment(object$normalized_posterior,function(x) (x - themeans[j])^2)[j])
   names(thesds) <- names(themeans)
 
   themoments <- cbind(themeans,thesds)
@@ -126,58 +179,154 @@ summary.aghq <- function(aghqobj) {
 
   # Quantiles
   thequants <- vector(mode = 'list',length = d)
-  for (j in 1:d) thequants[[j]] <- compute_quantiles(aghqobj$marginals[[j]],c(.025,.5,.975))
+  for (j in 1:d) thequants[[j]] <- compute_quantiles(object$marginals[[j]],c(.025,.5,.975))
   names(thequants) <- paste0("theta",1:d)
   thequants <- t(as.data.frame(thequants))
   colnames(thequants)[2] <- 'median'
 
-  thesummary <- cbind(themoments,thequants)
+  thesummary <- cbind(themoments,thequants,data.frame(mode = object$optresults$mode))
+  thesummary <- thesummary[ ,c('mean','median','mode','sd','2.5%','97.5%')]
 
   out <- list()
   class(out) <- "aghqsummary"
-  out$mode <- aghqobj$optresults$mode
-  out$hessian <- aghqobj$optresults$hessian
+  out$mode <- object$optresults$mode
+  out$hessian <- object$optresults$hessian
   out$covariance <- solve(out$hessian)
   out$cholesky <- chol(out$covariance)
-  out$quadpoints <- as.numeric(aghqobj$normalized_posterior$grid$level)
+  out$quadpoints <- as.numeric(object$normalized_posterior$grid$level)
   out$dim <- length(out$quadpoints)
   out$summarytable <- thesummary
 
   out
 }
 
-print.aghqsummary <- function(summ) {
-  cat("AGHQ on a",summ$dim,"dimensional posterior with ",summ$quadpoints,"quadrature points\n\n")
-  cat("The posterior mode is:",summ$mode,"\n\n")
+#' Print method for AGHQ summary objects
+#'
+#' Print the summary of an \code{aghq} object. Almost always called by invoking
+#' \code{summary(...)} interactively in the console.
+#'
+#' @param x The result of calling \code{summary(...)} on an object of class \code{aghq}.
+#' @param ... not used.
+#'
+#' @return Silently prints summary information.
+#'
+#' @family quadrature
+#'
+#' @examples
+#'
+#' logfteta2d <- function(eta,y) {
+#'   # eta is now (eta1,eta2)
+#'   # y is now (y1,y2)
+#'   n <- length(y)
+#'   n1 <- ceiling(n/2)
+#'   n2 <- floor(n/2)
+#'   y1 <- y[1:n1]
+#'   y2 <- y[(n1+1):(n1+n2)]
+#'   eta1 <- eta[1]
+#'   eta2 <- eta[2]
+#'   sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+#'     sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+#' }
+#' set.seed(84343124)
+#' n1 <- 5
+#' n2 <- 5
+#' n <- n1+n2
+#' y1 <- rpois(n1,5)
+#' y2 <- rpois(n2,5)
+#
+#' objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+#' funlist2d <- list(
+#'   fn = objfunc2d,
+#'   gr = function(x) numDeriv::grad(objfunc2d,x),
+#'   he = function(x) numDeriv::hessian(objfunc2d,x)
+#' )
+#'
+#' thequadrature <- aghq(funlist2d,3,c(0,0))
+#' # Summarize and automatically call its print() method when called interactively:
+#' summary(thequadrature)
+#'
+#' @family quadrature
+#'
+#' @export
+#'
+print.aghqsummary <- function(x,...) {
+  cat("AGHQ on a",x$dim,"dimensional posterior with ",x$quadpoints,"quadrature points\n\n")
+  cat("The posterior mode is:",x$mode,"\n\n")
   cat("The posterior Hessian at the mode is:\n")
-  print(as.matrix(summ$hessian))
+  print(as.matrix(x$hessian))
   cat("\n")
   cat("The covariance matrix used for the quadrature is...\n")
-  print(as.matrix(summ$covariance))
+  print(as.matrix(x$covariance))
   cat("\n")
   cat("...and its Cholesky is:\n")
-  print(as.matrix(summ$cholesky))
+  print(as.matrix(x$cholesky))
   cat("\n")
   cat("Here are some moments and quantiles for theta:\n\n")
-  print(summ$summarytable)
+  print(x$summarytable)
   cat("\n")
 }
 
-
-plot.aghq <- function(aghqobj) {
-  d <- length(aghqobj$marginals)
+#' Plot method for AGHQ objects
+#'
+#' Plot the marginal pdf and cdf from an \code{aghq} object.
+#'
+#' @param x The return value of \code{aghq::aghq}.
+#' @param ... not used.
+#'
+#' @return Silently plots.
+#'
+#' @family quadrature
+#'
+#' @examples
+#'
+#' logfteta2d <- function(eta,y) {
+#'   # eta is now (eta1,eta2)
+#'   # y is now (y1,y2)
+#'   n <- length(y)
+#'   n1 <- ceiling(n/2)
+#'   n2 <- floor(n/2)
+#'   y1 <- y[1:n1]
+#'   y2 <- y[(n1+1):(n1+n2)]
+#'   eta1 <- eta[1]
+#'   eta2 <- eta[2]
+#'   sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+#'     sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+#' }
+#' set.seed(84343124)
+#' n1 <- 5
+#' n2 <- 5
+#' n <- n1+n2
+#' y1 <- rpois(n1,5)
+#' y2 <- rpois(n2,5)
+#
+#' objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+#' funlist2d <- list(
+#'   fn = objfunc2d,
+#'   gr = function(x) numDeriv::grad(objfunc2d,x),
+#'   he = function(x) numDeriv::hessian(objfunc2d,x)
+#' )
+#'
+#' thequadrature <- aghq(funlist2d,3,c(0,0))
+#' plot(thequadrature)
+#'
+#' @family quadrature
+#'
+#' @export
+#'
+plot.aghq <- function(x,...) {
+  d <- length(x$marginals)
   # Compute pdf and cdf
   pdfandcdf <- vector(mode = 'list',length = d)
-  for (j in 1:d) pdfandcdf[[j]] <- compute_pdf_and_cdf(aghqobj$marginals[[j]])
+  for (j in 1:d) pdfandcdf[[j]] <- compute_pdf_and_cdf(x$marginals[[j]])
 
-  par(mfrow = c(d,2))
+  graphics::par(mfrow = c(d,2))
   for (j in 1:d) {
-    plot(pdfandcdf[[j]]$pdf ~ pdfandcdf[[j]]$theta,
+    graphics::plot(pdfandcdf[[j]]$pdf ~ pdfandcdf[[j]]$theta,
          type = 'l',
          main = paste0("Marg. Post., theta",j),
          xlab = paste0("theta",j),
          ylab = "Density")
-    plot(pdfandcdf[[j]]$cdf ~ pdfandcdf[[j]]$theta,
+    graphics::plot(pdfandcdf[[j]]$cdf ~ pdfandcdf[[j]]$theta,
          type = 'l',
          main = paste0("Marg. CDF, theta",j),
          xlab = paste0("theta",j),
