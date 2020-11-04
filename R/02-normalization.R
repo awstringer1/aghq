@@ -80,10 +80,11 @@ normalize_logpost <- function(optresults,k,whichfirst = 1) {
   nodesandweights <- as.data.frame(nodesandweights)
 
   # Compute the log-posterior at the integration points
+  thetaorder <- paste0('theta',1:S)
   if (length(idxorder) == 1) {
-    nodesandweights$logpost <- sapply(nodesandweights[ ,idxorder],optresults$ff$fn)
+    nodesandweights$logpost <- sapply(nodesandweights[ ,thetaorder],optresults$ff$fn)
   } else{
-    nodesandweights$logpost <- apply(nodesandweights[ ,idxorder],1,optresults$ff$fn)
+    nodesandweights$logpost <- apply(nodesandweights[ ,thetaorder],1,optresults$ff$fn)
   }
 
   # Get the normalization constant

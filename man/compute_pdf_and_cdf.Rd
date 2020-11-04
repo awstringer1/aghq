@@ -4,10 +4,16 @@
 \alias{compute_pdf_and_cdf}
 \title{Density and Cumulative Distribution Function}
 \usage{
-compute_pdf_and_cdf(margpost, finegrid = NULL)
+compute_pdf_and_cdf(margpost, transformation = NULL, finegrid = NULL)
 }
 \arguments{
 \item{margpost}{The output of \code{aghq::marginal_posterior}. See the documentation for that function.}
+
+\item{transformation}{Optional. A list containing two functions, \code{fromtheta}
+and \code{totheta}, which accept and return numeric vectors, defining a parameter transformation for which you would
+also like the pdf calculated for. See examples. May also have an element \code{jacobian},
+a function which takes a numeric vector and computes the jacobian of the transformation; if
+not provided, this is done using \code{numDeriv::jacobian}.}
 
 \item{finegrid}{Optional, a grid of values on which to compute the CDF. The default makes
 use of the values in \code{margpost} but if the results are unsuitable, you may wish to

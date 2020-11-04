@@ -92,7 +92,7 @@ marginal_posterior <- function(optresults,k,j) {
   nodesandweightsfactored <- cbind(nn,wwE) %>% dplyr::inner_join(nodesandweights,by = c(thetaj,thetaminusj))
 
   out <- nodesandweightsfactored %>%
-    tidyr::pivot_longer(tidyselect::contains(paste0(thetaminusj,"W")),names_to = "v",values_to = "w") %>%
+    tidyr::pivot_longer(tidyselect::one_of(paste0(thetaminusj,"W")),names_to = "v",values_to = "w") %>%
     dplyr::mutate(logw = log(.data$w * prod(.env$diagcholinvH[-1]))) %>%
     dplyr::group_by(.data[[thetaj]]) %>%
     dplyr::summarize(logmargpost = matrixStats::logSumExp(.data$logw + .data$logpost_normalized))
@@ -206,6 +206,11 @@ compute_moment <- function(normalized_posterior,ff = function(x) 1) {
 #' @param finegrid Optional, a grid of values on which to compute the CDF. The default makes
 #' use of the values in \code{margpost} but if the results are unsuitable, you may wish to
 #' modify this manually.
+#' @param transformation Optional. A list containing two functions, \code{fromtheta}
+#' and \code{totheta}, which accept and return numeric vectors, defining a parameter transformation for which you would
+#' also like the pdf calculated for. See examples. May also have an element \code{jacobian},
+#' a function which takes a numeric vector and computes the jacobian of the transformation; if
+#' not provided, this is done using \code{numDeriv::jacobian}.
 #'
 #' @return A tbl_df/tbl/data.frame with columns \code{theta}, \code{pdf} and \code{cdf} corresponding
 #' to the value of the parameter and its estimated PDF and CDF at that value.
@@ -251,7 +256,7 @@ compute_moment <- function(normalized_posterior,ff = function(x) 1) {
 #'
 #' @export
 #'
-compute_pdf_and_cdf <- function(margpost,finegrid = NULL) {
+compute_pdf_and_cdf <- function(margpost,transformation = NULL,finegrid = NULL) {
 
   margpostinterp <- interpolate_marginal_posterior(margpost)
 
@@ -263,10 +268,25 @@ compute_pdf_and_cdf <- function(margpost,finegrid = NULL) {
     finegrid <- c(seq(thetarange[1],thetarange[2],length.out=1000))
   }
 
-  dplyr::tibble(theta = finegrid,
+  out <- dplyr::tibble(theta = finegrid,
                  pdf = exp(margpostinterp(.data$theta)),
                  cdf = cumsum(.data$pdf * c(0,diff(.data$theta))))
 
+  if (!is.null(transformation)) {
+    if (is.null(transformation$jacobian)) {
+      transformation$jacobian <- function(theta) {
+        out <- numeric(length(theta))
+        for (i in 1:length(theta)) {
+          out[i] <- det(abs(numDeriv::jacobian(transformation$totheta,transformation$fromtheta(theta[i]))))
+        }
+        out
+      }
+    }
+    out <- out %>%
+      dplyr::mutate(transparam = transformation$fromtheta(.data[["theta"]]),
+             pdf_transparam = .data[["pdf"]] * transformation$jacobian(.data[["theta"]]))
+  }
+  out
 }
 
 #' Quantiles

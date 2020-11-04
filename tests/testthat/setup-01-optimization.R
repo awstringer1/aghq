@@ -32,6 +32,16 @@ norm_bfgs_5 <- normalize_logpost(opt_bfgs,5,1)
 norm_bfgs_7 <- normalize_logpost(opt_bfgs,7,1)
 
 
+margpost_3 <- marginal_posterior(opt_sparsetrust,3,1)
+pdfwithtrans <- compute_pdf_and_cdf(
+  margpost_3,
+  transformation = list(
+    totheta = function(x) log(x),
+    fromtheta = function(x) exp(x)
+  ))
+
+
+
 ## A 2d example ##
 logfteta2d <- function(eta,y) {
   # eta is now (eta1,eta2)
