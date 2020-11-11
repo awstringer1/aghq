@@ -78,6 +78,10 @@ Other quadrature:
 \code{\link{normalize_logpost}()},
 \code{\link{plot.aghq}()},
 \code{\link{print.aghqsummary}()},
-\code{\link{summary.aghq}()}
+\code{\link{print.aghq}()},
+\code{\link{print.laplacesummary}()},
+\code{\link{print.laplace}()},
+\code{\link{summary.aghq}()},
+\code{\link{summary.laplace}()}
 }
 \concept{quadrature}

@@ -56,7 +56,11 @@ Other quadrature:
 \code{\link{normalize_logpost}()},
 \code{\link{optimize_theta}()},
 \code{\link{print.aghqsummary}()},
-\code{\link{summary.aghq}()}
+\code{\link{print.aghq}()},
+\code{\link{print.laplacesummary}()},
+\code{\link{print.laplace}()},
+\code{\link{summary.aghq}()},
+\code{\link{summary.laplace}()}
 
 Other quadrature: 
 \code{\link{aghq}()},
@@ -64,6 +68,10 @@ Other quadrature:
 \code{\link{normalize_logpost}()},
 \code{\link{optimize_theta}()},
 \code{\link{print.aghqsummary}()},
-\code{\link{summary.aghq}()}
+\code{\link{print.aghq}()},
+\code{\link{print.laplacesummary}()},
+\code{\link{print.laplace}()},
+\code{\link{summary.aghq}()},
+\code{\link{summary.laplace}()}
 }
 \concept{quadrature}

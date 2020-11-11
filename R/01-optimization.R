@@ -104,7 +104,8 @@ optimize_theta <- function(ff,startingvalue,control = default_control()) {
     opt <- trust::trust(
       objfun = funlist,
       parinit = startingvalue,
-      rinit = 1
+      rinit = 1,
+      rmax = 100
     )
     out <- list(
       ff = ff,

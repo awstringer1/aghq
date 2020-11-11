@@ -17,12 +17,16 @@
 #' The user shouldn't have to worry about this: it's used internally to re-order the parameter vector
 #' before doing the quadrature, which is useful when calculating marginal posteriors.
 #'
-#' @return A list with elements:
+#' @return If k > 1, a list with elements:
 #' \itemize{
 #' \item{\code{nodesandweights}: }{a dataframe containing the nodes and weights for the adaptive quadrature rule, with the un-normalized and normalized log posterior evaluated at the nodes.}
 #' \item{\code{thegrid}: }{a \code{NIGrid} object from the \code{mvQuad} package, see \code{?mvQuad::createNIGrid}.}
 #' \item{\code{lognormconst}: }{the actual result of the quadrature: the log of the normalizing constant of the posterior.}
 #' }
+#'
+#' If k = 1, then the method returns
+#' a numeric value representing the log of the normalizing constant computed using
+#' a Laplace approximation.
 #'
 #' @family quadrature
 #'
@@ -60,10 +64,16 @@
 #' norm_bfgs_5 <- normalize_logpost(opt_bfgs,5,1)
 #' norm_bfgs_7 <- normalize_logpost(opt_bfgs,7,1)
 #'
+#' @importFrom Matrix determinant
+#'
 #' @export
 #'
 normalize_logpost <- function(optresults,k,whichfirst = 1) {
   if (as.integer(k) != k) stop(paste0("Please provide an integer k, the number of quadrature points. You provided ",k,"which does not satisfy as.integer(k) == k"))
+  if (k == 1) {
+    # Laplace approx: just return the normalizing constant
+    return(optresults$ff$fn(optresults$mode) - as.numeric(.5 * determinant(optresults$hessian,logarithm = TRUE)$modulus))
+  }
   # Create the grid
   S <- length(optresults$mode) # Dimension
   thegrid <- mvQuad::createNIGrid(dim = S,type = "GHe",level = k)
@@ -100,17 +110,3 @@ normalize_logpost <- function(optresults,k,whichfirst = 1) {
     lognormconst = lognormconst
   )
 }
-
-
-#' Normalize the joint posterior using a Laplace Approximation
-#'
-#' A Laplace approximation is AGHQ with k = 1 quadrature point. This function
-#' is simply a wrapper for \code{aghq::normalize_logpost(...,k=1)}, for users
-#' who are more comfortable with Laplace approximations than with the AGHQ methodology.
-#' But it's the same thing :)
-#'
-#' @inherit normalize_logpost params return examples
-#'
-#' @export
-#'
-laplace_approximation <- function(optresults) normalize_logpost(optresults,1,1)

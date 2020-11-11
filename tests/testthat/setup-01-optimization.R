@@ -1,4 +1,4 @@
-library(aghq)
+# devtools::load_all()
 logfteta <- function(eta,y) {
   sum(y) * eta - (length(y) + 1) * exp(eta) - sum(lgamma(y+1)) + eta
 }
@@ -135,3 +135,6 @@ qgamma(.975,1+sum(y1),1+n1)
 thequadrature <- aghq(funlist2d,3,c(0,0))
 thesummary <- summary(thequadrature)
 
+# Laplace
+
+thelaplace <- laplace_approximation(funlist2d,c(0,0))

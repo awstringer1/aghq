@@ -191,6 +191,7 @@ summary.aghq <- function(object,...) {
   class(out) <- "aghqsummary"
   out$mode <- object$optresults$mode
   out$hessian <- object$optresults$hessian
+  out$lognormconst <- object$normalized_posterior$lognormconst
   out$covariance <- solve(out$hessian)
   out$cholesky <- chol(out$covariance)
   out$quadpoints <- as.numeric(object$normalized_posterior$grid$level)
@@ -198,6 +199,59 @@ summary.aghq <- function(object,...) {
   out$summarytable <- thesummary
 
   out
+}
+
+#' Print method for AGHQ objects
+#'
+#' Pretty print the object-- just gives some basic information and then suggests
+#' the user call \code{summary(...)}.
+#'
+#' @param x An object of class \code{aghq}.
+#' @param ... not used.
+#'
+#' @return Silently prints summary information.
+#'
+#' @family quadrature
+#'
+#' @examples
+#'
+#' logfteta2d <- function(eta,y) {
+#'   # eta is now (eta1,eta2)
+#'   # y is now (y1,y2)
+#'   n <- length(y)
+#'   n1 <- ceiling(n/2)
+#'   n2 <- floor(n/2)
+#'   y1 <- y[1:n1]
+#'   y2 <- y[(n1+1):(n1+n2)]
+#'   eta1 <- eta[1]
+#'   eta2 <- eta[2]
+#'   sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+#'     sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+#' }
+#' set.seed(84343124)
+#' n1 <- 5
+#' n2 <- 5
+#' n <- n1+n2
+#' y1 <- rpois(n1,5)
+#' y2 <- rpois(n2,5)
+#
+#' objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+#' funlist2d <- list(
+#'   fn = objfunc2d,
+#'   gr = function(x) numDeriv::grad(objfunc2d,x),
+#'   he = function(x) numDeriv::hessian(objfunc2d,x)
+#' )
+#'
+#' thequadrature <- aghq(funlist2d,3,c(0,0))
+#' thequadrature
+#'
+#' @export
+#'
+print.aghq <- function(x,...) {
+cat("aghq object. \n
+Use summary(...) to see more detailed information,\n
+plot(...) to see plots of marginal distributions, and \n
+?compute_moment to see a list of useful summary methods.\n ")
 }
 
 #' Print method for AGHQ summary objects
@@ -252,6 +306,7 @@ summary.aghq <- function(object,...) {
 print.aghqsummary <- function(x,...) {
   cat("AGHQ on a",x$dim,"dimensional posterior with ",x$quadpoints,"quadrature points\n\n")
   cat("The posterior mode is:",x$mode,"\n\n")
+  cat("The log of the normalizing constant/marginal likelihood is:",x$lognormconst,"\n\n")
   cat("The posterior Hessian at the mode is:\n")
   print(as.matrix(x$hessian))
   cat("\n")
@@ -337,19 +392,22 @@ plot.aghq <- function(x,...) {
 #' Laplace Approximation
 #'
 #' Wrapper function to implement a Laplace approximation to the posterior. A
-#' Laplace approximation is AGHQ with \code{k = 1} quadrature points, and indeed,
-#' this function just calls \code{aghq::aghq(...,k=1)}. However, the returned
-#' object is of a different class \code{laplace}, and different summary and
-#' plot methods are given for it. It is included because the
-#' Laplace approximation is an established method with which users may be familiar,
-#' and also, because it is especially useful for high-dimensional problems where
+#' Laplace approximation is AGHQ with \code{k = 1} quadrature points.
+#' However, the returned
+#' object is of a different class \code{laplace}, and a different summary
+#' method is given for it. It is especially useful for high-dimensional problems where
 #' the curse of dimensionality renders the use of \code{k > 1} quadrature points
-#' infeasible. The summary and plot methods reflect the fact that the user may
-#' be using this for a high-dimensional problem.
+#' infeasible. The summary method reflects the fact that the user may
+#' be using this for a high-dimensional problem, and no plot method is given,
+#' because there isn't anything
+#' interesting to plot.
 #'
 #' @inheritParams aghq
 #'
-#' @return An object of class \code{laplace} with summary and plot methods.
+#' @return An object of class \code{laplace} with summary and plot methods. This
+#' is simply a list with elements \code{lognormconst} containing the log of the
+#' approximate normalizing constant, and \code{optresults} containing the optimization
+#' results formatted the same way as \code{optimize_theta} and \code{aghq}.
 #'
 #' @examples
 #'
@@ -387,5 +445,188 @@ plot.aghq <- function(x,...) {
 #' @export
 #'
 laplace_approximation <- function(ff,startingvalue,optresults = NULL,control = default_control()) {
-  0
+  if(is.null(optresults)) optresults <- optimize_theta(ff,startingvalue,control)
+  lognorm <- normalize_logpost(optresults,1)
+  out <- list(lognormconst = lognorm,optresults = optresults)
+  class(out) <- "laplace"
+  out
+}
+
+#' Print method for AGHQ objects
+#'
+#' Pretty print the object-- just gives some basic information and then suggests
+#' the user call \code{summary(...)}.
+#'
+#' @param x An object of class \code{aghq}.
+#' @param ... not used.
+#'
+#' @return Silently prints summary information.
+#'
+#' @family quadrature
+#'
+#' @examples
+#'
+#' logfteta2d <- function(eta,y) {
+#'   # eta is now (eta1,eta2)
+#'   # y is now (y1,y2)
+#'   n <- length(y)
+#'   n1 <- ceiling(n/2)
+#'   n2 <- floor(n/2)
+#'   y1 <- y[1:n1]
+#'   y2 <- y[(n1+1):(n1+n2)]
+#'   eta1 <- eta[1]
+#'   eta2 <- eta[2]
+#'   sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+#'     sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+#' }
+#' set.seed(84343124)
+#' n1 <- 5
+#' n2 <- 5
+#' n <- n1+n2
+#' y1 <- rpois(n1,5)
+#' y2 <- rpois(n2,5)
+#
+#' objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+#' funlist2d <- list(
+#'   fn = objfunc2d,
+#'   gr = function(x) numDeriv::grad(objfunc2d,x),
+#'   he = function(x) numDeriv::hessian(objfunc2d,x)
+#' )
+#'
+#' thequadrature <- aghq(funlist2d,3,c(0,0))
+#' thequadrature
+#'
+#' @export
+#'
+print.laplace <- function(x,...) {
+cat("laplace object. \n
+Use summary(...) to see more detailed information.\n
+Further summaries are not available for this class; if you
+actually wanted aghq with one quadrature point, use
+aghq(...,k = 1). Note that some summaries may not
+behave as expected in this case; you are recommended
+to use k >= 3 if you want moments, quantiles, etc.\n")
+}
+
+#' Summary method for Laplace Approximation objects
+#'
+#' Summary method for objects of class \code{laplace}. Similar
+#' to the method for objects of class \code{aghq}, but assumes the
+#' problem is high-dimensional and does not compute or
+#' print any large objects or summaries. See \code{summary.aghq} for
+#' further information.
+#'
+#' @param object An object of class \code{laplace}.
+#' @param ... not used.
+#'
+#' @return Silently prints summary information.
+#'
+#' @family quadrature
+#'
+#' @examples
+#'
+#' logfteta2d <- function(eta,y) {
+#'   # eta is now (eta1,eta2)
+#'   # y is now (y1,y2)
+#'   n <- length(y)
+#'   n1 <- ceiling(n/2)
+#'   n2 <- floor(n/2)
+#'   y1 <- y[1:n1]
+#'   y2 <- y[(n1+1):(n1+n2)]
+#'   eta1 <- eta[1]
+#'   eta2 <- eta[2]
+#'   sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+#'     sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+#' }
+#' set.seed(84343124)
+#' n1 <- 5
+#' n2 <- 5
+#' n <- n1+n2
+#' y1 <- rpois(n1,5)
+#' y2 <- rpois(n2,5)
+#
+#' objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+#' funlist2d <- list(
+#'   fn = objfunc2d,
+#'   gr = function(x) numDeriv::grad(objfunc2d,x),
+#'   he = function(x) numDeriv::hessian(objfunc2d,x)
+#' )
+#'
+#' thelaplace <- laplace_approximation(funlist2d,c(0,0))
+#' # Summarize and automatically call its print() method when called interactively:
+#' summary(thelaplace)
+#'
+#' @family quadrature
+#'
+#' @export
+summary.laplace <- function(object,...) {
+  d <- length(object$optresults$mode)
+
+  out <- list()
+  class(out) <- "laplacesummary"
+  out$mode <- object$optresults$mode
+  out$lognormconst <- object$lognormconst
+  out$dim <- d
+
+  out
+}
+
+#' Print method for laplacesummary objects
+#'
+#' Print the summary of an \code{laplace} object. Almost always called by invoking
+#' \code{summary(...)} interactively in the console.
+#'
+#' @param x The result of calling \code{summary(...)} on an object of class \code{laplace}.
+#' @param ... not used.
+#'
+#' @return Silently prints summary information.
+#'
+#' @family quadrature
+#'
+#' @examples
+#'
+#' logfteta2d <- function(eta,y) {
+#'   # eta is now (eta1,eta2)
+#'   # y is now (y1,y2)
+#'   n <- length(y)
+#'   n1 <- ceiling(n/2)
+#'   n2 <- floor(n/2)
+#'   y1 <- y[1:n1]
+#'   y2 <- y[(n1+1):(n1+n2)]
+#'   eta1 <- eta[1]
+#'   eta2 <- eta[2]
+#'   sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+#'     sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+#' }
+#' set.seed(84343124)
+#' n1 <- 5
+#' n2 <- 5
+#' n <- n1+n2
+#' y1 <- rpois(n1,5)
+#' y2 <- rpois(n2,5)
+#
+#' objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+#' funlist2d <- list(
+#'   fn = objfunc2d,
+#'   gr = function(x) numDeriv::grad(objfunc2d,x),
+#'   he = function(x) numDeriv::hessian(objfunc2d,x)
+#' )
+#'
+#' thelaplace <- laplace_approximation(funlist2d,c(0,0))
+#' # Summarize and automatically call its print() method when called interactively:
+#' summary(thelaplace)
+#'
+#' @family quadrature
+#'
+#' @export
+#'
+print.laplacesummary <- function(x,...) {
+  cat("Laplace approximation for a",x$dim,"dimensional posterior\n\n")
+  if (x$dim > 5) {
+    cat("The posterior mode is:",c(round(x$mode[1:5],3),"..."),"\n\n")
+  } else {
+    cat("The posterior mode is:",round(x$mode,3),"\n\n")
+  }
+  cat("The log of the normalizing constant/marginal likelihood is:",x$lognormconst,"\n\n")
+  cat("\n")
 }
