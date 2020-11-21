@@ -630,3 +630,82 @@ print.laplacesummary <- function(x,...) {
   cat("The log of the normalizing constant/marginal likelihood is:",x$lognormconst,"\n\n")
   cat("\n")
 }
+
+#' Marginal Laplace approximation
+#'
+#' Implement the marginal Laplace approximation of Tierney and Kadane (1986) for
+#' finding the marginal posterior \code{(theta | Y)} from an unnormalized joint posterior
+#' \code{(W,theta,Y)} where \code{W} is high dimensional and \code{theta} is low dimensional.
+#' See the \code{AGHQ} software paper for a detailed example, or Stringer et. al. (2020).
+#'
+#' @param ff A function list similar to that required by \code{aghq}. However, each
+#' function now takes arguments \code{W} and \code{theta}. Explicitly, this is a
+#' list containing elements:
+#' \itemize{
+#' \item{\code{fn}}{: function taking arguments \code{W} and \code{theta} and returning a numeric
+#' value representing the log-joint posterior at \code{W,theta}}
+#' \item{\code{gr}}{: function taking arguments \code{W} and \code{theta} and returning a numeric
+#' vector representing the gradient with respect to \code{W} of the log-joint posterior at \code{W,theta}}
+#' \item{\code{he}}{: function taking arguments \code{W} and \code{theta} and returning a numeric
+#' matrix representing the hessian with respect to \code{W} of the log-joint posterior at \code{W,theta}}
+#' }
+#' @param startingvalue A list with elements \code{W} and \code{theta}, which are numeric
+#' vectors to start the optimizations for each variable. If you're using this method
+#' then the log-joint posterior should be concave and these optimizations shoud not be
+#' sensitive to starting values.
+#' @param control A list with elements
+#' \itemize{
+#' \item{\code{method}: }{optimization method to use for the \code{theta} optimization:
+#' \itemize{
+#' \item{'sparse_trust' (default): }{\code{trustOptim::trust.optim}}
+#' \item{'sparse': }{\code{trust::trust}}
+#' \item{'BFGS': }{\code{optim(...,method = "BFGS")}}
+#' }
+#' }
+#' \item{\code{inner_method}: }{optimization method to use for the \code{W} optimization; same
+#' options as for \code{method}}
+#' }
+#' Default \code{inner_method} is 'sparse_trust' and default \code{method} is 'BFGS'.
+#'
+#' @inheritParams aghq
+#'
+#' @return An \code{aghq} object, the result of calling \code{aghq::aghq} on
+#' the Laplace approximation \code{(theta|Y)}. See software paper for full details.
+#'
+#' @family quadrature
+#'
+#' @export
+#'
+marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = default_control_marglaplace()) {
+
+  # Dimension of W space
+  Wd <- length(startingvalue$W)
+  # Write a function for fixed theta that computes the laplace approximation
+  log_posterior_theta <- function(theta) {
+    ffinner <- list(
+      fn = function(W) ff$fn(W,theta),
+      gr = function(W) ff$gr(W,theta),
+      he = function(W) ff$he(W,theta)
+    )
+
+    utils::capture.output(lap <- laplace_approximation(ffinner,startingvalue$W,control = list(method = control$inner_method)))
+
+    as.numeric(lap$lognormconst)
+  }
+  log_posterior_theta_vectorized <- function(theta) {
+    out <- numeric(length(theta))
+    for (i in 1:length(theta)) out[i] <- log_posterior_theta(theta[i])
+    out
+  }
+
+  ## Do the quadrature ##
+  # Create the function list
+  # TODO: better optimization like they do for GAMs
+  ffouter <- list(
+    fn = log_posterior_theta_vectorized,
+    gr = function(theta) numDeriv::grad(log_posterior_theta_vectorized,theta),
+    he = function(theta) numDeriv::hessian(log_posterior_theta_vectorized,theta)
+  )
+  # Return the quadrature object
+  aghq::aghq(ffouter,k,startingvalue$theta,control = control)
+}

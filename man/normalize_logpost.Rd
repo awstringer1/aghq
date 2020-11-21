@@ -73,6 +73,7 @@ norm_bfgs_7 <- normalize_logpost(opt_bfgs,7,1)
 Other quadrature: 
 \code{\link{aghq}()},
 \code{\link{laplace_approximation}()},
+\code{\link{marginal_laplace}()},
 \code{\link{optimize_theta}()},
 \code{\link{plot.aghq}()},
 \code{\link{print.aghqsummary}()},

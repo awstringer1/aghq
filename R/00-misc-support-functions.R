@@ -7,3 +7,10 @@ default_control <- function() {
     method = c("sparse_trust","trust","BFGS")
   )
 }
+
+default_control_marglaplace <- function() {
+  list(
+    method = c("BFGS","sparse_trust","trust"),
+    inner_method = c("sparse_trust","trust","BFGS")
+  )
+}

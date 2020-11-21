@@ -40,12 +40,14 @@ If you're unsure whether this option is needed for your problem then it probably
 \itemize{
 \item{\code{method}: }{optimization method to use:
 \itemize{
-\item{'sparse_trust' (default): }{\code{trustOptim::trust.optim}}
-\item{'sparse': }{\code{trust::trust}}
+\item{'sparse_trust' (default): }{\code{trustOptim::trust.optim} with \code{method = 'sparse'}}
+\item{'SR1' (default): }{\code{trustOptim::trust.optim} with \code{method = 'SR1'}}
+\item{'trust': }{\code{trust::trust}}
 \item{'BFGS': }{\code{optim(...,method = "BFGS")}}
 }
 }
-}}
+}
+Default is 'sparse_trust'.}
 }
 \value{
 An object of class \code{laplace} with summary and plot methods. This
@@ -99,6 +101,7 @@ thequadrature <- aghq(funlist2d,3,c(0,0))
 \seealso{
 Other quadrature: 
 \code{\link{aghq}()},
+\code{\link{marginal_laplace}()},
 \code{\link{normalize_logpost}()},
 \code{\link{optimize_theta}()},
 \code{\link{plot.aghq}()},

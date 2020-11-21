@@ -16,6 +16,7 @@ funlist <- list(
 )
 
 opt_sparsetrust <- optimize_theta(funlist,1.5)
+opt_sr1 <- optimize_theta(funlist,1.5,control = list(method = "SR1"))
 opt_trust <- optimize_theta(funlist,1.5,control = list(method = "trust"))
 opt_bfgs <- optimize_theta(funlist,1.5,control = list(method = "BFGS"))
 

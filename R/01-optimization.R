@@ -30,12 +30,15 @@
 #' \itemize{
 #' \item{\code{method}: }{optimization method to use:
 #' \itemize{
-#' \item{'sparse_trust' (default): }{\code{trustOptim::trust.optim}}
-#' \item{'sparse': }{\code{trust::trust}}
+#' \item{'sparse_trust' (default): }{\code{trustOptim::trust.optim} with \code{method = 'sparse'}}
+#' \item{'SR1' (default): }{\code{trustOptim::trust.optim} with \code{method = 'SR1'}}
+#' \item{'trust': }{\code{trust::trust}}
 #' \item{'BFGS': }{\code{optim(...,method = "BFGS")}}
 #' }
 #' }
 #' }
+#' Default is 'sparse_trust'.
+#'
 #' @return A list with elements
 #' \itemize{
 #' \item{\code{ff}: }{the function list that was provided}
@@ -84,6 +87,21 @@ optimize_theta <- function(ff,startingvalue,control = default_control()) {
       gr = optgrad,
       hs = function(x) as(opthess(x),"dgCMatrix"),
       method = "Sparse"
+    )
+    out <- list(
+      ff = ff,
+      mode = opt$solution,
+      hessian = opt$hessian,
+      convergence = opt$status
+    )
+  }
+  else if (method == "SR1") {
+    if (!("trustOptim" %in% rownames(installed.packages()))) stop("Method = SR1 requires the trustOptim package, but you do not have this package installed.")
+    opt <- trustOptim::trust.optim(
+      x = startingvalue,
+      fn = optfunc,
+      gr = optgrad,
+      method = "SR1"
     )
     out <- list(
       ff = ff,

@@ -4,7 +4,9 @@
 \name{gcdatalist}
 \alias{gcdatalist}
 \title{Transformed Globular Clusters data}
-\format{An object of class \code{list} of length 6.}
+\format{
+An object of class \code{list} of length 6.
+}
 \source{
 Eadie GM, Harris WE (2016). “Bayesian mass estimates of the Milky Way: the dark and light sides of parameter assumptions.” The Astrophysical Journal, 829(108).
 }

@@ -28,12 +28,14 @@ appropriate values without error.}
 \itemize{
 \item{\code{method}: }{optimization method to use:
 \itemize{
-\item{'sparse_trust' (default): }{\code{trustOptim::trust.optim}}
-\item{'sparse': }{\code{trust::trust}}
+\item{'sparse_trust' (default): }{\code{trustOptim::trust.optim} with \code{method = 'sparse'}}
+\item{'SR1' (default): }{\code{trustOptim::trust.optim} with \code{method = 'SR1'}}
+\item{'trust': }{\code{trust::trust}}
 \item{'BFGS': }{\code{optim(...,method = "BFGS")}}
 }
 }
-}}
+}
+Default is 'sparse_trust'.}
 }
 \value{
 A list with elements
@@ -75,6 +77,7 @@ optimize_theta(funlist,1.5,control = list(method = "BFGS"))
 Other quadrature: 
 \code{\link{aghq}()},
 \code{\link{laplace_approximation}()},
+\code{\link{marginal_laplace}()},
 \code{\link{normalize_logpost}()},
 \code{\link{plot.aghq}()},
 \code{\link{print.aghqsummary}()},

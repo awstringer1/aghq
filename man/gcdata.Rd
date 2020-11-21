@@ -4,7 +4,9 @@
 \name{gcdata}
 \alias{gcdata}
 \title{Globular Clusters data for Milky Way mass estimation}
-\format{An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 70 rows and 25 columns.}
+\format{
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 70 rows and 25 columns.
+}
 \source{
 Eadie GM, Harris WE (2016). “Bayesian mass estimates of the Milky Way: the dark and light sides of parameter assumptions.” The Astrophysical Journal, 829(108).
 }
