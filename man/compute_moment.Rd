@@ -12,7 +12,8 @@ compute_moment(normalized_posterior, ff = function(x) 1)
 \item{ff}{Any R function which takes in a numeric vector and returns a numeric vector.}
 }
 \value{
-A named numeric vector with the mean of ff for each parameter computed using AGHQ.
+A numeric vector containing the moment(s) of ff with respect to the joint
+distribution being approximated using AGHQ.
 }
 \description{
 Compute the moment of any function ff using AGHQ.

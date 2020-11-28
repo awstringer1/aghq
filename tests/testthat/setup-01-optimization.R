@@ -32,6 +32,12 @@ norm_bfgs_3 <- normalize_logpost(opt_bfgs,3,1)
 norm_bfgs_5 <- normalize_logpost(opt_bfgs,5,1)
 norm_bfgs_7 <- normalize_logpost(opt_bfgs,7,1)
 
+norm_sr1_3 <- normalize_logpost(opt_sr1,3,1)
+norm_sr1_5 <- normalize_logpost(opt_sr1,5,1)
+norm_sr1_7 <- normalize_logpost(opt_sr1,7,1)
+
+
+
 
 margpost_3 <- marginal_posterior(opt_sparsetrust,3,1)
 pdfwithtrans <- compute_pdf_and_cdf(

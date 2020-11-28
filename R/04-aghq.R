@@ -10,6 +10,11 @@
 #' a list of information about the normalized posterior, with methods for summarizing
 #' and plotting.
 #'
+#' When \code{k = 1} the AGHQ method is a Laplace approximation, and you should use
+#' the \code{aghq::laplace_approximation} function, since some of the methods for
+#' \code{aghq} objects won't work with only one quadrature point. Objects of
+#' class \code{laplace} have different methods suited to this case. See \code{?aghq::laplace_approximation}.
+#'
 #' @inheritParams optimize_theta
 #' @inheritParams normalize_logpost
 #' @param optresults Optional. A list of the results of the optimization of the log
@@ -80,12 +85,13 @@
 #'
 #' @export
 #'
-aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control()) {
+aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control(),...) {
+
   # Optimization
-  if (is.null(optresults)) optresults <- optimize_theta(ff,startingvalue,control)
+  if (is.null(optresults)) optresults <- optimize_theta(ff,startingvalue,control,...)
 
   # Normalization
-  normalized_posterior <- normalize_logpost(optresults,k)
+  normalized_posterior <- normalize_logpost(optresults,k,...)
 
   # Marginals
   d <- length(startingvalue)
@@ -707,5 +713,6 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
     he = function(theta) numDeriv::hessian(log_posterior_theta_vectorized,theta)
   )
   # Return the quadrature object
+  if (k == 1) return(aghq::laplace_approximation(ffouter,startingvalue$theta,control = control))
   aghq::aghq(ffouter,k,startingvalue$theta,control = control)
 }

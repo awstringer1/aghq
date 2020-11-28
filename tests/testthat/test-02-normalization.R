@@ -14,6 +14,10 @@ test_that("Normalization works",{
     expect_length(norm_bfgs_5,3)
     expect_length(norm_bfgs_7,3)
 
+    expect_length(norm_sr1_3,3)
+    expect_length(norm_sr1_5,3)
+    expect_length(norm_sr1_7,3)
+
     expect_length(norm_sparse_2d_3,3)
     expect_length(norm_sparse_2d_5,3)
     expect_length(norm_sparse_2d_7,3)
@@ -30,6 +34,10 @@ test_that("Normalization works",{
     expect_equal(nrow(norm_sparse_3$nodesandweights),3)
     expect_equal(nrow(norm_sparse_5$nodesandweights),5)
     expect_equal(nrow(norm_sparse_7$nodesandweights),7)
+
+    expect_equal(nrow(norm_sr1_3$nodesandweights),3)
+    expect_equal(nrow(norm_sr1_5$nodesandweights),5)
+    expect_equal(nrow(norm_sr1_7$nodesandweights),7)
 
     expect_equal(nrow(norm_trust_3$nodesandweights),3)
     expect_equal(nrow(norm_trust_5$nodesandweights),5)
@@ -55,6 +63,10 @@ test_that("Normalization works",{
     expect_false(is.infinite(norm_sparse_3$lognormconst))
     expect_false(is.infinite(norm_sparse_5$lognormconst))
     expect_false(is.infinite(norm_sparse_7$lognormconst))
+
+    expect_false(is.infinite(norm_sr1_3$lognormconst))
+    expect_false(is.infinite(norm_sr1_5$lognormconst))
+    expect_false(is.infinite(norm_sr1_7$lognormconst))
 
     expect_false(is.infinite(norm_trust_3$lognormconst))
     expect_false(is.infinite(norm_trust_5$lognormconst))
@@ -85,6 +97,10 @@ test_that("Normalization works",{
     expect_equal(round(norm_sparse_3$lognormconst,2),round(truelognormconst,2))
     expect_equal(round(norm_sparse_5$lognormconst,3),round(truelognormconst,3))
     expect_equal(round(norm_sparse_7$lognormconst,3),round(truelognormconst,3))
+
+    expect_equal(round(norm_sr1_3$lognormconst,2),round(truelognormconst,2))
+    expect_equal(round(norm_sr1_5$lognormconst,3),round(truelognormconst,3))
+    expect_equal(round(norm_sr1_7$lognormconst,3),round(truelognormconst,3))
 
     expect_equal(round(norm_trust_3$lognormconst,2),round(truelognormconst,2))
     expect_equal(round(norm_trust_5$lognormconst,3),round(truelognormconst,3))

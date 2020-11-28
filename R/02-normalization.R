@@ -16,6 +16,7 @@
 #' @param whichfirst Integer between 1 and the dimension of the parameter space, default 1.
 #' The user shouldn't have to worry about this: it's used internally to re-order the parameter vector
 #' before doing the quadrature, which is useful when calculating marginal posteriors.
+#' @param ... Additional arguments to be passed to \code{optresults$ff}, see \code{?optimize_theta}.
 #'
 #' @return If k > 1, a list with elements:
 #' \itemize{
@@ -68,11 +69,11 @@
 #'
 #' @export
 #'
-normalize_logpost <- function(optresults,k,whichfirst = 1) {
+normalize_logpost <- function(optresults,k,whichfirst = 1,...) {
   if (as.integer(k) != k) stop(paste0("Please provide an integer k, the number of quadrature points. You provided ",k,"which does not satisfy as.integer(k) == k"))
   if (k == 1) {
     # Laplace approx: just return the normalizing constant
-    return(optresults$ff$fn(optresults$mode) - as.numeric(.5 * determinant(optresults$hessian,logarithm = TRUE)$modulus))
+    return(optresults$ff$fn(optresults$mode,...) - as.numeric(.5 * determinant(optresults$hessian,logarithm = TRUE)$modulus))
   }
   # Create the grid
   S <- length(optresults$mode) # Dimension
@@ -92,9 +93,9 @@ normalize_logpost <- function(optresults,k,whichfirst = 1) {
   # Compute the log-posterior at the integration points
   thetaorder <- paste0('theta',1:S)
   if (length(idxorder) == 1) {
-    nodesandweights$logpost <- sapply(nodesandweights[ ,thetaorder],optresults$ff$fn)
+    nodesandweights$logpost <- sapply(nodesandweights[ ,thetaorder],optresults$ff$fn,...)
   } else{
-    nodesandweights$logpost <- apply(nodesandweights[ ,thetaorder],1,optresults$ff$fn)
+    nodesandweights$logpost <- apply(nodesandweights[ ,thetaorder],1,optresults$ff$fn,...)
   }
 
   # Get the normalization constant

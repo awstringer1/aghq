@@ -4,7 +4,7 @@
 \alias{optimize_theta}
 \title{Obtain function information necessary for performing quadrature}
 \usage{
-optimize_theta(ff, startingvalue, control = default_control())
+optimize_theta(ff, startingvalue, control = default_control(), ...)
 }
 \arguments{
 \item{ff}{A list with three elements:
@@ -36,6 +36,8 @@ appropriate values without error.}
 }
 }
 Default is 'sparse_trust'.}
+
+\item{...}{Additional arguments to be passed to \code{ff$fn}, \code{ff$gr}, and \code{ff$he}.}
 }
 \value{
 A list with elements

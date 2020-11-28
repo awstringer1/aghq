@@ -92,14 +92,18 @@ marginal_posterior <- function(optresults,k,j) {
   nodesandweightsfactored <- cbind(nn,wwE) %>% dplyr::inner_join(nodesandweights,by = c(thetaj,thetaminusj))
 
   out <- nodesandweightsfactored %>%
+    dplyr::mutate(id = 1:(dplyr::n())) %>%
     tidyr::pivot_longer(tidyselect::one_of(paste0(thetaminusj,"W")),names_to = "v",values_to = "w") %>%
-    dplyr::mutate(logw = log(.data$w * prod(.env$diagcholinvH[-1]))) %>%
-    dplyr::group_by(.data[[thetaj]]) %>%
+    dplyr::group_by(.data[[thetaj]],.data$id) %>%
+    dplyr::summarize(logw = sum(log(.data$w)) + sum(log(.env$diagcholinvH[-1])),
+                     logpost_normalized = mean(.data$logpost_normalized)) %>%
     dplyr::summarize(logmargpost = matrixStats::logSumExp(.data$logw + .data$logpost_normalized))
+
 
   out$w <- as.numeric(ww * diagcholinvH[1])
   out
 }
+
 
 #' Interpolate the Marginal Posterior
 #'
@@ -127,7 +131,8 @@ interpolate_marginal_posterior <- function(margpost) {
 #' @param normalized_posterior The output of \code{aghq::normalize_logpost}. See the documentation for that function.
 #' @param ff Any R function which takes in a numeric vector and returns a numeric vector.
 #'
-#' @return A named numeric vector with the mean of ff for each parameter computed using AGHQ.
+#' @return A numeric vector containing the moment(s) of ff with respect to the joint
+#' distribution being approximated using AGHQ.
 #'
 #' @examples
 #' logfteta2d <- function(eta,y) {
@@ -182,16 +187,28 @@ interpolate_marginal_posterior <- function(margpost) {
 compute_moment <- function(normalized_posterior,ff = function(x) 1) {
   nodesandweights <- normalized_posterior$nodesandweights
 
-  thetastodo <- colnames(nodesandweights)[stringr::str_detect(colnames(nodesandweights),"theta")]
+  whereistheta <- stringr::str_detect(colnames(nodesandweights),'theta')
 
-  out <- numeric(length(thetastodo))
-  names(out) <- thetastodo
-  for (theta in thetastodo) {
-    out[theta] <- sum(ff(nodesandweights[[theta]]) * nodesandweights$weights * exp(nodesandweights$logpost_normalized))
+  lengthof_f <- length(ff(nodesandweights[1,whereistheta]))
+
+  if (lengthof_f == 1) {
+    out <- sum(ff(nodesandweights[ ,whereistheta])* exp(nodesandweights$logpost_normalized) * nodesandweights$weights)
+  } else {
+    out <- apply(nodesandweights[ ,whereistheta],1,ff) %>%
+      apply(1,function(x) sum(x * exp(nodesandweights$logpost_normalized) * nodesandweights$weights))
   }
 
-  out
+  # thetastodo <- colnames(nodesandweights)[stringr::str_detect(colnames(nodesandweights),"theta")]
+  #
+  # out <- numeric(length(thetastodo))
+  # names(out) <- thetastodo
+  # for (theta in thetastodo) {
+  #   out[theta] <- sum(ff(nodesandweights[[theta]]) * nodesandweights$weights * exp(nodesandweights$logpost_normalized))
+  # }
+
+  unname(out)
 }
+
 
 #' Density and Cumulative Distribution Function
 #'

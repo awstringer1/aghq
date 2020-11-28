@@ -38,6 +38,7 @@
 #' }
 #' }
 #' Default is 'sparse_trust'.
+#' @param ... Additional arguments to be passed to \code{ff$fn}, \code{ff$gr}, and \code{ff$he}.
 #'
 #' @return A list with elements
 #' \itemize{
@@ -72,10 +73,10 @@
 #' @importFrom utils installed.packages
 #' @importFrom methods as
 #' @export
-optimize_theta <- function(ff,startingvalue,control = default_control()) {
-  optfunc <- function(x) -1 * ff$fn(x)
-  optgrad <- function(x) as.numeric(-1 * ff$gr(x))
-  opthess <- function(x) as.matrix(-1 * ff$he(x))
+optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
+  optfunc <- function(x,...) -1 * ff$fn(x,...)
+  optgrad <- function(x,...) as.numeric(-1 * ff$gr(x,...))
+  opthess <- function(x,...) as.matrix(-1 * ff$he(x,...))
 
   method <- control$method[1]
 
@@ -85,7 +86,7 @@ optimize_theta <- function(ff,startingvalue,control = default_control()) {
       x = startingvalue,
       fn = optfunc,
       gr = optgrad,
-      hs = function(x) as(opthess(x),"dgCMatrix"),
+      hs = function(x) as(opthess(x,...),"dgCMatrix"),
       method = "Sparse"
     )
     out <- list(
@@ -101,29 +102,31 @@ optimize_theta <- function(ff,startingvalue,control = default_control()) {
       x = startingvalue,
       fn = optfunc,
       gr = optgrad,
-      method = "SR1"
+      method = "SR1",
+      ...
     )
     out <- list(
       ff = ff,
       mode = opt$solution,
-      hessian = opt$hessian,
+      hessian = as(opthess(opt$solution,...),"dgCMatrix"),
       convergence = opt$status
     )
   }
   else if (method == "trust") {
     if (!("trustOptim" %in% rownames(installed.packages()))) stop("Method = trust requires the trust package, but you do not have this package installed.")
-    funlist <- function(x) {
+    funlist <- function(x,...) {
       list(
-        value = optfunc(x),
-        gradient = optgrad(x),
-        hessian = opthess(x)
+        value = optfunc(x,...),
+        gradient = optgrad(x,...),
+        hessian = opthess(x,...)
       )
     }
     opt <- trust::trust(
       objfun = funlist,
       parinit = startingvalue,
       rinit = 1,
-      rmax = 100
+      rmax = 100,
+      ...
     )
     out <- list(
       ff = ff,
@@ -133,11 +136,11 @@ optimize_theta <- function(ff,startingvalue,control = default_control()) {
     )
   }
   else if (method == "BFGS") {
-    opt <- optim(startingvalue,optfunc,optgrad,method = "BFGS")
+    opt <- optim(startingvalue,optfunc,optgrad,method = "BFGS",...)
     out <- list(
       ff = ff,
       mode = opt$par,
-      hessian = opthess(opt$par),
+      hessian = opthess(opt$par,...),
       convergence = opt$convergence
     )
   }

@@ -4,7 +4,7 @@
 \alias{aghq}
 \title{Adaptive Gauss-Hermite Quadrature}
 \usage{
-aghq(ff, k, startingvalue, optresults = NULL, control = default_control())
+aghq(ff, k, startingvalue, optresults = NULL, control = default_control(), ...)
 }
 \arguments{
 \item{ff}{A list with three elements:
@@ -46,6 +46,8 @@ If you're unsure whether this option is needed for your problem then it probably
 }
 }
 Default is 'sparse_trust'.}
+
+\item{...}{Additional arguments to be passed to \code{ff$fn}, \code{ff$gr}, and \code{ff$he}.}
 }
 \value{
 An object of class \code{aghq} which is a list containing elements:
@@ -79,6 +81,12 @@ Normalize the log-posterior distribution using Adaptive Gauss-Hermite Quadrature
 This function takes in a function and its gradient and Hessian, and returns
 a list of information about the normalized posterior, with methods for summarizing
 and plotting.
+}
+\details{
+When \code{k = 1} the AGHQ method is a Laplace approximation, and you should use
+the \code{aghq::laplace_approximation} function, since some of the methods for
+\code{aghq} objects won't work with only one quadrature point. Objects of
+class \code{laplace} have different methods suited to this case. See \code{?aghq::laplace_approximation}.
 }
 \examples{
 

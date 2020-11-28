@@ -22,8 +22,8 @@ test_that("Marginal posteriors computed correctly",{
   expect_equal(sum(exp(margpost_2d_2_k7$logmargpost) * margpost_2d_2_k7$w),1)
 
   # Moments
-  expect_equal(aghqnormconst1d,c('theta1' = 1))
-  expect_equal(aghqnormconst2d,c('theta1' = 1,'theta2' = 1))
+  expect_equal(aghqnormconst1d,1)
+  expect_equal(aghqnormconst2d,1)
 
   expect_lt(abs(aghqmean1d - truemean1d),.02)
   expect_lt(abs(aghqmean2d - truemean2d)[1],.03)
