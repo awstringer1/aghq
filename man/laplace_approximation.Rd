@@ -8,7 +8,8 @@ laplace_approximation(
   ff,
   startingvalue,
   optresults = NULL,
-  control = default_control()
+  control = default_control(),
+  ...
 )
 }
 \arguments{
@@ -48,6 +49,8 @@ If you're unsure whether this option is needed for your problem then it probably
 }
 }
 Default is 'sparse_trust'.}
+
+\item{...}{Additional arguments to be passed to \code{ff$fn}, \code{ff$gr}, and \code{ff$he}.}
 }
 \value{
 An object of class \code{laplace} with summary and plot methods. This

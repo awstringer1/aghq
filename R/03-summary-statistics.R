@@ -104,7 +104,6 @@ marginal_posterior <- function(optresults,k,j) {
   out
 }
 
-
 #' Interpolate the Marginal Posterior
 #'
 #' Build a Lagrange polynomial interpolant of the marginal posterior, for plotting
@@ -372,5 +371,63 @@ compute_quantiles <- function(margpost,q = c(.025,.975)) {
   out
 }
 
-# TODO: examples
-#
+#' Sample from the mixture-of-Gaussians approximation to the marginal posterior of the "inner"
+#' variables from a marginal Laplace approximation.
+#'
+#' Draws samples from the mixture-of-Gaussians approximation to the variables that were
+#' marginalized over in a marginal Laplace approximation fit using \code{aghq::marginal_laplace}.
+#' Computes the Choleskies once and then draws as many samples as you ask, quickly.
+#'
+#' @param quad The result of running \code{aghq::marginal_laplace}, object of class
+#' \code{marginallaplace} from which to draw samples.
+#' @param M Numeric, integer saying how many samples to draw
+#' @param ... Not used
+#'
+#' @family sampling
+#'
+#' @return A list containing elements:
+#' \itemize{
+#' \item{\code{samps}: }{ \code{d x M} matrix where \code{d = dim(W)} and each column is a sample
+#' from \code{pi(W|Y,theta)}}
+#' \item{\code{theta}: }{\code{M x S} tibble where \code{S = dim(theta)} containing the value of \code{theta} for
+#' each sample}
+#' }
+#'
+#' @details This method samples from the posterior and returns a vector that is ordered
+#' the same as the "W" variables in your marginal Laplace approximation. If your
+#' model contains more than one type of variable that is being marginalized over,
+#' it is up to you to subset these out of W. See the \code{aghq} package software
+#' paper for several examples.
+#'
+#' @export
+#'
+#'
+#'
+sample_marginal <- function(quad,M,...) {
+  K <- as.numeric(quad$normalized_posterior$grid$level)[1]
+  d <- dim(quad$modesandhessians$H[[1]])[1]
+  simlist <- quad$modesandhessians
+  simlist$L <- purrr::map(simlist$H,~chol(Matrix::forceSymmetric(.x),perm=FALSE))
+  simlist$lambda <- exp(quad$normalized_posterior$nodesandweights$logpost_normalized) * quad$normalized_posterior$nodesandweights$weights
+
+  # Sample from the multinomial
+  if (M ==1) {
+    k <- which(stats::rmultinom(M,1,simlist$lambda) == 1)
+  } else {
+    k <- apply(stats::rmultinom(M,1,simlist$lambda),2,function(x) which(x == 1))
+  }
+  tt <- table(k) # Values are number of samples to draw for each k
+
+  # Big Gaussian mixture matrix
+  Z <- lapply(split(matrix(stats::rnorm(M*d),nrow = M),k),matrix,nrow = d)
+  samps <- purrr::map2(Z,
+              names(Z),
+              ~as.numeric(solve(simlist$L[[as.numeric(.y)]],.x)) +
+                do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x)))) %>%
+    purrr::reduce(cbind)
+
+  list(
+    samps = samps,
+    theta = simlist[k,paste0('theta',seq(1,sum(stringr::str_count(colnames(simlist),'theta'))))]
+  )
+}

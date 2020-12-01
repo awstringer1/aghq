@@ -9,7 +9,8 @@ marginal_laplace(
   k,
   startingvalue,
   optresults = NULL,
-  control = default_control_marglaplace()
+  control = default_control_marglaplace(),
+  ...
 )
 }
 \arguments{
@@ -53,10 +54,16 @@ If you're unsure whether this option is needed for your problem then it probably
 options as for \code{method}}
 }
 Default \code{inner_method} is 'sparse_trust' and default \code{method} is 'BFGS'.}
+
+\item{...}{Additional arguments to be passed to \code{ff$fn}, \code{ff$gr}, and \code{ff$he}.}
 }
 \value{
-An \code{aghq} object, the result of calling \code{aghq::aghq} on
-the Laplace approximation \code{(theta|Y)}. See software paper for full details.
+If \code{k > 1}, an object of class \code{marginallaplace}, which includes
+the result of calling \code{aghq::aghq} on
+the Laplace approximation of \code{(theta|Y)}, .... See software paper for full details.
+If \code{k = 1}, an object of class \code{laplace} which is the result of calling
+\code{aghq::laplace_approximation} on
+the Laplace approximation of \code{(theta|Y)}.
 }
 \description{
 Implement the marginal Laplace approximation of Tierney and Kadane (1986) for

@@ -10,4 +10,9 @@ test_that("Quadrature works",{
   expect_is(thelaplace,"laplace")
   expect_equal(names(thelaplace),c("lognormconst","optresults"))
   expect_is(summary(thelaplace),"laplacesummary")
+
+  # Marginal laplace approximation
+  expect_is(themarginallaplace,"marginallaplace")
+  expect_is(themarginallaplace,"aghq")
+  expect_equal(names(themarginallaplace),c("normalized_posterior","marginals","optresults","modesandhessians"))
 })

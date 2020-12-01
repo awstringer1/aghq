@@ -25,7 +25,9 @@ Imports:
     tidyr,
     tidyselect,
     rlang,
-    polynom
+    polynom,
+    tibble,
+    purrr
 Suggests:
     trustOptim,
     trust,

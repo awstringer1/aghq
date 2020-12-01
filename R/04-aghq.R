@@ -450,9 +450,9 @@ plot.aghq <- function(x,...) {
 #'
 #' @export
 #'
-laplace_approximation <- function(ff,startingvalue,optresults = NULL,control = default_control()) {
-  if(is.null(optresults)) optresults <- optimize_theta(ff,startingvalue,control)
-  lognorm <- normalize_logpost(optresults,1)
+laplace_approximation <- function(ff,startingvalue,optresults = NULL,control = default_control(),...) {
+  if(is.null(optresults)) optresults <- optimize_theta(ff,startingvalue,control,...)
+  lognorm <- normalize_logpost(optresults,1,...)
   out <- list(lognormconst = lognorm,optresults = optresults)
   class(out) <- "laplace"
   out
@@ -675,14 +675,18 @@ print.laplacesummary <- function(x,...) {
 #'
 #' @inheritParams aghq
 #'
-#' @return An \code{aghq} object, the result of calling \code{aghq::aghq} on
-#' the Laplace approximation \code{(theta|Y)}. See software paper for full details.
+#' @return If \code{k > 1}, an object of class \code{marginallaplace}, which includes
+#' the result of calling \code{aghq::aghq} on
+#' the Laplace approximation of \code{(theta|Y)}, .... See software paper for full details.
+#' If \code{k = 1}, an object of class \code{laplace} which is the result of calling
+#' \code{aghq::laplace_approximation} on
+#' the Laplace approximation of \code{(theta|Y)}.
 #'
 #' @family quadrature
 #'
 #' @export
 #'
-marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = default_control_marglaplace()) {
+marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = default_control_marglaplace(),...) {
 
   # Dimension of W space
   Wd <- length(startingvalue$W)
@@ -698,21 +702,97 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 
     as.numeric(lap$lognormconst)
   }
-  log_posterior_theta_vectorized <- function(theta) {
-    out <- numeric(length(theta))
-    for (i in 1:length(theta)) out[i] <- log_posterior_theta(theta[i])
-    out
-  }
 
   ## Do the quadrature ##
   # Create the function list
   # TODO: better optimization like they do for GAMs
   ffouter <- list(
-    fn = log_posterior_theta_vectorized,
-    gr = function(theta) numDeriv::grad(log_posterior_theta_vectorized,theta),
-    he = function(theta) numDeriv::hessian(log_posterior_theta_vectorized,theta)
+    fn = log_posterior_theta,
+    gr = function(theta) numDeriv::grad(log_posterior_theta,theta),
+    he = function(theta) numDeriv::hessian(log_posterior_theta,theta)
   )
-  # Return the quadrature object
+  # If requesting an "outer" Laplace approximation, return it
   if (k == 1) return(aghq::laplace_approximation(ffouter,startingvalue$theta,control = control))
-  aghq::aghq(ffouter,k,startingvalue$theta,control = control)
+  # aghq::aghq(ffouter,k,startingvalue$theta,control = control)
+  # Do the quadrature manually, so we can save intermediate results
+  outeropt <- aghq::optimize_theta(ffouter,startingvalue$theta,control,...)
+
+  # Create the grid
+  S <- length(outeropt$mode) # Dimension
+  thegrid <- mvQuad::createNIGrid(dim = S,type = "GHe",level = k)
+  m <- outeropt$mode
+  H <- outeropt$hessian
+  mvQuad::rescale(thegrid,m = m,C = Matrix::forceSymmetric(solve(H)),dec.type=2)
+
+  thetaorder <- paste0('theta',1:S)
+
+  nodesandweights <- cbind(mvQuad::getNodes(thegrid),mvQuad::getWeights(thegrid))
+  colnames(nodesandweights) <- c(thetaorder,"weights")
+  nodesandweights <- as.data.frame(nodesandweights)
+
+  # Compute the log-posterior at the integration points, saving the summaries
+  if (length(thetaorder) == 1) {
+    distinctthetas <- data.frame(theta1 = nodesandweights[ ,thetaorder])
+  } else {
+    distinctthetas <- nodesandweights[ ,thetaorder]
+  }
+  lp <- numeric(nrow(distinctthetas))
+  modesandhessians <- dplyr::as_tibble(distinctthetas) %>%
+    tibble::add_column(
+      mode = vector(mode = 'list',length = nrow(distinctthetas)),
+      H = vector(mode = 'list',length = nrow(distinctthetas)),
+      logpost = numeric(nrow(distinctthetas))
+    )
+
+  for (i in 1:length(lp)) {
+    theta <- as.numeric(distinctthetas[i,thetaorder])
+    # Re-use the starting values
+    if (i == 1) {
+      Wstart <- startingvalue$W
+    } else {
+      Wstart <- modesandhessians[i-1,'mode'][[1]][[1]]
+    }
+    # Do the Laplace approx
+    ffinner <- list(
+      fn = function(W) ff$fn(W,theta),
+      gr = function(W) ff$gr(W,theta),
+      he = function(W) ff$he(W,theta)
+    )
+
+    utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,control = list(method = control$inner_method)))
+    modesandhessians[i,'mode'] <- list(list(lap$optresults$mode))
+    modesandhessians[i,'H'] <- list(list(lap$optresults$hessian))
+    modesandhessians[i,'logpost'] <- as.numeric(lap$lognormconst)
+
+    lp[i] <- as.numeric(lap$lognormconst)
+  }
+
+  # Get the normalization constant
+  ww <- nodesandweights$weights
+
+  lognormconst <- matrixStats::logSumExp(log(ww) + lp)
+  nodesandweights$logpost <- lp
+  nodesandweights$logpost_normalized <- lp - lognormconst
+
+  normalized_posterior <- list(
+    nodesandweights = nodesandweights,
+    grid = thegrid,
+    lognormconst = lognormconst
+  )
+  # Do the rest of the aghq
+  d <- length(startingvalue$theta)
+  marginals <- vector(mode = "list",length = d)
+  for (j in 1:d) marginals[[j]] <- marginal_posterior(outeropt,k,j)
+
+  out <- list(
+    normalized_posterior = normalized_posterior,
+    marginals = marginals,
+    optresults = outeropt,
+    modesandhessians = modesandhessians
+  )
+  class(out) <- c("marginallaplace","aghq")
+  out
 }
+
+
+

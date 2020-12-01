@@ -145,3 +145,23 @@ thesummary <- summary(thequadrature)
 # Laplace
 
 thelaplace <- laplace_approximation(funlist2d,c(0,0))
+
+# Marginal laplace...
+
+objfunc2dmarg <- function(W,theta) objfunc2d(c(W,theta))
+objfunc2dmarggr <- function(W,theta) {
+  fn <- function(W) objfunc2dmarg(W,theta)
+  numDeriv::grad(fn,W)
+}
+objfunc2dmarghe <- function(W,theta) {
+  fn <- function(W) objfunc2dmarg(W,theta)
+  numDeriv::hessian(fn,W)
+}
+
+funlist2dmarg <- list(
+  fn = objfunc2dmarg,
+  gr = objfunc2dmarggr,
+  he = objfunc2dmarghe
+)
+
+themarginallaplace <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 0))
