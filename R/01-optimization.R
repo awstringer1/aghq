@@ -35,9 +35,11 @@
 #' \item{'trust': }{\code{trust::trust}}
 #' \item{'BFGS': }{\code{optim(...,method = "BFGS")}}
 #' }
-#' }
-#' }
 #' Default is 'sparse_trust'.
+#' }
+#' \item{\code{optcontrol}: }{optional: a list of control parameters to pass to the
+#' internal optimizer you chose. The \code{aghq} package uses sensible defaults.}
+#' }
 #' @param ... Additional arguments to be passed to \code{ff$fn}, \code{ff$gr}, and \code{ff$he}.
 #'
 #' @return A list with elements
@@ -82,13 +84,15 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
 
   if (method == "sparse_trust") {
     if (!("trustOptim" %in% rownames(installed.packages()))) stop("Method = sparse_trust requires the trustOptim package, but you do not have this package installed.")
+    if (is.null(control$optcontrol)) control$optcontrol <- list(maxit = 1e03)
     opt <- trustOptim::trust.optim(
       x = startingvalue,
       fn = optfunc,
       gr = optgrad,
       hs = function(x) as(opthess(x,...),"dgCMatrix"),
       method = "Sparse",
-      control = list(maxit = 1e03)
+      control = control$optcontrol,
+      ...
     )
     out <- list(
       ff = ff,
@@ -99,11 +103,13 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
   }
   else if (method == "SR1") {
     if (!("trustOptim" %in% rownames(installed.packages()))) stop("Method = SR1 requires the trustOptim package, but you do not have this package installed.")
+    if (is.null(control$optcontrol)) control$optcontrol <- list(maxit = 1e03)
     opt <- trustOptim::trust.optim(
       x = startingvalue,
       fn = optfunc,
       gr = optgrad,
       method = "SR1",
+      control = control$optcontrol,
       ...
     )
     out <- list(
@@ -122,6 +128,7 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
         hessian = opthess(x,...)
       )
     }
+
     opt <- trust::trust(
       objfun = funlist,
       parinit = startingvalue,
@@ -137,7 +144,8 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
     )
   }
   else if (method == "BFGS") {
-    opt <- optim(startingvalue,optfunc,optgrad,method = "BFGS",...)
+    if (is.null(control$optcontrol)) control$optcontrol <- list()
+    opt <- optim(startingvalue,optfunc,optgrad,method = "BFGS",control = list(),...)
     out <- list(
       ff = ff,
       mode = opt$par,

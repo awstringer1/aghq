@@ -1,0 +1,233 @@
+---
+title: "aghq: Adaptive Gauss-Hermite Quadrature for Bayesian inference"
+output: rmarkdown::html_vignette
+bibliography: bib.bib
+vignette: >
+  %\VignetteIndexEntry{aghq}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(aghq)
+library(dplyr)
+library(ggplot2)
+```
+
+This vignette describes the `aghq` package for Bayesian inference using Adaptive
+Gauss Hermite Quadrature as described by @aghqus. It is taken almost verbatim
+from Section 2 (Basic Use) of @aghqimp. It shows how to use the basic functions
+of the package to implement a very simple example of Bayesian inference using
+adaptive quadrature. For six challenging and illuminating examples, consult @aghqimp.
+
+# A simple example
+
+The following conjugate
+model is used by @aghqus:
+\begin{equation}\begin{aligned}
+Y_i | \lambda &\overset{ind}{\sim} \text{Poisson}(\lambda), i\in[n], \\
+\lambda &\sim \text{Exponential}(1), \lambda > 0, \\
+\implies \lambda | Y &\sim \text{Gamma}\left(1 + \sum_{i=1}^{n}y_{i},n+1\right), \\
+\pi(\lambda,Y) &= \frac{\lambda^{\sum_{i=1}^{n}y_{i}}e^{-n\lambda}}{\prod_{i=1}^{n}y_{i}!}\times e^{-\lambda}, \\
+\pi(Y) &= \frac{\Gamma\left(1 + \sum_{i=1}^{n}y_{i}\right)}{(n+1)^{\left(1 + \sum_{i=1}^{n}y_{i}\right)}\prod_{i=1}^{n}y_{i}!}
+\end{aligned}\end{equation}
+We apply a transformation:
+\begin{equation}\begin{aligned}
+\eta &= \log\lambda, \\
+\implies \log\pi(\eta,Y) &= \eta\sum_{i=1}^{n}y_{i} - (n+1)e^{\eta} - \sum_{i=1}^{n}\log(y_{i}!) + \eta, \\
+\end{aligned}\end{equation}
+which, because the jacobian $|d\lambda/d\eta|$ is
+included, does not change the value of $\pi(Y)$.
+
+To approximate $\pi(Y)$ and then make Bayesian inferences based on $\pi(\lambda|Y)$,
+first install and load the \pkg{aghq} package:
+```{r aghq1,warning = FALSE,message = FALSE}
+# Stable version:
+# install.packages("aghq")
+# Or devel version:
+# devtools::install_github("awstringer1/aghq")
+```
+We will simulate some data from the model:
+```{r aghqsimdata1}
+set.seed(84343124)
+y <- rpois(10,5) # True lambda = 5, n = 10
+```
+The main function is the `aghq::aghq` function. The user supplies a list
+containing the log-posterior and its first two derivatives:
+```{r aghq22}
+# Define the log posterior, log(pi(eta,y)) here
+logpietay <- function(eta,y) {
+  sum(y) * eta - (length(y) + 1) * exp(eta) - sum(lgamma(y+1)) + eta
+}
+# The objective function has to take a single argument, eta, so pass
+# in the data:
+objfunc <- function(x) logpietay(x,y)
+# Simple numerical derivatives suffice here:
+objfuncgrad <- function(x) numDeriv::grad(objfunc,x)
+objfunchess <- function(x) numDeriv::hessian(objfunc,x)
+# Now create the list to pass to aghq()
+funlist <- list(
+  fn = objfunc,
+  gr = objfuncgrad,
+  he = objfunchess
+)
+```
+Now perform the quadrature. The only other required input is the number of 
+quadrature points, $k$, and a starting value for the optimization:
+```{r doaghq1}
+# AGHQ with k = 3
+# Use eta = 0 as a starting value
+thequadrature <- aghq::aghq(ff = funlist,k = 3,startingvalue = 0)
+```
+
+The object `thequadrature` has class `aghq`, with `summary` and `plot` methods:
+```{r doaghq2}
+summary(thequadrature)
+plot(thequadrature)
+```
+
+The actual object is a list with elements (see \S\ref{sec:background} for notation):
+
+- `normalized_posterior`: the output of the `aghq::normalize_posterior` function,
+which is itself a list with elements:
+  
+  - `nodesandweights`: a dataframe containing the nodes and weights from the quadrature
+  and the normalized and un-normalized log posterior at the nodes,
+  
+  - `thegrid`: a `NIGrid` object from the `mvQuad` package, see `?mvQuad::createNIGrid`,
+  
+  - `lognormconst`: the numeric value of the approximation of the log of the normalizing constant $\pi(Y)$.
+
+- `marginals`: a list of the same length as `startingvalue` of which element `j` is
+the result of calling `aghq::marginal_posterior` with that `j`. This is a `tbl_df/tbl/data.frame`
+containing the normalized marginal posterior for the $j^{th}$ element of $\eta$. In
+this one-dimensional example, this is exactly the same information that is present
+in `thequadrature$normalized_logpost$nodesandweights`.
+
+- `optresults`: information and results from the optimization of $\log\pi^{*}(\eta,Y)$.
+This is itself a list with elements:
+
+  - `ff`: the function list passed to `aghq`,
+  
+  - `mode`: the mode of the log-posterior,
+  
+  - `hessian`: the negative Hessian of the log-posterior, at the mode, and
+  
+  - `convergence`: the convergence code, specific to the optimizer used.
+  
+We can observe the structure of the object and compare the results to the truth
+for this simple example:
+```{r aghqobjecttruth1}
+# The normalized posterior:
+thequadrature$normalized_posterior$nodesandweights
+# The log normalization constant:
+options(digits = 6)
+thequadrature$normalized_posterior$lognormconst
+# Compare to the truth: 
+lgamma(1 + sum(y)) - (1 + sum(y)) * log(length(y) + 1) - sum(lgamma(y+1))
+# Quite accurate with only n = 10 and k = 3; this example is very simple.
+# The mode found by the optimization:
+thequadrature$optresults$mode
+# The true mode:
+log((sum(y) + 1)/(length(y) + 1))
+options(digits = 3)
+```
+Of course, in practical problems, the true mode and normalizing constant won't
+be known.
+
+The \pkg{aghq} package provides further routines for computing moments, quantiles,
+and distributions/densities. These are especially useful when working with 
+transformations and we are in the example, 
+since interest here is in the original parameter $\lambda = e^{\eta}$. The main functions
+are:
+
+- `compute_pdf_and_cdf`: compute the density and cumulative distribution
+function for a marginal posterior distribution of a variable and (optionally)
+a smooth monotone transformation of that variable,
+
+- `compute_moment`: compute the posterior moment of any function,
+
+- `compute_quantiles`: compute posterior quantiles for a marginal posterior
+distribution.
+
+We will consider several examples. To compute the approximate marginal posterior for $\lambda$, 
+$\widetilde{\pi}(\lambda|Y)$, first compute the marginal posterior
+for $\eta$ and then transform:
+\begin{equation}
+\widetilde{\pi}(\lambda|Y) = \widetilde{\pi}(\eta|Y)|\frac{d\eta}{d\lambda}|
+\end{equation}
+
+The `aghq::compute_pdf_and_cdf` function has an option, `transformation`, which
+allows the user to specify a parameter transformation that they would like the
+marginal density of. The user specifies functions `fromtheta` and `totheta` which
+convert from and to the transformed scale (on which quadrature was done), and the
+function returns the marginal density on both scales, making use of a numerically
+differentiated jacobian. This is all done as follows:
+
+```{r postforlambda1,fig.cap="Approximate (---) and true (- - -) posterior for $\\lambda$"}
+# Compute the pdf for eta
+pdfwithlambda <- compute_pdf_and_cdf(
+  thequadrature$marginals[[1]],
+  transformation = list(
+    totheta = function(x) log(x),
+    fromtheta = function(x) exp(x)
+  )
+)
+# Plot along with the true posterior
+lambdapostplot <- pdfwithlambda %>%
+  ggplot(aes(x = transparam,y = pdf_transparam)) +
+  theme_classic() +
+  geom_line() +
+  stat_function(fun = dgamma,
+                args = list(shape = 1+sum(y),rate = 1 + length(y)),
+                linetype = 'dashed') +
+  labs(x = expression(lambda),y = "Density")
+lambdapostplot
+```
+
+We may compute the posterior mean of $\lambda = e^{\eta}$, $\EE(\lambda|Y)$, using the
+`compute_moment` function. This can also be used to confirm that the posterior is,
+in fact, properly normalized:
+```{r postmean1}
+options(digits = 6)
+# Check if the posterior integrates to 1, by computing the "moment" of "1":
+compute_moment(thequadrature$normalized_posterior,
+               ff = function(x) 1)
+# Posterior mean for eta:
+compute_moment(thequadrature$normalized_posterior,
+               ff = function(x) x)
+# Posterior mean for lambda = exp(eta)
+compute_moment(thequadrature$normalized_posterior,
+               ff = function(x) exp(x))
+# Compare to the truth:
+(sum(y) + 1)/(length(y) + 1)
+options(digits = 3)
+```
+Quantiles are computed using the `compute_quantiles` function. For example, 
+to get the first and third percentiles along with median and first and third quartiles:
+```{r getquants1}
+# Get the quantiles for eta:
+etaquants <- compute_quantiles(
+  thequadrature$marginals[[1]],
+  q = c(.01,.25,.50,.75,.99)
+)
+# The quantiles for lambda = exp(eta) are obtained directly:
+exp(etaquants)
+# and compared with the truth:
+qgamma(c(.01,.25,.50,.75,.99),shape = 1+sum(y),rate = 1+length(y))
+```
+The estimation of quantiles, especially extreme quantiles, is much more difficult
+than that of moments, and this is reflected in the small differences in accuracy
+observed between the two in this example.
+
+For more details, see @aghqus and @aghqimp.
+
+# References
+

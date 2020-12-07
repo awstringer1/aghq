@@ -32,4 +32,8 @@ Suggests:
     trustOptim,
     trust,
     numDeriv,
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    knitr,
+    rmarkdown,
+    ggplot2
+VignetteBuilder: knitr

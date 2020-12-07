@@ -33,9 +33,11 @@ appropriate values without error.}
 \item{'trust': }{\code{trust::trust}}
 \item{'BFGS': }{\code{optim(...,method = "BFGS")}}
 }
+Default is 'sparse_trust'.
 }
-}
-Default is 'sparse_trust'.}
+\item{\code{optcontrol}: }{optional: a list of control parameters to pass to the
+internal optimizer you chose. The \code{aghq} package uses sensible defaults.}
+}}
 
 \item{...}{Additional arguments to be passed to \code{ff$fn}, \code{ff$gr}, and \code{ff$he}.}
 }
