@@ -16,8 +16,13 @@ sample_marginal(quad, M, ...)
 \item{...}{Not used}
 }
 \value{
-A \code{d x M} matrix where \code{d = dim(W)} and each column is a sample
-from pi(W|Y).
+A list containing elements:
+\itemize{
+\item{\code{samps}: }{ \code{d x M} matrix where \code{d = dim(W)} and each column is a sample
+from \code{pi(W|Y,theta)}}
+\item{\code{theta}: }{\code{M x S} tibble where \code{S = dim(theta)} containing the value of \code{theta} for
+each sample}
+}
 }
 \description{
 Draws samples from the mixture-of-Gaussians approximation to the variables that were

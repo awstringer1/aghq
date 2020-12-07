@@ -87,7 +87,8 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
       fn = optfunc,
       gr = optgrad,
       hs = function(x) as(opthess(x,...),"dgCMatrix"),
-      method = "Sparse"
+      method = "Sparse",
+      control = list(maxit = 1e03)
     )
     out <- list(
       ff = ff,

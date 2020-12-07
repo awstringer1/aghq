@@ -88,7 +88,7 @@
 aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control(),...) {
 
   # Optimization
-  if (is.null(optresults)) optresults <- optimize_theta(ff,startingvalue,control,...)
+  if (is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ff,startingvalue,control,...))
 
   # Normalization
   normalized_posterior <- normalize_logpost(optresults,k,...)
@@ -451,7 +451,7 @@ plot.aghq <- function(x,...) {
 #' @export
 #'
 laplace_approximation <- function(ff,startingvalue,optresults = NULL,control = default_control(),...) {
-  if(is.null(optresults)) optresults <- optimize_theta(ff,startingvalue,control,...)
+  if(is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ff,startingvalue,control,...))
   lognorm <- normalize_logpost(optresults,1,...)
   out <- list(lognormconst = lognorm,optresults = optresults)
   class(out) <- "laplace"
@@ -692,6 +692,7 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
   Wd <- length(startingvalue$W)
   # Write a function for fixed theta that computes the laplace approximation
   log_posterior_theta <- function(theta) {
+    # cat('theta = ',theta,'\n')
     ffinner <- list(
       fn = function(W) ff$fn(W,theta),
       gr = function(W) ff$gr(W,theta),
@@ -700,6 +701,7 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 
     utils::capture.output(lap <- laplace_approximation(ffinner,startingvalue$W,control = list(method = control$inner_method)))
 
+    # cat('normconst = ',as.numeric(lap$lognormconst),'\n')
     as.numeric(lap$lognormconst)
   }
 
@@ -708,14 +710,16 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
   # TODO: better optimization like they do for GAMs
   ffouter <- list(
     fn = log_posterior_theta,
-    gr = function(theta) numDeriv::grad(log_posterior_theta,theta),
+    gr = function(theta) numDeriv::grad(log_posterior_theta,theta,method = 'simple'),
     he = function(theta) numDeriv::hessian(log_posterior_theta,theta)
   )
   # If requesting an "outer" Laplace approximation, return it
   if (k == 1) return(aghq::laplace_approximation(ffouter,startingvalue$theta,control = control))
   # aghq::aghq(ffouter,k,startingvalue$theta,control = control)
   # Do the quadrature manually, so we can save intermediate results
-  outeropt <- aghq::optimize_theta(ffouter,startingvalue$theta,control,...)
+  utils::capture.output(outeropt <- aghq::optimize_theta(ffouter,startingvalue$theta,control,...))
+  # > eigen(outeropt$hessian)$values
+  # [1] 716.35141 231.83598  86.38313 -53.23640
 
   # Create the grid
   S <- length(outeropt$mode) # Dimension
