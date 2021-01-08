@@ -5,10 +5,10 @@ Version: 0.1.0
 Author: Alex Stringer
 Maintainer: Alex Stringer <alex.stringer@mail.utoronto.ca>
 Description: Adaptive Gauss Hermite Quadrature for Bayesian inference.
-    This package implements the AGHQ method for normalizing posterior distributions.
-    A single core function implements the method and suitable plot and summary methods
-    are included. The package contains several documented helper functions for users
-    to customize their results. A theory paper and a software paper are forthcoming.
+    This package implements the AGHQ method for normalizing posterior distributions
+    and making Bayesian inferences based on them. Functions are provided for doing
+    quadrature and marginal Laplace approximations, and summary methods are provided
+    for making inferences based on the results.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
