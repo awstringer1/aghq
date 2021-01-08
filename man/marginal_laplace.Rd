@@ -31,7 +31,7 @@ approximation.}
 
 \item{startingvalue}{A list with elements \code{W} and \code{theta}, which are numeric
 vectors to start the optimizations for each variable. If you're using this method
-then the log-joint posterior should be concave and these optimizations shoud not be
+then the log-joint posterior should be concave and these optimizations should not be
 sensitive to starting values.}
 
 \item{optresults}{Optional. A list of the results of the optimization of the log
