@@ -264,7 +264,6 @@ compute_moment <- function(normalized_posterior,ff = function(x) 1) {
 #' opt_sparsetrust_2d <- optimize_theta(funlist2d,c(1.5,1.5))
 #' margpost <- marginal_posterior(opt_sparsetrust_2d,3,1) # margpost for theta1
 #' thepdfandcdf <- compute_pdf_and_cdf(margpost)
-#' par(mfrow = c(1,2))
 #' with(thepdfandcdf,{
 #'   plot(pdf~theta,type='l')
 #'   plot(cdf~theta,type='l')
