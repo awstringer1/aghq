@@ -52,6 +52,33 @@ Thank you for catching this omission. This came from my including of the "pipe"
 operator from the `magrittr` package, and I forgot to include the `\value` tag
 in the documentation. I fixed it.
 
+> Please make sure that you do not change the user's options, par or
+working directory. If you really have to do so within functions, please
+ensure with an *immediate* call of on.exit() that the settings are reset
+when the function is exited. e.g.:
+...
+oldpar <- par(no.readonly = TRUE)    # code line i
+on.exit(par(oldpar))            # code line i + 1
+...
+par(mfrow=c(2,2))            # somewhere after
+...
+e.g.: 04-aghq.R
 
+Thank you for this advice, I have removed the call to `par()` from the plot 
+method.
+
+> Please always make sure to reset to user's options(), working directory
+or par() after you changed it in examples and vignettes and demos.
+e.g.: inst/doc/aghq.R, compute_pdf_and_cdf.Rd
+oldpar <- par(mfrow = c(1,2))
+...
+par(oldpar)
+
+> old <- options(digits = 3)
+...
+options(old)
+
+Thank you for this advice, I have removed the call to `par()` from the example
+in the `compute_pdf_and_cdf` documentation.
 
 Thank you!

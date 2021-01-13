@@ -380,7 +380,6 @@ plot.aghq <- function(x,...) {
   pdfandcdf <- vector(mode = 'list',length = d)
   for (j in 1:d) pdfandcdf[[j]] <- compute_pdf_and_cdf(x$marginals[[j]])
 
-  # graphics::par(mfrow = c(d,2))
   for (j in 1:d) {
     graphics::plot(pdfandcdf[[j]]$pdf ~ pdfandcdf[[j]]$theta,
          type = 'l',

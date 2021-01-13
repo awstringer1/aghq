@@ -8,7 +8,9 @@ Description: Adaptive Gauss Hermite Quadrature for Bayesian inference.
     The AGHQ method for normalizing posterior distributions
     and making Bayesian inferences based on them. Functions are provided for doing
     quadrature and marginal Laplace approximations, and summary methods are provided
-    for making inferences based on the results. See Stringer (2021).
+    for making inferences based on the results. 
+    See Stringer (2021). "Implementing Adaptive Quadrature for Bayesian Inference: 
+    the aghq Package" arXiv:2101.04468 [stat.CO].
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
