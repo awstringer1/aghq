@@ -1,6 +1,6 @@
 # AGHQ: Adaptive Gauss Hermite Quadrature for Bayesian Inference
 
-This package implements Bayesian inference using Adaptive Gauss-Hermite Quadrature, as specified in our paper in preparation. See also the accompanying [software paper](https://arxiv.org/abs/2101.04468), available on arXiv.
+This package implements Bayesian inference using Adaptive Gauss-Hermite Quadrature, as specified in our paper in preparation. See also the accompanying [software paper](https://arxiv.org/abs/2101.04468){target="_blank"}, available on arXiv.
 
 You can install the development version from Github:
 
