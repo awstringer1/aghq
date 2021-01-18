@@ -9,7 +9,7 @@ install.packages('devtools')
 devtools::install_github('awstringer1/aghq')
 ```
 
-You can also install the stable version from CRAN:
+You can also install the stable version from [CRAN](https://cran.r-project.org/web/packages/aghq/index.html):
 
 ```R
 install.packages('aghq')
