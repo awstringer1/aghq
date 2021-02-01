@@ -689,6 +689,55 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 
   # Dimension of W space
   Wd <- length(startingvalue$W)
+
+  # Mechanism for saving and reusing starting values
+  thetatable <- t(as.data.frame(startingvalue$theta))
+  colnames(thetatable) <- paste0('theta',1:length(startingvalue$theta))
+  rownames(thetatable) <- NULL
+
+  Wlist <- list()
+  Wlist[[1]] <- startingvalue$W
+
+  envtouse <- environment()
+
+  get_thetaidx <- function(theta,whichenv = parent.frame()) {
+    # Return the closest theta in the thetatable
+    thetatable <- whichenv$thetatable
+    if (is.null(thetatable)) return(0)
+    if (nrow(thetatable) == 0) return(0)
+
+    apply(thetatable,1,function(x) which.min(sum(abs(x - theta))))
+  }
+
+  get_Wstart <- function(theta,whichenv = parent.frame()) {
+    whichenv$Wlist[[get_thetaidx(theta,whichenv)]]
+  }
+
+  add_Wstart <- function(theta,W,whichenv = parent.frame()) {
+    # Check if that theta already exists, if so, overwrite
+    WW <- get_Wstart(theta,whichenv)
+    if (!(all(WW == 0))) {
+      Wlist <- whichenv$Wlist
+      Wlist[[get_thetaidx(theta,whichenv)]] <- W
+      assign("Wlist",Wlist,envir = whichenv)
+    } else {
+      newrow <- t(as.data.frame(theta))
+      colnames(newrow) <- paste0('theta',1:length(theta))
+      rownames(newrow) <- NULL
+
+      thetatable <- rbind(
+        whichenv$thetatable,
+        newrow
+      )
+      assign("thetatable",thetatable,envir = whichenv)
+
+      Wlist <- whichenv$Wlist
+      ll <- length(Wlist)
+      Wlist[[ll+1]] <- W
+      assign("Wlist",Wlist,envir = whichenv)
+    }
+  }
+
   # Write a function for fixed theta that computes the laplace approximation
   log_posterior_theta <- function(theta) {
     # cat('theta = ',theta,'\n')
@@ -698,7 +747,11 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
       he = function(W) ff$he(W,theta)
     )
 
+    Wstart <- get_Wstart(theta,whichenv = envtouse)
+
     utils::capture.output(lap <- laplace_approximation(ffinner,startingvalue$W,control = list(method = control$inner_method)))
+
+    add_Wstart(theta,lap$optresults$mode,whichenv = .GlobalEnv)
 
     # cat('normconst = ',as.numeric(lap$lognormconst),'\n')
     as.numeric(lap$lognormconst)
@@ -714,11 +767,8 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
   )
   # If requesting an "outer" Laplace approximation, return it
   if (k == 1) return(aghq::laplace_approximation(ffouter,startingvalue$theta,control = control))
-  # aghq::aghq(ffouter,k,startingvalue$theta,control = control)
   # Do the quadrature manually, so we can save intermediate results
   utils::capture.output(outeropt <- aghq::optimize_theta(ffouter,startingvalue$theta,control,...))
-  # > eigen(outeropt$hessian)$values
-  # [1] 716.35141 231.83598  86.38313 -53.23640
 
   # Create the grid
   S <- length(outeropt$mode) # Dimension
