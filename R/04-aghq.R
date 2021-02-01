@@ -706,7 +706,13 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
     if (is.null(thetatable)) return(0)
     if (nrow(thetatable) == 0) return(0)
 
-    apply(thetatable,1,function(x) which.min(sum(abs(x - theta))))
+    which.min(apply(thetatable,1,function(x) sum(abs(x - theta))))
+  }
+
+  theta_in_table <- function(theta,whichenv = parent.frame()) {
+    # logical: is theta in the thetatable?
+    thetatable <- whichenv$thetatable
+    any(apply(thetatable,1,function(x) all(x == theta)))
   }
 
   get_Wstart <- function(theta,whichenv = parent.frame()) {
@@ -715,8 +721,7 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 
   add_Wstart <- function(theta,W,whichenv = parent.frame()) {
     # Check if that theta already exists, if so, overwrite
-    WW <- get_Wstart(theta,whichenv)
-    if (!(all(WW == 0))) {
+    if (theta_in_table(theta,whichenv)) {
       Wlist <- whichenv$Wlist
       Wlist[[get_thetaidx(theta,whichenv)]] <- W
       assign("Wlist",Wlist,envir = whichenv)
@@ -739,7 +744,7 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
   }
 
   # Write a function for fixed theta that computes the laplace approximation
-  log_posterior_theta <- function(theta) {
+  log_posterior_theta <- function(theta,whichenv = envtouse) {
     # cat('theta = ',theta,'\n')
     ffinner <- list(
       fn = function(W) ff$fn(W,theta),
@@ -747,11 +752,11 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
       he = function(W) ff$he(W,theta)
     )
 
-    Wstart <- get_Wstart(theta,whichenv = envtouse)
+    Wstart <- get_Wstart(theta,whichenv = whichenv)
 
-    utils::capture.output(lap <- laplace_approximation(ffinner,startingvalue$W,control = list(method = control$inner_method)))
+    utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,control = list(method = control$inner_method)))
 
-    add_Wstart(theta,lap$optresults$mode,whichenv = .GlobalEnv)
+    add_Wstart(theta,lap$optresults$mode,whichenv = whichenv)
 
     # cat('normconst = ',as.numeric(lap$lognormconst),'\n')
     as.numeric(lap$lognormconst)
