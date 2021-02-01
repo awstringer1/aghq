@@ -691,12 +691,16 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
   Wd <- length(startingvalue$W)
 
   # Mechanism for saving and reusing starting values
+  # and hessians/modes/chols
   thetatable <- t(as.data.frame(startingvalue$theta))
   colnames(thetatable) <- paste0('theta',1:length(startingvalue$theta))
   rownames(thetatable) <- NULL
 
   Wlist <- list()
   Wlist[[1]] <- startingvalue$W
+
+  Hlist <- list()
+  Hlist[[1]] <- -1 * ff$he(W = startingvalue$W,theta = startingvalue$theta)
 
   envtouse <- environment()
 
@@ -719,12 +723,20 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
     whichenv$Wlist[[get_thetaidx(theta,whichenv)]]
   }
 
-  add_Wstart <- function(theta,W,whichenv = parent.frame()) {
+  get_H <- function(theta,whichenv = parent.frame()) {
+    whichenv$Hlist[[get_thetaidx(theta,whichenv)]]
+  }
+
+  add_elements <- function(theta,W,H,whichenv = parent.frame()) {
     # Check if that theta already exists, if so, overwrite
     if (theta_in_table(theta,whichenv)) {
       Wlist <- whichenv$Wlist
       Wlist[[get_thetaidx(theta,whichenv)]] <- W
       assign("Wlist",Wlist,envir = whichenv)
+
+      Hlist <- whichenv$Hlist
+      Hlist[[get_thetaidx(theta,whichenv)]] <- H
+      assign("Hlist",Hlist,envir = whichenv)
     } else {
       newrow <- t(as.data.frame(theta))
       colnames(newrow) <- paste0('theta',1:length(theta))
@@ -740,6 +752,11 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
       ll <- length(Wlist)
       Wlist[[ll+1]] <- W
       assign("Wlist",Wlist,envir = whichenv)
+
+      Hlist <- whichenv$Hlist
+      ll <- length(Hlist)
+      Hlist[[ll+1]] <- H
+      assign("Hlist",Hlist,envir = whichenv)
     }
   }
 
@@ -752,13 +769,23 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
       he = function(W) ff$he(W,theta)
     )
 
+    # If theta is in the table already then create the optresults
     Wstart <- get_Wstart(theta,whichenv = whichenv)
+    optresults <- NULL
+    # if (theta_in_table(theta,whichenv)) {
+    #   H <- get_H(theta,whichenv)
+    #   optresults <- list(
+    #     ff = ffinner,
+    #     mode = Wstart,
+    #     hessian = H,
+    #     convergence = 0
+    #   )
+    # }
 
-    utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,control = list(method = control$inner_method)))
+    utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,optresults = optresults,control = list(method = control$inner_method)))
 
-    add_Wstart(theta,lap$optresults$mode,whichenv = whichenv)
+    add_elements(theta,lap$optresults$mode,lap$optresults$hessian,whichenv = whichenv)
 
-    # cat('normconst = ',as.numeric(lap$lognormconst),'\n')
     as.numeric(lap$lognormconst)
   }
 
@@ -805,11 +832,7 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
   for (i in 1:length(lp)) {
     theta <- as.numeric(distinctthetas[i,thetaorder])
     # Re-use the starting values
-    if (i == 1) {
-      Wstart <- startingvalue$W
-    } else {
-      Wstart <- modesandhessians[i-1,'mode'][[1]][[1]]
-    }
+    Wstart <- get_Wstart(theta,envtouse)
     # Do the Laplace approx
     ffinner <- list(
       fn = function(W) ff$fn(W,theta),
