@@ -422,6 +422,6 @@ sample_marginal <- function(quad,M,...) {
 
   list(
     samps = samps,
-    theta = simlist[k,paste0('theta',seq(1,sum(stringr::str_count(colnames(simlist),'theta'))))]
+    theta = simlist[k,paste0('theta',seq(1,length(grep('theta',colnames(simlist)))))]
   )
 }

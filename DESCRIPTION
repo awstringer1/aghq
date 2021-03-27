@@ -20,7 +20,6 @@ Imports:
     methods,
     mvQuad,
     Matrix,
-    stringr,
     magrittr,
     dplyr,
     tidyr,
