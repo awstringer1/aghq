@@ -81,6 +81,7 @@ funlist2d <- list(
 
 opt_sparsetrust_2d <- optimize_theta(funlist2d,c(1.5,1.5))
 opt_trust_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = list(method = "trust"))
+opt_sr1_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = list(method = "SR1"))
 opt_bfgs_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = list(method = "BFGS"))
 
 norm_sparse_2d_3 <- normalize_logpost(opt_sparsetrust_2d,3,1)
@@ -94,6 +95,10 @@ norm_trust_2d_7 <- normalize_logpost(opt_trust_2d,7,1)
 norm_bfgs_2d_3 <- normalize_logpost(opt_bfgs_2d,3,1)
 norm_bfgs_2d_5 <- normalize_logpost(opt_bfgs_2d,5,1)
 norm_bfgs_2d_7 <- normalize_logpost(opt_bfgs_2d,7,1)
+
+norm_sr1_2d_3 <- normalize_logpost(opt_sr1_2d,3,1)
+norm_sr1_2d_5 <- normalize_logpost(opt_sr1_2d,5,1)
+norm_sr1_2d_7 <- normalize_logpost(opt_sr1_2d,7,1)
 
 # Parameter vector reordering
 norm_sparse_2d_reorder_3 <- normalize_logpost(opt_sparsetrust_2d,3,2)
@@ -128,6 +133,7 @@ aghqexpsd2d_2 <- sqrt(compute_moment(norm_sparse_2d_7,function(x) (exp(x) - true
 
 # Interpolation
 margpostinterp <- interpolate_marginal_posterior(margpost_2d_1)
+margpostinterp_2 <- interpolate_marginal_posterior(margpost_2d_2)
 
 # pdf and cdf
 thepdfandcdf <- compute_pdf_and_cdf(margpost_2d_1)
@@ -165,3 +171,156 @@ funlist2dmarg <- list(
 )
 
 themarginallaplace <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 0))
+themargsamps <- aghq::sample_marginal(themarginallaplace,10)
+
+## A 3d example ##
+# This is necessary because I want a 2d marginal example
+logfteta3d <- function(eta,y) {
+  # eta is now (eta1,eta2)
+  # y is now (y1,y2)
+  n <- length(y)
+  n1 <- ceiling(n/3)
+  n2 <- ceiling(n/3)
+  n3 <- n - (n1+n2)
+
+  y1 <- y[1:n1]
+  y2 <- y[(n1+1):(n1+n2)]
+  y3 <- y[(n1+n2+1):(n1+n2+n3)]
+
+  eta1 <- eta[1]
+  eta2 <- eta[2]
+  eta3 <- eta[3]
+
+  sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+    sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2 +
+      sum(y3) * eta3 - (length(y3) + 1) * exp(eta3) - sum(lgamma(y3+1)) + eta3
+
+}
+set.seed(84343124)
+n1 <- 5
+n2 <- 5
+n3 <- 5
+n <- n1+n2+n3
+y1 <- rpois(n1,5)
+y2 <- rpois(n2,5)
+y3 <- rpois(n3,5)
+
+truemode3d <- c(log((sum(y1) + 1)/(length(y1) + 1)),log((sum(y2) + 1)/(length(y2) + 1)),log((sum(y3) + 1)/(length(y3) + 1)))
+truelognormconst3d <- truelogint(y1)  + truelogint(y2) + truelogint(y3)
+
+objfunc3d <- function(x) logfteta3d(x,c(y1,y2,y3))
+funlist3d <- list(
+  fn = objfunc3d,
+  gr = function(x) numDeriv::grad(objfunc3d,x),
+  he = function(x) numDeriv::hessian(objfunc3d,x)
+)
+
+
+opt_sparsetrust_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5))
+opt_trust_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = list(method = "trust"))
+opt_sr1_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = list(method = "SR1"))
+opt_bfgs_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = list(method = "BFGS"))
+
+norm_sparse_3d_3 <- normalize_logpost(opt_sparsetrust_3d,3,1)
+norm_sparse_3d_5 <- normalize_logpost(opt_sparsetrust_3d,5,1)
+norm_sparse_3d_7 <- normalize_logpost(opt_sparsetrust_3d,7,1)
+
+norm_trust_3d_3 <- normalize_logpost(opt_trust_3d,3,1)
+norm_trust_3d_5 <- normalize_logpost(opt_trust_3d,5,1)
+norm_trust_3d_7 <- normalize_logpost(opt_trust_3d,7,1)
+
+norm_bfgs_3d_3 <- normalize_logpost(opt_bfgs_3d,3,1)
+norm_bfgs_3d_5 <- normalize_logpost(opt_bfgs_3d,5,1)
+norm_bfgs_3d_7 <- normalize_logpost(opt_bfgs_3d,7,1)
+
+norm_sr1_3d_3 <- normalize_logpost(opt_sr1_3d,3,1)
+norm_sr1_3d_5 <- normalize_logpost(opt_sr1_3d,5,1)
+norm_sr1_3d_7 <- normalize_logpost(opt_sr1_3d,7,1)
+
+# Parameter vector reordering
+norm_sparse_3d_reorder_1 <- normalize_logpost(opt_sparsetrust_3d,3,1)
+norm_sparse_3d_reorder_2 <- normalize_logpost(opt_sparsetrust_3d,3,2)
+norm_sparse_3d_reorder_3 <- normalize_logpost(opt_sparsetrust_3d,3,3)
+
+# Marginal posteriors
+margpost_3d_1 <- marginal_posterior(opt_sparsetrust_3d,3,1)
+margpost_3d_2 <- marginal_posterior(opt_sparsetrust_3d,3,2)
+margpost_3d_3 <- marginal_posterior(opt_sparsetrust_3d,3,3)
+
+margpostinterp_3d_1 <- interpolate_marginal_posterior(margpost_3d_1)
+margpostinterp_3d_2 <- interpolate_marginal_posterior(margpost_3d_2)
+margpostinterp_3d_3 <- interpolate_marginal_posterior(margpost_3d_3)
+
+
+# Moments
+truemean3d <- truemode3d
+trueexpmean3d <- exp(truemean3d)
+truesd3d <- c(sqrt(1+sum(y1)) / (1 + length(y1)),sqrt(1+sum(y2)) / (1 + length(y2)),sqrt(1+sum(y3)) / (1 + length(y3)))
+
+aghqnormconst3d <- compute_moment(norm_sparse_3d_3)
+
+aghqmean3d <- compute_moment(norm_sparse_3d_7,function(x) x)
+
+aghqexpmean3d <- compute_moment(norm_sparse_3d_7,function(x) exp(x))
+
+aghqexpsd3d_1 <- sqrt(compute_moment(norm_sparse_3d_7,function(x) (exp(x) - trueexpmean3d[1])^2))[1]
+aghqexpsd3d_2 <- sqrt(compute_moment(norm_sparse_3d_7,function(x) (exp(x) - trueexpmean3d[2])^2))[2]
+aghqexpsd3d_3 <- sqrt(compute_moment(norm_sparse_3d_7,function(x) (exp(x) - trueexpmean3d[3])^2))[3]
+
+# Interpolation
+margpostinterp3d_1 <- interpolate_marginal_posterior(margpost_3d_1)
+margpostinterp3d_2 <- interpolate_marginal_posterior(margpost_3d_2)
+margpostinterp3d_3 <- interpolate_marginal_posterior(margpost_3d_3)
+
+
+# pdf and cdf
+thepdfandcdf3d_1 <- compute_pdf_and_cdf(margpost_3d_1,transformation = list(totheta = log,fromtheta = exp))
+thepdfandcdf3d_2 <- compute_pdf_and_cdf(margpost_3d_2,transformation = list(totheta = log,fromtheta = exp))
+thepdfandcdf3d_3 <- compute_pdf_and_cdf(margpost_3d_3,transformation = list(totheta = log,fromtheta = exp))
+
+# quantiles
+thequantiles3d_1 <- compute_quantiles(margpost_3d_1)
+thequantiles3d_2 <- compute_quantiles(margpost_3d_2)
+thequantiles3d_3 <- compute_quantiles(margpost_3d_3)
+
+# Quadrature!
+thequadrature3d <- aghq(funlist3d,3,c(0,0,0))
+thesummary3d <- summary(thequadrature3d)
+
+
+# Laplace
+
+thelaplace3d <- laplace_approximation(funlist3d,c(0,0,0))
+
+# Marginal laplace...
+
+objfunc3dmarg <- function(W,theta) objfunc3d(c(W,theta))
+objfunc3dmarggr <- function(W,theta) {
+  fn <- function(W) objfunc3dmarg(W,theta)
+  numDeriv::grad(fn,W)
+}
+objfunc3dmarghe <- function(W,theta) {
+  fn <- function(W) objfunc3dmarg(W,theta)
+  numDeriv::hessian(fn,W)
+}
+
+funlist3dmarg <- list(
+  fn = objfunc3dmarg,
+  gr = objfunc3dmarggr,
+  he = objfunc3dmarghe
+)
+
+# 1-d marglaplace
+themarginallaplace3d_1 <- aghq::marginal_laplace(funlist3dmarg,3,list(W = c(0,0),theta = 0))
+themargsamps3d_1 <- aghq::sample_marginal(themarginallaplace3d_1,10)
+
+# 2d marglaplace
+themarginallaplace3d_2 <- aghq::marginal_laplace(funlist3dmarg,3,list(W = 0,theta = c(0,0)))
+themargsamps3d_2 <- aghq::sample_marginal(themarginallaplace3d_2,10)
+
+
+
+
+
+
+

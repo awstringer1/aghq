@@ -120,7 +120,7 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
     )
   }
   else if (method == "trust") {
-    if (!("trustOptim" %in% rownames(installed.packages()))) stop("Method = trust requires the trust package, but you do not have this package installed.")
+    if (!("trust" %in% rownames(installed.packages()))) stop("Method = trust requires the trust package, but you do not have this package installed.")
     funlist <- function(x,...) {
       list(
         value = optfunc(x,...),

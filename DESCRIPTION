@@ -19,7 +19,6 @@ Depends: R (>= 3.5.0)
 Imports:
     methods,
     mvQuad,
-    matrixStats,
     Matrix,
     stringr,
     magrittr,

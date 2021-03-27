@@ -97,7 +97,8 @@ marginal_posterior <- function(optresults,k,j) {
     dplyr::group_by(.data[[thetaj]],.data$id) %>%
     dplyr::summarize(logw = sum(log(.data$w)) + sum(log(.env$diagcholinvH[-1])),
                      logpost_normalized = mean(.data$logpost_normalized)) %>%
-    dplyr::summarize(logmargpost = matrixStats::logSumExp(.data$logw + .data$logpost_normalized))
+    dplyr::summarize(logmargpost = logsumexp(.data$logw + .data$logpost_normalized))
+
 
 
   out$w <- as.numeric(ww * diagcholinvH[1])
@@ -119,7 +120,8 @@ marginal_posterior <- function(optresults,k,j) {
 #'
 interpolate_marginal_posterior <- function(margpost) {
   # Unname the theta
-  colnames(margpost)[stringr::str_detect(colnames(margpost),"theta")] <- "theta"
+  colnames(margpost)[grep("theta",colnames(margpost))] <- "theta"
+
   as.function(polynom::poly.calc(x = margpost$theta,y = margpost$logmargpost))
 }
 
@@ -186,7 +188,7 @@ interpolate_marginal_posterior <- function(margpost) {
 compute_moment <- function(normalized_posterior,ff = function(x) 1) {
   nodesandweights <- normalized_posterior$nodesandweights
 
-  whereistheta <- stringr::str_detect(colnames(nodesandweights),'theta')
+  whereistheta <- grep('theta',colnames(nodesandweights))
 
   lengthof_f <- length(ff(nodesandweights[1,whereistheta]))
 
@@ -196,14 +198,6 @@ compute_moment <- function(normalized_posterior,ff = function(x) 1) {
     out <- apply(nodesandweights[ ,whereistheta],1,ff) %>%
       apply(1,function(x) sum(x * exp(nodesandweights$logpost_normalized) * nodesandweights$weights))
   }
-
-  # thetastodo <- colnames(nodesandweights)[stringr::str_detect(colnames(nodesandweights),"theta")]
-  #
-  # out <- numeric(length(thetastodo))
-  # names(out) <- thetastodo
-  # for (theta in thetastodo) {
-  #   out[theta] <- sum(ff(nodesandweights[[theta]]) * nodesandweights$weights * exp(nodesandweights$logpost_normalized))
-  # }
 
   unname(out)
 }
@@ -275,7 +269,8 @@ compute_pdf_and_cdf <- function(margpost,transformation = NULL,finegrid = NULL) 
 
   margpostinterp <- interpolate_marginal_posterior(margpost)
 
-  thetacol <- colnames(margpost)[stringr::str_detect(colnames(margpost),"theta")]
+  thetacol <- colnames(margpost)[grep("theta",colnames(margpost))]
+
   if (is.null(finegrid)) {
     rn <- range(margpost[[thetacol]])
     rnl <- diff(rn)

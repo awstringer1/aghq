@@ -851,7 +851,8 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
   # Get the normalization constant
   ww <- nodesandweights$weights
 
-  lognormconst <- matrixStats::logSumExp(log(ww) + lp)
+  lognormconst <- logsumexp(log(ww) + lp)
+
   nodesandweights$logpost <- lp
   nodesandweights$logpost_normalized <- lp - lognormconst
 

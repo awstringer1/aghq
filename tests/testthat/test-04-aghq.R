@@ -6,6 +6,12 @@ test_that("Quadrature works",{
   expect_equal(names(thequadrature),c("normalized_posterior","marginals","optresults"))
   expect_is(summary(thequadrature),"aghqsummary")
 
+  expect_is(thequadrature3d,"aghq")
+  expect_equal(names(thequadrature3d),c("normalized_posterior","marginals","optresults"))
+  expect_is(summary(thequadrature3d),"aghqsummary")
+
+
+
   # Laplace approximation
   expect_is(thelaplace,"laplace")
   expect_equal(names(thelaplace),c("lognormconst","optresults"))
@@ -15,4 +21,36 @@ test_that("Quadrature works",{
   expect_is(themarginallaplace,"marginallaplace")
   expect_is(themarginallaplace,"aghq")
   expect_equal(names(themarginallaplace),c("normalized_posterior","marginals","optresults","modesandhessians"))
+
+  expect_is(themarginallaplace3d_1,"marginallaplace")
+  expect_is(themarginallaplace3d_1,"aghq")
+  expect_equal(names(themarginallaplace3d_1),c("normalized_posterior","marginals","optresults","modesandhessians"))
+
+  expect_is(themarginallaplace3d_2,"marginallaplace")
+  expect_is(themarginallaplace3d_2,"aghq")
+  expect_equal(names(themarginallaplace3d_2),c("normalized_posterior","marginals","optresults","modesandhessians"))
+
+  # Sampling from marginal Laplace approximation
+  expect_is(themargsamps,"list")
+  expect_length(themargsamps,2)
+  expect_equal(names(themargsamps),c('samps','theta'))
+  expect_equal(names(themargsamps$theta),'theta1')
+  expect_equal(dim(themargsamps$theta),c(10,1))
+  expect_equal(dim(themargsamps$samps),c(1,10))
+
+  expect_is(themargsamps3d_1,"list")
+  expect_length(themargsamps3d_1,2)
+  expect_equal(names(themargsamps3d_1),c('samps','theta'))
+  expect_equal(names(themargsamps3d_1$theta),'theta1')
+  expect_equal(dim(themargsamps3d_1$theta),c(10,1))
+  expect_equal(dim(themargsamps3d_1$samps),c(2,10))
+
+  expect_is(themargsamps3d_2,"list")
+  expect_length(themargsamps3d_2,2)
+  expect_equal(names(themargsamps3d_2),c('samps','theta'))
+  expect_equal(names(themargsamps3d_2$theta),c('theta1','theta2'))
+  expect_equal(dim(themargsamps3d_2$theta),c(10,2))
+  expect_equal(dim(themargsamps3d_2$samps),c(1,10))
+
+
 })

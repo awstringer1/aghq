@@ -87,7 +87,7 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,...) {
   mvQuad::rescale(thegrid,m = m,C = Matrix::forceSymmetric(solve(H)),dec.type=2) # forceSymmetric for numerical asymmetries
 
   nodesandweights <- cbind(mvQuad::getNodes(thegrid),mvQuad::getWeights(thegrid))
-  colnames(nodesandweights) <- c(stringr::str_c("theta",idxorder),"weights")
+  colnames(nodesandweights) <- c(paste0("theta",idxorder),"weights")
   nodesandweights <- as.data.frame(nodesandweights)
 
   # Compute the log-posterior at the integration points
@@ -102,7 +102,8 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,...) {
   ww <- nodesandweights$weights
   pp <- nodesandweights$logpost
 
-  lognormconst <- matrixStats::logSumExp(log(ww) + pp)
+  lognormconst <- logsumexp(log(ww) + pp)
+
   nodesandweights$logpost_normalized <- nodesandweights$logpost - lognormconst
 
   list(
