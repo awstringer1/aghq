@@ -81,6 +81,7 @@ optimize_theta(funlist,1.5,control = list(method = "BFGS"))
 Other quadrature: 
 \code{\link{aghq}()},
 \code{\link{laplace_approximation}()},
+\code{\link{marginal_laplace_tmb}()},
 \code{\link{marginal_laplace}()},
 \code{\link{normalize_logpost}()},
 \code{\link{plot.aghq}()},

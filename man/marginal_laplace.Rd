@@ -75,6 +75,7 @@ See the \code{AGHQ} software paper for a detailed example, or Stringer et. al. (
 Other quadrature: 
 \code{\link{aghq}()},
 \code{\link{laplace_approximation}()},
+\code{\link{marginal_laplace_tmb}()},
 \code{\link{normalize_logpost}()},
 \code{\link{optimize_theta}()},
 \code{\link{plot.aghq}()},

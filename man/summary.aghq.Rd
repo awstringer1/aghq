@@ -71,6 +71,7 @@ str(ss)
 Other quadrature: 
 \code{\link{aghq}()},
 \code{\link{laplace_approximation}()},
+\code{\link{marginal_laplace_tmb}()},
 \code{\link{marginal_laplace}()},
 \code{\link{normalize_logpost}()},
 \code{\link{optimize_theta}()},
