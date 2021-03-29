@@ -822,12 +822,17 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
     distinctthetas <- nodesandweights[ ,thetaorder]
   }
   lp <- numeric(nrow(distinctthetas))
-  modesandhessians <- dplyr::as_tibble(distinctthetas) %>%
-    tibble::add_column(
-      mode = vector(mode = 'list',length = nrow(distinctthetas)),
-      H = vector(mode = 'list',length = nrow(distinctthetas)),
-      logpost = numeric(nrow(distinctthetas))
-    )
+  # modesandhessians <- dplyr::as_tibble(distinctthetas) %>%
+  #   tibble::add_column(
+  #     mode = vector(mode = 'list',length = nrow(distinctthetas)),
+  #     H = vector(mode = 'list',length = nrow(distinctthetas)),
+  #     logpost = numeric(nrow(distinctthetas))
+  #   )
+
+  modesandhessians <- distinctthetas
+  modesandhessians$mode <- vector(mode = 'list',length = nrow(distinctthetas))
+  modesandhessians$H <- vector(mode = 'list',length = nrow(distinctthetas))
+  modesandhessians$logpost <- numeric(nrow(distinctthetas))
 
   for (i in 1:length(lp)) {
     theta <- as.numeric(distinctthetas[i,thetaorder])

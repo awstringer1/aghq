@@ -20,21 +20,14 @@ Imports:
     methods,
     mvQuad,
     Matrix,
-    magrittr,
-    dplyr,
-    tidyr,
-    tidyselect,
     rlang,
-    polynom,
-    tibble,
-    purrr
+    polynom
 Suggests:
     trustOptim,
     trust,
     numDeriv,
     testthat (>= 2.1.0),
     knitr,
-    rmarkdown,
-    ggplot2
+    rmarkdown
 VignetteBuilder: knitr
 Language: en-US

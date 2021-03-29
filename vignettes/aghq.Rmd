@@ -17,8 +17,6 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(aghq)
-library(dplyr)
-library(ggplot2)
 ```
 
 This vignette describes the `aghq` package for Bayesian inference using Adaptive
@@ -181,15 +179,18 @@ pdfwithlambda <- compute_pdf_and_cdf(
   )
 )
 # Plot along with the true posterior
-lambdapostplot <- pdfwithlambda %>%
-  ggplot(aes(x = transparam,y = pdf_transparam)) +
-  theme_classic() +
-  geom_line() +
-  stat_function(fun = dgamma,
-                args = list(shape = 1+sum(y),rate = 1 + length(y)),
-                linetype = 'dashed') +
-  labs(x = expression(lambda),y = "Density")
-lambdapostplot
+# lambdapostplot <- pdfwithlambda %>%
+#   ggplot(aes(x = transparam,y = pdf_transparam)) +
+#   theme_classic() +
+#   geom_line() +
+#   stat_function(fun = dgamma,
+#                 args = list(shape = 1+sum(y),rate = 1 + length(y)),
+#                 linetype = 'dashed') +
+#   labs(x = expression(lambda),y = "Density")
+
+with(pdfwithlambda,plot(transparam,pdf_transparam,type='l',xlab = expression(lambda),ylab = "Density"))
+with(pdfwithlambda,lines(transparam,dgamma(transparam,shape = 1+sum(y),rate = 1+length(y)),lty='dashed'))
+
 ```
 
 We may compute the posterior mean of $\lambda = e^{\eta}$, $\EE(\lambda|Y)$, using the

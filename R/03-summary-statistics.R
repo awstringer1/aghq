@@ -404,7 +404,7 @@ sample_marginal <- function(quad,M,...) {
   K <- as.numeric(quad$normalized_posterior$grid$level)[1]
   d <- dim(quad$modesandhessians$H[[1]])[1]
   simlist <- quad$modesandhessians
-  simlist$L <- purrr::map(simlist$H,~chol(Matrix::forceSymmetric(.x),perm=FALSE))
+  simlist$L <- lapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE))
   simlist$lambda <- exp(quad$normalized_posterior$nodesandweights$logpost_normalized) * quad$normalized_posterior$nodesandweights$weights
 
   # Sample from the multinomial
@@ -436,12 +436,15 @@ sample_marginal <- function(quad,M,...) {
   cnt <- numeric(length(unique(k)))
   names(cnt) <- sort(unique(k))
   for (i in 1:length(k)) {
-    cnt[k[i]] <- cnt[k[i]] + 1
-    ord[i] <- cumtab[k[i]] + cnt[k[i]]
+    wc <- which(names(cnt) == k[i])
+    cnt[wc] <- cnt[wc] + 1
+    ord[i] <- cumtab[wc] + cnt[wc]
   }
 
   samps <- Reduce(cbind,samps)
   samps <- samps[ ,ord]
+
+  theta <- simlist[k,paste0('theta',seq(1,length(grep('theta',colnames(simlist)))))]
 
   # In one dimension, R's indexing is not type consistent
   if (!is.matrix(samps)) {
@@ -449,8 +452,10 @@ sample_marginal <- function(quad,M,...) {
     rownames(samps) <- NULL
   }
 
+  if (!inherits(theta,"data.frame")) theta <- data.frame(theta1 = theta)
+
   list(
     samps = samps,
-    theta = simlist[k,paste0('theta',seq(1,length(grep('theta',colnames(simlist)))))]
+    theta = theta
   )
 }
