@@ -68,7 +68,6 @@ marginal_posterior <- function(optresults,k,j) {
   if (S == 1) {
     out <- nodesandweights[ ,c("theta1","logpost_normalized","weights")]
     colnames(out) <- c("theta1","logmargpost","w")
-    out <- dplyr::as_tibble(out)
     return(out)
   }
   idxorder <- c(j,(1:S)[-j])
@@ -89,17 +88,20 @@ marginal_posterior <- function(optresults,k,j) {
   thetaj <- paste0("theta",j)
   thetaminusj <- paste0("theta",(1:S)[-j])
 
-  nodesandweightsfactored <- cbind(nn,wwE) %>% dplyr::inner_join(nodesandweights,by = c(thetaj,thetaminusj))
+  nodesandweightsfactored <- merge(cbind(nn,wwE),nodesandweights,by = c(thetaj,thetaminusj),all = FALSE)
 
-  out <- nodesandweightsfactored %>%
-    dplyr::mutate(id = 1:(dplyr::n())) %>%
-    tidyr::pivot_longer(tidyselect::one_of(paste0(thetaminusj,"W")),names_to = "v",values_to = "w") %>%
-    dplyr::group_by(.data[[thetaj]],.data$id) %>%
-    dplyr::summarize(logw = sum(log(.data$w)) + sum(log(.env$diagcholinvH[-1])),
-                     logpost_normalized = mean(.data$logpost_normalized)) %>%
-    dplyr::summarize(logmargpost = logsumexp(.data$logw + .data$logpost_normalized))
+  out <- nodesandweightsfactored
+  out['id'] <- seq(1,nrow(out),by = 1)
+  # Use apply or sapply depending on dimension, because base R data frame indexing
+  # does not return a consistent result
+  if (S == 2) {
+    out['logw'] <- sapply(out[ ,paste0(thetaminusj,"W")],function(x) sum(log(x)) + sum(log(diagcholinvH[-1])))
+  } else {
+    out['logw'] <- apply(out[ ,paste0(thetaminusj,"W")],1,function(x) sum(log(x)) + sum(log(diagcholinvH[-1])))
+  }
 
-
+  out <- data.frame(theta = unique(out[[thetaj]]),logmargpost = as.numeric(tapply(out$logw + out$logpost_normalized,out[ ,thetaj],logsumexp)))
+  colnames(out)[colnames(out) == 'theta'] <- thetaj
 
   out$w <- as.numeric(ww * diagcholinvH[1])
   out
@@ -195,8 +197,8 @@ compute_moment <- function(normalized_posterior,ff = function(x) 1) {
   if (lengthof_f == 1) {
     out <- sum(ff(nodesandweights[ ,whereistheta])* exp(nodesandweights$logpost_normalized) * nodesandweights$weights)
   } else {
-    out <- apply(nodesandweights[ ,whereistheta],1,ff) %>%
-      apply(1,function(x) sum(x * exp(nodesandweights$logpost_normalized) * nodesandweights$weights))
+    out <- apply(nodesandweights[ ,whereistheta],1,ff)
+    out <- apply(out,1,function(x) sum(x * exp(nodesandweights$logpost_normalized) * nodesandweights$weights))
   }
 
   unname(out)
@@ -278,9 +280,11 @@ compute_pdf_and_cdf <- function(margpost,transformation = NULL,finegrid = NULL) 
     finegrid <- c(seq(thetarange[1],thetarange[2],length.out=1000))
   }
 
-  out <- dplyr::tibble(theta = finegrid,
-                 pdf = exp(margpostinterp(.data$theta)),
-                 cdf = cumsum(.data$pdf * c(0,diff(.data$theta))))
+  out <- data.frame(
+    theta = finegrid,
+    pdf = exp(margpostinterp(finegrid)),
+    cdf = cumsum(exp(margpostinterp(finegrid)) * c(0,diff(finegrid)))
+  )
 
   if (!is.null(transformation)) {
     if (is.null(transformation$jacobian)) {
@@ -292,9 +296,8 @@ compute_pdf_and_cdf <- function(margpost,transformation = NULL,finegrid = NULL) 
         out
       }
     }
-    out <- out %>%
-      dplyr::mutate(transparam = transformation$fromtheta(.data[["theta"]]),
-             pdf_transparam = .data[["pdf"]] * transformation$jacobian(.data[["theta"]]))
+    out$transparam <- transformation$fromtheta(out$theta)
+    out$pdf_transparam <- out$pdf * transformation$jacobian(out$theta)
   }
   out
 }
@@ -414,11 +417,37 @@ sample_marginal <- function(quad,M,...) {
 
   # Big Gaussian mixture matrix
   Z <- lapply(split(matrix(stats::rnorm(M*d),nrow = M),k),matrix,nrow = d)
-  samps <- purrr::map2(Z,
-              names(Z),
-              ~as.numeric(solve(simlist$L[[as.numeric(.y)]],.x)) +
-                do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x)))) %>%
-    purrr::reduce(cbind)
+  # samps <- purrr::map2(Z,
+  #             names(Z),
+  #             ~as.numeric(solve(simlist$L[[as.numeric(.y)]],.x)) +
+  #               do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x)))) %>%
+  #   purrr::reduce(cbind)
+
+  samps <- mapply(
+    function(.x,.y) as.numeric(solve(simlist$L[[as.numeric(.y)]],.x)) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
+    Z,
+    names(Z)
+  )
+
+  # Order them properly
+  ord <- numeric(length(k))
+  cumtab <- cumsum(c(0,table(k)))
+  cumtab <- cumtab[-length(cumtab)]
+  cnt <- numeric(length(unique(k)))
+  names(cnt) <- sort(unique(k))
+  for (i in 1:length(k)) {
+    cnt[k[i]] <- cnt[k[i]] + 1
+    ord[i] <- cumtab[k[i]] + cnt[k[i]]
+  }
+
+  samps <- Reduce(cbind,samps)
+  samps <- samps[ ,ord]
+
+  # In one dimension, R's indexing is not type consistent
+  if (!is.matrix(samps)) {
+    samps <- rbind(samps)
+    rownames(samps) <- NULL
+  }
 
   list(
     samps = samps,
