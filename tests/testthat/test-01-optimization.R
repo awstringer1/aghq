@@ -14,8 +14,8 @@ test_that("optimizations works", {
   expect_true(all(eigen(opt_trust$hessian)$values > 0))
   expect_true(all(eigen(opt_bfgs$hessian)$values > 0))
   # Convergence
-  expect_equal(opt_sparsetrust$convergence,"Success")
-  expect_equal(opt_sr1$convergence,"Radius of trust region is less than stop.trust.radius")
+  expect_true(opt_sparsetrust$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
+  expect_true(opt_sr1$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
   expect_true(opt_trust$convergence)
   expect_equal(opt_bfgs$convergence,0)
   # Methods
@@ -34,8 +34,8 @@ test_that("optimizations works", {
   expect_true(all(eigen(opt_trust_2d$hessian)$values > 0))
   expect_true(all(eigen(opt_bfgs_2d$hessian)$values > 0))
   # Convergence
-  expect_equal(opt_sparsetrust_2d$convergence,"Radius of trust region is less than stop.trust.radius")
-  expect_equal(opt_sr1_2d$convergence,"Success")
+  expect_true(opt_sparsetrust_2d$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
+  expect_true(opt_sr1_2d$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
   expect_true(opt_trust_2d$convergence)
   expect_equal(opt_bfgs_2d$convergence,0)
 
@@ -52,8 +52,8 @@ test_that("optimizations works", {
   expect_true(all(eigen(opt_trust_3d$hessian)$values > 0))
   expect_true(all(eigen(opt_bfgs_3d$hessian)$values > 0))
   # Convergence
-  expect_equal(opt_sparsetrust_3d$convergence,"Success")
-  expect_equal(opt_sr1_3d$convergence,"Radius of trust region is less than stop.trust.radius")
+  expect_true(opt_sparsetrust_3d$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
+  expect_true(opt_sr1_3d$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
   expect_true(opt_trust_3d$convergence)
   expect_equal(opt_bfgs_3d$convergence,0)
 
