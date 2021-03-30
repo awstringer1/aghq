@@ -100,7 +100,11 @@ marginal_posterior <- function(optresults,k,j) {
     out['logw'] <- apply(out[ ,paste0(thetaminusj,"W")],1,function(x) sum(log(x)) + sum(log(diagcholinvH[-1])))
   }
 
-  out <- data.frame(theta = unique(out[[thetaj]]),logmargpost = as.numeric(tapply(out$logw + out$logpost_normalized,out[ ,thetaj],logsumexp)))
+  # tapply doesn't preserve the order of its arguments. This caused a bug
+  tapres <- tapply(out$logw + out$logpost_normalized,out[ ,thetaj],logsumexp)
+  tt <- unique(out[[thetaj]])
+  ttord <- match(tt,names(tapres))
+  out <- data.frame(theta = tt,logmargpost = as.numeric(tapres[ttord]))
   colnames(out)[colnames(out) == 'theta'] <- thetaj
 
   out$w <- as.numeric(ww * diagcholinvH[1])
