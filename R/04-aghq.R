@@ -907,11 +907,26 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 #' @param ff The output of calling \code{TMB::MakeADFun()} with \code{random} set
 #' to a non-empty subset of the parameters. **VERY IMPORTANT**: \code{TMB}'s
 #' automatic Laplace approximation requires you to write your template implementing
-#' the **negated** log-posterior. Therefor, this list that you input here
+#' the **negated** log-posterior. Therefore, this list that you input here
 #' will contain components \code{fn}, \code{gr} and \code{he} that implement the
 #' **negated** log-posterior and its derivatives. This is **opposite**
 #' to every other comparable function in the \code{aghq} package, and is done
 #' here to emphasize compatibility with \code{TMB}.
+#' @param control A list of control parameters. See \code{?default_control} for details. Valid options are:
+#' \itemize{
+#' \item{\code{method}: }{optimization method to use for the \code{theta} optimization:
+#' \itemize{
+#' \item{'sparse_trust' (default): }{\code{trustOptim::trust.optim}}
+#' \item{'sparse': }{\code{trust::trust}}
+#' \item{'BFGS': }{\code{optim(...,method = "BFGS")}}
+#' }
+#' }
+#' \item{\code{inner_method}: }{optimization method to use for the \code{W} optimization; same
+#' options as for \code{method}. Default \code{inner_method} is 'sparse_trust' and default \code{method} is 'BFGS'.
+#' }
+#' \item \code{negate}: default \code{TRUE}. See \code{?default_control_tmb}. Assumes that your \code{TMB} function
+#' template computes the **negated** log-posterior, which it must if you're using \code{TMB}'s automatic
+#' Laplace approximation, which you must be if you're using this function!}.
 #'
 #' @inheritParams aghq
 #'
@@ -925,7 +940,7 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 #'
 #' @export
 #'
-marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,control = default_control(negate = TRUE),...) {
+marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,control = default_control_tmb(),...) {
   ## Do aghq ##
   # The aghq
   quad <- aghq(ff,k,startingvalue,optresults,control,...)

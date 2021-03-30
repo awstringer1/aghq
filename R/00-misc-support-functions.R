@@ -108,6 +108,49 @@ default_control_marglaplace <- function(...) {
   out
 }
 
+#' Default control arguments for \code{aghq::marginal_laplace()}.
+#'
+#' Run \code{default_control_marglaplace()} to print the list of valid control parameters
+#' and their defaults, and run with named arguments to change the defaults.
+#'
+#' @param ... You can provide a named value for any control parameter and its
+#' value will be set accordingly. See \code{?marginal_laplace} and examples here.
+#'
+#' @return A list of argument values.
+#'
+#' @details Valid options are:
+#' \itemize{
+#' \item{\code{method}: }{optimization method to use for the \code{theta} optimization:
+#' \itemize{
+#' \item{'sparse_trust' (default): }{\code{trustOptim::trust.optim}}
+#' \item{'sparse': }{\code{trust::trust}}
+#' \item{'BFGS': }{\code{optim(...,method = "BFGS")}}
+#' }
+#' }
+#' \item \code{negate}: {default \code{TRUE}. Assumes that your \code{TMB} function
+#' template computes the **negated** log-posterior, which it must if you're using \code{TMB}'s automatic
+#' Laplace approximation, which you must be if you're using this function!}.
+#' }
+#'
+#' @examples
+#'
+#' default_control_marglaplace()
+#' default_control_marglaplace(method = "trust")
+#' default_control_marglaplace(method = "trust",inner_method = "trust")
+#' default_control_marglaplace(negate = TRUE)
+#'
+#' @export
+#'
+default_control_tmb <- function(...) {
+  out <- list(
+    method = c("BFGS","sparse_trust","trust"),
+    negate = TRUE
+  )
+  specialargs <- list(...)
+  for (arg in names(specialargs)) out[arg] <- specialargs[arg]
+  out
+}
+
 # Logsumexp
 # From: https://stats.stackexchange.com/questions/381936/vectorised-computation-of-logsumexp
 # Accessed on: 2021/03/27 10:49AM

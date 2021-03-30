@@ -9,7 +9,7 @@ marginal_laplace_tmb(
   k,
   startingvalue,
   optresults = NULL,
-  control = default_control(),
+  control = default_control_tmb(),
   ...
 )
 }
@@ -17,7 +17,7 @@ marginal_laplace_tmb(
 \item{ff}{The output of calling \code{TMB::MakeADFun()} with \code{random} set
 to a non-empty subset of the parameters. \strong{VERY IMPORTANT}: \code{TMB}'s
 automatic Laplace approximation requires you to write your template implementing
-the \strong{negated} log-posterior. Therefor, this list that you input here
+the \strong{negated} log-posterior. Therefore, this list that you input here
 will contain components \code{fn}, \code{gr} and \code{he} that implement the
 \strong{negated} log-posterior and its derivatives. This is \strong{opposite}
 to every other comparable function in the \code{aghq} package, and is done
@@ -37,20 +37,21 @@ overrides this, and is useful for when you know your optimization is too difficu
 handled by general-purpose software. See the software paper for several examples of this.
 If you're unsure whether this option is needed for your problem then it probably is not.}
 
-\item{control}{A list with elements
+\item{control}{A list of control parameters. See \code{?default_control} for details. Valid options are:
 \itemize{
-\item{\code{method}: }{optimization method to use:
+\item{\code{method}: }{optimization method to use for the \code{theta} optimization:
 \itemize{
-\item{'sparse_trust' (default): }{\code{trustOptim::trust.optim} with \code{method = 'sparse'}}
-\item{'SR1' (default): }{\code{trustOptim::trust.optim} with \code{method = 'SR1'}}
-\item{'trust': }{\code{trust::trust}}
+\item{'sparse_trust' (default): }{\code{trustOptim::trust.optim}}
+\item{'sparse': }{\code{trust::trust}}
 \item{'BFGS': }{\code{optim(...,method = "BFGS")}}
 }
-Default is 'sparse_trust'.
 }
-\item{\code{optcontrol}: }{optional: a list of control parameters to pass to the
-internal optimizer you chose. The \code{aghq} package uses sensible defaults.}
-}}
+\item{\code{inner_method}: }{optimization method to use for the \code{W} optimization; same
+options as for \code{method}. Default \code{inner_method} is 'sparse_trust' and default \code{method} is 'BFGS'.
+}
+\item \code{negate}: default \code{TRUE}. See \code{?default_control_tmb}. Assumes that your \code{TMB} function
+template computes the \strong{negated} log-posterior, which it must if you're using \code{TMB}'s automatic
+Laplace approximation, which you must be if you're using this function!}.}
 
 \item{...}{Additional arguments to be passed to \code{ff$fn}, \code{ff$gr}, and \code{ff$he}.}
 }
