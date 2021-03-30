@@ -88,13 +88,17 @@
 aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control(),...) {
   # Negate it if asked
   if (control$negate) {
-    ff$fn <- function(theta) -1 * ff$fn(theta)
-    ff$gr <- function(theta) -1 * ff$gr(theta)
-    ff$he <- function(theta) -1 * ff$he(theta)
+    ffa <- list(
+      fn = function(theta) -1 * ff$fn(theta),
+      gr = function(theta) -1 * ff$gr(theta),
+      he = function(theta) -1 * ff$he(theta)
+    )
+  } else {
+    ffa <- ff
   }
 
   # Optimization
-  if (is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ff,startingvalue,control,...))
+  if (is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ffa,startingvalue,control,...))
 
   # Normalization
   normalized_posterior <- normalize_logpost(optresults,k,...)
@@ -693,11 +697,15 @@ print.laplacesummary <- function(x,...) {
 #'
 marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = default_control_marglaplace(),...) {
 
-  # Negate it if specified
+  # Negate it if asked
   if (control$negate) {
-    ff$fn <- function(W,theta) -1 * ff$fn(W,theta)
-    ff$gr <- function(W,theta) -1 * ff$gr(W,theta)
-    ff$he <- function(W,theta) -1 * ff$he(W,theta)
+    ffa <- list(
+      fn = function(theta) -1 * ff$fn(theta),
+      gr = function(theta) -1 * ff$gr(theta),
+      he = function(theta) -1 * ff$he(theta)
+    )
+  } else {
+    ffa <- ff
   }
   # Dimension of W space
   Wd <- length(startingvalue$W)
@@ -712,7 +720,7 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
   Wlist[[1]] <- startingvalue$W
 
   Hlist <- list()
-  Hlist[[1]] <- -1 * ff$he(W = startingvalue$W,theta = startingvalue$theta)
+  Hlist[[1]] <- -1 * ffa$he(W = startingvalue$W,theta = startingvalue$theta)
 
   envtouse <- environment()
 
@@ -776,9 +784,9 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
   log_posterior_theta <- function(theta,whichenv = envtouse) {
     # cat('theta = ',theta,'\n')
     ffinner <- list(
-      fn = function(W) ff$fn(W,theta),
-      gr = function(W) ff$gr(W,theta),
-      he = function(W) ff$he(W,theta)
+      fn = function(W) ffa$fn(W,theta),
+      gr = function(W) ffa$gr(W,theta),
+      he = function(W) ffa$he(W,theta)
     )
 
     # If theta is in the table already then create the optresults
@@ -852,9 +860,9 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
     Wstart <- get_Wstart(theta,envtouse)
     # Do the Laplace approx
     ffinner <- list(
-      fn = function(W) ff$fn(W,theta),
-      gr = function(W) ff$gr(W,theta),
-      he = function(W) ff$he(W,theta)
+      fn = function(W) ffa$fn(W,theta),
+      gr = function(W) ffa$gr(W,theta),
+      he = function(W) ffa$he(W,theta)
     )
 
     utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,control = list(method = control$inner_method)))
