@@ -86,6 +86,12 @@
 #' @export
 #'
 aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control(),...) {
+  # Negate it if asked
+  if (control$negate) {
+    ff$fn <- function(theta) -1 * ff$fn(theta)
+    ff$gr <- function(theta) -1 * ff$gr(theta)
+    ff$he <- function(theta) -1 * ff$he(theta)
+  }
 
   # Optimization
   if (is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ff,startingvalue,control,...))
@@ -687,6 +693,12 @@ print.laplacesummary <- function(x,...) {
 #'
 marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = default_control_marglaplace(),...) {
 
+  # Negate it if specified
+  if (control$negate) {
+    ff$fn <- function(W,theta) -1 * ff$fn(W,theta)
+    ff$gr <- function(W,theta) -1 * ff$gr(W,theta)
+    ff$he <- function(W,theta) -1 * ff$he(W,theta)
+  }
   # Dimension of W space
   Wd <- length(startingvalue$W)
 
@@ -913,16 +925,10 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 #'
 #' @export
 #'
-marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,control = default_control(),...) {
+marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,control = default_control(negate = TRUE),...) {
   ## Do aghq ##
-  # Negate the function list for compatibility with aghq
-  ffa <- list(
-    fn = function(w) -1 * ff$fn(w),
-    gr = function(w) -1 * ff$gr(w),
-    he = function(w) -1 * ff$he(w)
-  )
   # The aghq
-  quad <- aghq(ffa,k,startingvalue,optresults,control,...)
+  quad <- aghq(ff,k,startingvalue,optresults,control,...)
 
   ## Add on the info needed for marginal Laplace ##
   # Add on the quad point modes and curvatures

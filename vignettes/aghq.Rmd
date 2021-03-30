@@ -223,6 +223,11 @@ etaquants <- compute_quantiles(
 exp(etaquants)
 # and compared with the truth:
 qgamma(c(.01,.25,.50,.75,.99),shape = 1+sum(y),rate = 1+length(y))
+# Can be used to get approximate posterior samples:
+M <- 1e04 # 10,000 samples
+samps <- compute_quantiles(thequadrature$marginals[[1]],runif(M))
+hist(exp(samps),breaks = 50,freq=FALSE)
+with(pdfwithlambda,lines(transparam,dgamma(transparam,shape = 1+sum(y),rate = 1+length(y)),lty='dashed'))
 ```
 The estimation of quantiles, especially extreme quantiles, is much more difficult
 than that of moments, and this is reflected in the small differences in accuracy
