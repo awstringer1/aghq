@@ -71,6 +71,43 @@ finding the marginal posterior \code{(theta | Y)} from an unnormalized joint pos
 \code{(W,theta,Y)} where \code{W} is high dimensional and \code{theta} is low dimensional.
 See the \code{AGHQ} software paper for a detailed example, or Stringer et. al. (2020).
 }
+\examples{
+logfteta2d <- function(eta,y) {
+  # eta is now (eta1,eta2)
+  # y is now (y1,y2)
+  n <- length(y)
+  n1 <- ceiling(n/2)
+  n2 <- floor(n/2)
+  y1 <- y[1:n1]
+  y2 <- y[(n1+1):(n1+n2)]
+  eta1 <- eta[1]
+  eta2 <- eta[2]
+  sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+    sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+}
+set.seed(84343124)
+n1 <- 5
+n2 <- 5
+n <- n1+n2
+y1 <- rpois(n1,5)
+y2 <- rpois(n2,5)
+objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+objfunc2dmarg <- function(W,theta) objfunc2d(c(W,theta))
+objfunc2dmarggr <- function(W,theta) {
+  fn <- function(W) objfunc2dmarg(W,theta)
+  numDeriv::grad(fn,W)
+}
+objfunc2dmarghe <- function(W,theta) {
+  fn <- function(W) objfunc2dmarg(W,theta)
+  numDeriv::hessian(fn,W)
+}
+
+funlist2dmarg <- list(
+  fn = objfunc2dmarg,
+  gr = objfunc2dmarggr,
+  he = objfunc2dmarghe
+)
+}
 \seealso{
 Other quadrature: 
 \code{\link{aghq}()},

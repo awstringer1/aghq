@@ -2,38 +2,105 @@
 % Please edit documentation in R/03-summary-statistics.R
 \name{sample_marginal}
 \alias{sample_marginal}
-\title{Sample from the mixture-of-Gaussians approximation to the marginal posterior of the "inner"
-variables from a marginal Laplace approximation.}
+\alias{sample_marginal.aghq}
+\alias{sample_marginal.marginallaplace}
+\title{Exact independent samples from an approximate posterior distribution}
 \usage{
-sample_marginal(quad, M, ...)
+sample_marginal(quad, ...)
+
+\method{sample_marginal}{aghq}(quad, M, ...)
+
+\method{sample_marginal}{marginallaplace}(quad, M, ...)
 }
 \arguments{
-\item{quad}{The result of running \code{aghq::marginal_laplace}, object of class
-\code{marginallaplace} from which to draw samples.}
+\item{quad}{Object from which to draw samples.
+Either an object inheriting from class \code{marginallaplace}
+(the result of running \code{aghq::marginal_laplace} or \code{aghq::marginal_laplace_tmb}),
+or an object inheriting from class \code{aghq} (the result of running \code{aghq::aghq()}).}
+
+\item{...}{Used to pass additional arguments.}
 
 \item{M}{Numeric, integer saying how many samples to draw}
-
-\item{...}{Not used}
 }
 \value{
-A list containing elements:
+If run on a \code{marginallaplace} object, a list containing elements:
 \itemize{
 \item{\code{samps}: }{ \code{d x M} matrix where \code{d = dim(W)} and each column is a sample
 from \code{pi(W|Y,theta)}}
 \item{\code{theta}: }{\code{M x S} tibble where \code{S = dim(theta)} containing the value of \code{theta} for
 each sample}
+\item{\code{thetasamples}: }{A list of \code{S} numeric vectors each of length
+\code{M} where the \code{j}th element is a sample from \code{pi(theta_{j}|Y)}}. These are samples
+from the \strong{marginals}, NOT the \strong{joint}. Sampling from the joint is a much more difficult
+problem and how to do so in this context is an active area of research.
 }
+If run on an \code{aghq} object, then a list with just the \code{thetasamples} element. It still
+returns a list to maintain output consistency across inputs.
+
+If, for some reason, you don't want to do the sampling from \code{pi(theta|Y)}, you can manually
+set \code{quad$marginals = NULL}. Note that this sampling is typically \emph{very} fast
+and so I don't know why you would need to not do it but the option is there if you like.
+
+If, again for some reason, you just want samples from one marginal distribution using inverse CDF,
+you can just do \code{compute_quantiles(quad$marginals[[1]],runif(M))}.
 }
 \description{
-Draws samples from the mixture-of-Gaussians approximation to the variables that were
-marginalized over in a marginal Laplace approximation fit using \code{aghq::marginal_laplace}.
-Computes the Choleskies once and then draws as many samples as you ask, quickly.
+Draws samples from an approximate marginal distribution for general posteriors
+approximated using \code{aghq}, or from the mixture-of-Gaussians approximation to the variables that were
+marginalized over in a marginal Laplace approximation fit using \code{aghq::marginal_laplace}
+or \code{aghq::marginal_laplace_tmb}.
 }
 \details{
-This method samples from the posterior and returns a vector that is ordered
-the same as the "W" variables in your marginal Laplace approximation. If your
-model contains more than one type of variable that is being marginalized over,
-it is up to you to subset these out of W. See the \code{aghq} package software
-paper for several examples.
+For objects of class \code{aghq} or their marginal distribution components,
+sampling is done using the inverse CDF method, which is just \code{compute_quantiles(quad$marginals[[1]],runif(M))}.
+
+For marginal Laplace approximations (\code{aghq::marginal_laplace()}): this method samples from the posterior and returns a vector that is ordered
+the same as the "\code{W}" variables in your marginal Laplace approximation. See Algorithm 1 in
+Stringer et. al. (2021, https://arxiv.org/abs/2103.07425) for the algorithm; the details of sampling
+from a Gaussian are described in the reference(s) therein, which makes use of the (sparse)
+Cholesky factors. These are computed once for each quadrature point and stored.
+
+For the marginal Laplace approximations where the "inner" model is handled entirely by \code{TMB}
+(\code{aghq::marginal_laplace_tmb}), the interface here is identical to above,
+with the order of the "\code{W}" vector being determined by \code{TMB}. See the
+\code{names} of \code{quad$env$last.par}, for example.
+}
+\examples{
+logfteta2d <- function(eta,y) {
+  # eta is now (eta1,eta2)
+  # y is now (y1,y2)
+  n <- length(y)
+  n1 <- ceiling(n/2)
+  n2 <- floor(n/2)
+  y1 <- y[1:n1]
+  y2 <- y[(n1+1):(n1+n2)]
+  eta1 <- eta[1]
+  eta2 <- eta[2]
+  sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+    sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+}
+set.seed(84343124)
+n1 <- 5
+n2 <- 5
+n <- n1+n2
+y1 <- rpois(n1,5)
+y2 <- rpois(n2,5)
+objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+objfunc2dmarg <- function(W,theta) objfunc2d(c(W,theta))
+objfunc2dmarggr <- function(W,theta) {
+  fn <- function(W) objfunc2dmarg(W,theta)
+  numDeriv::grad(fn,W)
+}
+objfunc2dmarghe <- function(W,theta) {
+  fn <- function(W) objfunc2dmarg(W,theta)
+  numDeriv::hessian(fn,W)
+}
+
+funlist2dmarg <- list(
+  fn = objfunc2dmarg,
+  gr = objfunc2dmarggr,
+  he = objfunc2dmarghe
+)
+
 }
 \concept{sampling}

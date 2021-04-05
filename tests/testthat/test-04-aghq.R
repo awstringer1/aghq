@@ -32,25 +32,34 @@ test_that("Quadrature works",{
 
   # Sampling from marginal Laplace approximation
   expect_is(themargsamps,"list")
-  expect_length(themargsamps,2)
-  expect_equal(names(themargsamps),c('samps','theta'))
+  expect_length(themargsamps,3)
+  expect_equal(names(themargsamps),c('samps','theta','thetasamples'))
   expect_equal(colnames(themargsamps$theta),'theta1')
   expect_equal(dim(themargsamps$theta),c(10,1))
   expect_equal(dim(themargsamps$samps),c(1,10))
+  expect_equal(length(themargsamps$thetasamples),1)
+  expect_equal(length(themargsamps$thetasamples[[1]]),10)
 
   expect_is(themargsamps3d_1,"list")
-  expect_length(themargsamps3d_1,2)
-  expect_equal(names(themargsamps3d_1),c('samps','theta'))
+  expect_length(themargsamps3d_1,3)
+  expect_equal(names(themargsamps3d_1),c('samps','theta','thetasamples'))
   expect_equal(colnames(themargsamps3d_1$theta),'theta1')
   expect_equal(dim(themargsamps3d_1$theta),c(10,1))
   expect_equal(dim(themargsamps3d_1$samps),c(2,10))
+  expect_equal(length(themargsamps3d_1$thetasamples),1)
+  expect_equal(length(themargsamps3d_1$thetasamples[[1]]),10)
 
   expect_is(themargsamps3d_2,"list")
-  expect_length(themargsamps3d_2,2)
-  expect_equal(names(themargsamps3d_2),c('samps','theta'))
+  expect_length(themargsamps3d_2,3)
+  expect_equal(names(themargsamps3d_2),c('samps','theta','thetasamples'))
   expect_equal(colnames(themargsamps3d_2$theta),c('theta1','theta2'))
   expect_equal(dim(themargsamps3d_2$theta),c(10,2))
   expect_equal(dim(themargsamps3d_2$samps),c(1,10))
+  expect_equal(length(themargsamps3d_2$thetasamples),2)
+  expect_equal(length(themargsamps3d_2$thetasamples[[1]]),10)
+  expect_equal(length(themargsamps3d_2$thetasamples[[2]]),10)
+
+
 
 
 })
