@@ -2,12 +2,25 @@
 % Please edit documentation in R/03-summary-statistics.R
 \name{compute_pdf_and_cdf}
 \alias{compute_pdf_and_cdf}
+\alias{compute_pdf_and_cdf.default}
+\alias{compute_pdf_and_cdf.list}
+\alias{compute_pdf_and_cdf.aghq}
 \title{Density and Cumulative Distribution Function}
 \usage{
-compute_pdf_and_cdf(margpost, transformation = NULL, finegrid = NULL)
+compute_pdf_and_cdf(obj, ...)
+
+\method{compute_pdf_and_cdf}{default}(obj, transformation = NULL, finegrid = NULL, ...)
+
+\method{compute_pdf_and_cdf}{list}(obj, ...)
+
+\method{compute_pdf_and_cdf}{aghq}(obj, ...)
 }
 \arguments{
-\item{margpost}{The output of \code{aghq::marginal_posterior}. See the documentation for that function.}
+\item{obj}{Either the output of \code{aghq::aghq()}, its list of marginal distributions
+(element \code{marginals}), or an individual \code{data.frame} containing one of
+these marginal distributions as output by \code{aghq::marginal_posterior()}.}
+
+\item{...}{Used to pass additional arguments.}
 
 \item{transformation}{Optional. A list containing two functions, \code{fromtheta}
 and \code{totheta}, which accept and return numeric vectors, defining a parameter transformation for which you would

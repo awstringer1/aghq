@@ -2,12 +2,20 @@
 % Please edit documentation in R/03-summary-statistics.R
 \name{compute_moment}
 \alias{compute_moment}
+\alias{compute_moment.default}
+\alias{compute_moment.aghq}
 \title{Compute moments}
 \usage{
-compute_moment(normalized_posterior, ff = function(x) 1)
+compute_moment(obj, ...)
+
+\method{compute_moment}{default}(obj, ff = function(x) 1, ...)
+
+\method{compute_moment}{aghq}(obj, ff = function(x) 1, ...)
 }
 \arguments{
-\item{normalized_posterior}{The output of \code{aghq::normalize_logpost}. See the documentation for that function.}
+\item{obj}{Object of class \code{aghq} output by \code{aghq::aghq()}, or its \code{normalized_posterior} element. See \code{?aghq}.}
+
+\item{...}{Used to pass additional argument \code{ff}.}
 
 \item{ff}{Any R function which takes in a numeric vector and returns a numeric vector.}
 }
@@ -61,7 +69,6 @@ lambdameans
 # Compute the standard deviation of lambda1
 lambda1sd <- sqrt(compute_moment(norm_sparse_2d_7,ff = function(x) (exp(x) - lambdameans[1])^2))[1]
 # ...and so on.
-
 }
 \seealso{
 Other summaries: 

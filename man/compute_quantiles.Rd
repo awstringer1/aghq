@@ -2,12 +2,25 @@
 % Please edit documentation in R/03-summary-statistics.R
 \name{compute_quantiles}
 \alias{compute_quantiles}
+\alias{compute_quantiles.default}
+\alias{compute_quantiles.list}
+\alias{compute_quantiles.aghq}
 \title{Quantiles}
 \usage{
-compute_quantiles(margpost, q = c(0.025, 0.975))
+compute_quantiles(obj, ...)
+
+\method{compute_quantiles}{default}(obj, q = c(0.025, 0.975), ...)
+
+\method{compute_quantiles}{list}(obj, ...)
+
+\method{compute_quantiles}{aghq}(obj, ...)
 }
 \arguments{
-\item{margpost}{The output of \code{aghq::marginal_posterior}. See the documentation for that function.}
+\item{obj}{Either the output of \code{aghq::aghq()}, its list of marginal distributions
+(element \code{marginals}), or an individual \code{data.frame} containing one of
+these marginal distributions as output by \code{aghq::marginal_posterior()}.}
+
+\item{...}{Used to pass additional arguments.}
 
 \item{q}{Numeric vector of values in (0,1). The quantiles to compute.}
 }

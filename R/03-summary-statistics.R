@@ -135,8 +135,9 @@ interpolate_marginal_posterior <- function(margpost) {
 #'
 #' Compute the moment of any function ff using AGHQ.
 #'
-#' @param normalized_posterior The output of \code{aghq::normalize_logpost}. See the documentation for that function.
+#' @param obj Object of class \code{aghq} output by \code{aghq::aghq()}, or its \code{normalized_posterior} element. See \code{?aghq}.
 #' @param ff Any R function which takes in a numeric vector and returns a numeric vector.
+#' @param ... Used to pass additional argument \code{ff}.
 #'
 #' @return A numeric vector containing the moment(s) of ff with respect to the joint
 #' distribution being approximated using AGHQ.
@@ -186,13 +187,17 @@ interpolate_marginal_posterior <- function(margpost) {
 #' # Compute the standard deviation of lambda1
 #' lambda1sd <- sqrt(compute_moment(norm_sparse_2d_7,ff = function(x) (exp(x) - lambdameans[1])^2))[1]
 #' # ...and so on.
-#'
-#' @importFrom rlang .data .env
 #' @family summaries
 #' @export
 #'
-compute_moment <- function(normalized_posterior,ff = function(x) 1) {
-  nodesandweights <- normalized_posterior$nodesandweights
+compute_moment <- function(obj,...) {
+  UseMethod("compute_moment")
+}
+#' @rdname compute_moment
+#' @method compute_moment default
+#' @export
+compute_moment.default <- function(obj,ff = function(x) 1,...) {
+  nodesandweights <- obj$nodesandweights
 
   whereistheta <- grep('theta',colnames(nodesandweights))
 
@@ -207,7 +212,10 @@ compute_moment <- function(normalized_posterior,ff = function(x) 1) {
 
   unname(out)
 }
-
+#' @rdname compute_moment
+#' @method compute_moment aghq
+#' @export
+compute_moment.aghq <- function(obj,ff = function(x) 1,...) compute_moment(obj$normalized_posterior,ff)
 
 #' Density and Cumulative Distribution Function
 #'
@@ -218,7 +226,9 @@ compute_moment <- function(normalized_posterior,ff = function(x) 1) {
 #' using a simpler integration rule and a polynomial interpolant. This method tends
 #' to work well, but won't always.
 #'
-#' @param margpost The output of \code{aghq::marginal_posterior}. See the documentation for that function.
+#' @param obj Either the output of \code{aghq::aghq()}, its list of marginal distributions
+#' (element \code{marginals}), or an individual \code{data.frame} containing one of
+#' these marginal distributions as output by \code{aghq::marginal_posterior()}.
 #' @param finegrid Optional, a grid of values on which to compute the CDF. The default makes
 #' use of the values in \code{margpost} but if the results are unsuitable, you may wish to
 #' modify this manually.
@@ -227,6 +237,7 @@ compute_moment <- function(normalized_posterior,ff = function(x) 1) {
 #' also like the pdf calculated for. See examples. May also have an element \code{jacobian},
 #' a function which takes a numeric vector and computes the jacobian of the transformation; if
 #' not provided, this is done using \code{numDeriv::jacobian}.
+#' @param ... Used to pass additional arguments.
 #'
 #' @return A tbl_df/tbl/data.frame with columns \code{theta}, \code{pdf} and \code{cdf} corresponding
 #' to the value of the parameter and its estimated PDF and CDF at that value.
@@ -271,14 +282,17 @@ compute_moment <- function(normalized_posterior,ff = function(x) 1) {
 #'
 #' @export
 #'
-compute_pdf_and_cdf <- function(margpost,transformation = NULL,finegrid = NULL) {
+compute_pdf_and_cdf <- function(obj,...) UseMethod("compute_pdf_and_cdf")
+#' @rdname compute_pdf_and_cdf
+#' @export
+compute_pdf_and_cdf.default <- function(obj,transformation = NULL,finegrid = NULL,...) {
 
-  margpostinterp <- interpolate_marginal_posterior(margpost)
+  margpostinterp <- interpolate_marginal_posterior(obj)
 
-  thetacol <- colnames(margpost)[grep("theta",colnames(margpost))]
+  thetacol <- colnames(obj)[grep("theta",colnames(obj))]
 
   if (is.null(finegrid)) {
-    rn <- range(margpost[[thetacol]])
+    rn <- range(obj[[thetacol]])
     rnl <- diff(rn)
     thetarange <- c(min(rn) - rnl/2,max(rn) + rnl/2)
     finegrid <- c(seq(thetarange[1],thetarange[2],length.out=1000))
@@ -305,6 +319,16 @@ compute_pdf_and_cdf <- function(margpost,transformation = NULL,finegrid = NULL) 
   }
   out
 }
+#' @rdname compute_pdf_and_cdf
+#' @export
+compute_pdf_and_cdf.list <- function(obj,...) {
+  out <- list()
+  for (i in 1:length(obj)) out[[i]] <- compute_pdf_and_cdf(obj[[i]],...)
+  out
+}
+#' @rdname compute_pdf_and_cdf
+#' @export
+compute_pdf_and_cdf.aghq <- function(obj,...) compute_pdf_and_cdf(obj$marginals,...)
 
 #' Quantiles
 #'
@@ -361,8 +385,11 @@ compute_pdf_and_cdf <- function(margpost,transformation = NULL,finegrid = NULL) 
 #'
 #' @export
 #'
-compute_quantiles <- function(margpost,q = c(.025,.975)) {
-  pdfandcdf <- compute_pdf_and_cdf(margpost)
+compute_quantiles <- function(obj,...) UseMethod("compute_quantiles")
+#' @rdname compute_quantiles
+#' @export
+compute_quantiles.default <- function(obj,q = c(.025,.975),...) {
+  pdfandcdf <- compute_pdf_and_cdf(obj)
   out <- numeric(length(q))
   names(out) <- paste0(as.character(100 * q),"%")
 
@@ -371,6 +398,16 @@ compute_quantiles <- function(margpost,q = c(.025,.975)) {
   }
   out
 }
+#' @rdname compute_quantiles
+#' @export
+compute_quantiles.list <- function(obj,...) {
+  out <- list()
+  for (i in 1:length(obj)) out[[i]] <- compute_quantiles(obj[[i]],...)
+  out
+}
+#' @rdname compute_quantiles
+#' @export
+compute_quantiles.aghq <- function(obj,...) compute_quantiles(obj$marginals,...)
 
 #' Sample from the mixture-of-Gaussians approximation to the marginal posterior of the "inner"
 #' variables from a marginal Laplace approximation.

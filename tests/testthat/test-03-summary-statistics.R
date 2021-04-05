@@ -65,6 +65,9 @@ test_that("Marginal posteriors computed correctly",{
   expect_lt(abs(aghqexpsd3d_2 - truesd3d[2]),1e-03)
   expect_lt(abs(aghqexpsd3d_3 - truesd3d[3]),1e-03)
 
+  expect_equal(aghqnormconst2d_new,1)
+  expect_lt(abs(aghqmean2d - truemean2d)[1],.1)
+  expect_lt(abs(aghqmean2d - truemean2d)[2],.1)
 
   # Interpolation
   expect_is(margpostinterp,"function")

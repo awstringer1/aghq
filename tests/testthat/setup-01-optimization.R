@@ -148,6 +148,11 @@ qgamma(.975,1+sum(y1),1+n1)
 thequadrature <- aghq(funlist2d,3,c(0,0))
 thesummary <- summary(thequadrature)
 
+# Test new S3 interface for moments
+aghqnormconst2d_new <- compute_moment(thequadrature)
+
+aghqmean2d_new <- compute_moment(thequadrature,function(x) x)
+
 # Laplace
 
 thelaplace <- laplace_approximation(funlist2d,c(0,0))
