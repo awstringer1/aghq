@@ -144,7 +144,8 @@ default_control_marglaplace <- function(...) {
 default_control_tmb <- function(...) {
   out <- list(
     method = c("BFGS","sparse_trust","trust"),
-    negate = TRUE
+    negate = TRUE,
+    numhessian = TRUE
   )
   specialargs <- list(...)
   for (arg in names(specialargs)) out[arg] <- specialargs[arg]

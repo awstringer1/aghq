@@ -951,6 +951,11 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 #' \code{aghq::marginal_laplace()} and are hence suitable for post-processing
 #' with \code{summary}, \code{aghq::sample_marginal()}, and so on.
 #'
+#' @details Because \code{TMB} does not yet have the Hessian of the log marginal Laplace
+#' approximation implemented, a numerically-differentiated jacobian of the gradient
+#' is used via \code{numDeriv::jacobian()}. You can turn this off (using \code{ff$he()} instead,
+#' which you'll have to modify yourself) using \code{default_control_tmb(numhessian = FALSE)}.
+#'
 #' @param ff The output of calling \code{TMB::MakeADFun()} with \code{random} set
 #' to a non-empty subset of the parameters. **VERY IMPORTANT**: \code{TMB}'s
 #' automatic Laplace approximation requires you to write your template implementing
@@ -988,6 +993,10 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 #' @export
 #'
 marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,control = default_control_tmb(),...) {
+  # Hessian
+  if (control$numhessian) {
+    ff$he <- function(theta) numDeriv::jacobian(ff$gr,theta,method = 'simple')
+  }
   ## Do aghq ##
   # The aghq
   quad <- aghq(ff,k,startingvalue,optresults,control,...)

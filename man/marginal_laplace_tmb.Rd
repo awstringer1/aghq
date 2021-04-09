@@ -72,6 +72,12 @@ the resulting object so that its contents and class match the output of
 \code{aghq::marginal_laplace()} and are hence suitable for post-processing
 with \code{summary}, \code{aghq::sample_marginal()}, and so on.
 }
+\details{
+Because \code{TMB} does not yet have the Hessian of the log marginal Laplace
+approximation implemented, a numerically-differentiated jacobian of the gradient
+is used via \code{numDeriv::jacobian()}. You can turn this off (using \code{ff$he()} instead,
+which you'll have to modify yourself) using \code{default_control_tmb(numhessian = FALSE)}.
+}
 \seealso{
 Other quadrature: 
 \code{\link{aghq}()},
