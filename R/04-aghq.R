@@ -86,6 +86,18 @@
 #' @export
 #'
 aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control(),...) {
+
+  # Add informative error messages for core inputs
+  if (!is.list(funlist)) {
+    stop("The specified input to ff is not a list.")
+  }
+  if (!is.integer(k)) {
+    stop("The specified input to k is not an integer.")
+  }
+  if (!is.integer(startingvalue)) {
+    stop("The specified input to ff is not an integer.")
+  }
+  
   # Negate it if asked
   if (control$negate) {
     ffa <- list(
