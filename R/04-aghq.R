@@ -91,11 +91,11 @@ aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control(
   if (!is.list(funlist)) {
     stop("The specified input to ff is not a list.")
   }
-  if (!is.integer(k)) {
-    stop("The specified input to k is not an integer.")
+  if (!is.numeric(k)) {
+    stop("The specified input to k is not numeric.")
   }
-  if (!is.integer(startingvalue)) {
-    stop("The specified input to ff is not an integer.")
+  if (!is.numeric(startingvalue)) {
+    stop("The specified input to ff is not numeric")
   }
   
   # Negate it if asked
