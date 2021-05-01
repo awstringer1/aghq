@@ -8,19 +8,29 @@
 \usage{
 sample_marginal(quad, ...)
 
-\method{sample_marginal}{aghq}(quad, M, ...)
+\method{sample_marginal}{aghq}(quad, M, transformation = NULL, ...)
 
-\method{sample_marginal}{marginallaplace}(quad, M, ...)
+\method{sample_marginal}{marginallaplace}(quad, M, transformation = NULL, ...)
 }
 \arguments{
 \item{quad}{Object from which to draw samples.
-Either an object inheriting from class \code{marginallaplace}
+An object inheriting from class \code{marginallaplace}
 (the result of running \code{aghq::marginal_laplace} or \code{aghq::marginal_laplace_tmb}),
-or an object inheriting from class \code{aghq} (the result of running \code{aghq::aghq()}).}
+or an object inheriting from class \code{aghq} (the result of running \code{aghq::aghq()}).
+Can also provide a \code{data.frame} returned by \code{aghq::compute_pdf_and_cdf} in which
+case samples are returned for \code{transparam} if \code{transformation} is provided,
+and for \code{param} if \code{transformation = NULL}.}
 
 \item{...}{Used to pass additional arguments.}
 
 \item{M}{Numeric, integer saying how many samples to draw}
+
+\item{transformation}{Optional.
+A list containing function \code{fromtheta()} which accepts and returns numeric vectors,
+defining a parameter transformation for which you would like samples to be taken.
+See \code{?compute_pdf_and_cdf}. Note that unlike there, where this operation is
+a bit more complicated, here all is done is samples are taken on the original
+scale and then \code{transformation$fromtheta()} is called on them before returning.}
 }
 \value{
 If run on a \code{marginallaplace} object, a list containing elements:
@@ -63,7 +73,8 @@ Cholesky factors. These are computed once for each quadrature point and stored.
 For the marginal Laplace approximations where the "inner" model is handled entirely by \code{TMB}
 (\code{aghq::marginal_laplace_tmb}), the interface here is identical to above,
 with the order of the "\code{W}" vector being determined by \code{TMB}. See the
-\code{names} of \code{quad$env$last.par}, for example.
+\code{names} of \code{ff$env$last.par}, for example (where \code{ff} is your
+template obtained from a call to \code{TMB::MakeADFun}.
 }
 \examples{
 logfteta2d <- function(eta,y) {

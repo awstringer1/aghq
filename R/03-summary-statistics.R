@@ -417,10 +417,19 @@ compute_quantiles.aghq <- function(obj,...) compute_quantiles(obj$marginals,...)
 #' or \code{aghq::marginal_laplace_tmb}.
 #'
 #' @param quad Object from which to draw samples.
-#' Either an object inheriting from class \code{marginallaplace}
+#' An object inheriting from class \code{marginallaplace}
 #' (the result of running \code{aghq::marginal_laplace} or \code{aghq::marginal_laplace_tmb}),
 #' or an object inheriting from class \code{aghq} (the result of running \code{aghq::aghq()}).
+#' Can also provide a \code{data.frame} returned by \code{aghq::compute_pdf_and_cdf} in which
+#' case samples are returned for \code{transparam} if \code{transformation} is provided,
+#' and for \code{param} if \code{transformation = NULL}.
 #' @param M Numeric, integer saying how many samples to draw
+#' @param transformation Optional.
+#' A list containing function \code{fromtheta()} which accepts and returns numeric vectors,
+#' defining a parameter transformation for which you would like samples to be taken.
+#' See \code{?compute_pdf_and_cdf}. Note that unlike there, where this operation is
+#' a bit more complicated, here all is done is samples are taken on the original
+#' scale and then \code{transformation$fromtheta()} is called on them before returning.
 #' @param ... Used to pass additional arguments.
 #'
 #' @family sampling
@@ -458,7 +467,8 @@ compute_quantiles.aghq <- function(obj,...) compute_quantiles(obj$marginals,...)
 #' For the marginal Laplace approximations where the "inner" model is handled entirely by \code{TMB}
 #' (\code{aghq::marginal_laplace_tmb}), the interface here is identical to above,
 #' with the order of the "\code{W}" vector being determined by \code{TMB}. See the
-#' \code{names} of \code{quad$env$last.par}, for example.
+#' \code{names} of \code{ff$env$last.par}, for example (where \code{ff} is your
+#' template obtained from a call to \code{TMB::MakeADFun}.
 #'
 #' @examples
 #' logfteta2d <- function(eta,y) {
@@ -506,15 +516,20 @@ compute_quantiles.aghq <- function(obj,...) compute_quantiles(obj$marginals,...)
 sample_marginal <- function(quad,...) UseMethod("sample_marginal")
 #' @rdname sample_marginal
 #' @export
-sample_marginal.aghq <- function(quad,M,...) {
+sample_marginal.aghq <- function(quad,M,transformation = NULL,...) {
   out <- list()
   if (is.null(quad$marginals)) return(out)
   for (i in 1:length(quad$marginals)) out[[i]] <- unname(compute_quantiles(quad$marginals[[i]],stats::runif(M)))
+
+  if (!is.null(transformation)) {
+    if (is.null(transformation$fromtheta)) warning("transformation provided but transformation$fromtheta appears NULL.\n")
+    for (i in 1:length(out)) out[[i]] <- transformation$fromtheta(out[[i]])
+  }
   out
 }
 #' @rdname sample_marginal
 #' @export
-sample_marginal.marginallaplace <- function(quad,M,...) {
+sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,...) {
   K <- as.numeric(quad$normalized_posterior$grid$level)[1]
   d <- dim(quad$modesandhessians$H[[1]])[1]
   simlist <- quad$modesandhessians
@@ -567,8 +582,8 @@ sample_marginal.marginallaplace <- function(quad,M,...) {
     samps = samps,
     theta = theta
   )
-  # Add the marginals from theta|Y
+  # Add the marginals from theta|Y, with possible transformation
   class(quad) <- "aghq"
-  out$thetasamples <- sample_marginal(quad,M)
+  out$thetasamples <- sample_marginal(quad,M,transformation,...)
   out
 }
