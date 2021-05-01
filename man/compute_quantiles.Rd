@@ -9,11 +9,11 @@
 \usage{
 compute_quantiles(obj, ...)
 
-\method{compute_quantiles}{default}(obj, q = c(0.025, 0.975), ...)
+\method{compute_quantiles}{default}(obj, q = c(0.025, 0.975), transformation = NULL, ...)
 
-\method{compute_quantiles}{list}(obj, ...)
+\method{compute_quantiles}{list}(obj, q = c(0.025, 0.975), transformation = NULL, ...)
 
-\method{compute_quantiles}{aghq}(obj, ...)
+\method{compute_quantiles}{aghq}(obj, q = c(0.025, 0.975), transformation = NULL, ...)
 }
 \arguments{
 \item{obj}{Either the output of \code{aghq::aghq()}, its list of marginal distributions
@@ -23,6 +23,13 @@ these marginal distributions as output by \code{aghq::marginal_posterior()}.}
 \item{...}{Used to pass additional arguments.}
 
 \item{q}{Numeric vector of values in (0,1). The quantiles to compute.}
+
+\item{transformation}{Optional.
+A list containing function \code{fromtheta()} which accepts and returns numeric vectors,
+defining a parameter transformation for which you would like the quantiles of.
+See \code{?compute_pdf_and_cdf}. This transformation must be monotone and the function
+checks whether it's increasing or decreasing and returns the transformed quantiles,
+ordered appropriately.}
 }
 \value{
 A named numeric vector containing the quantiles you asked for, for the

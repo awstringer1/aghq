@@ -337,6 +337,12 @@ compute_pdf_and_cdf.aghq <- function(obj,...) compute_pdf_and_cdf(obj$marginals,
 #'
 #' @inheritParams compute_pdf_and_cdf
 #' @param q Numeric vector of values in (0,1). The quantiles to compute.
+#' @param transformation Optional.
+#' A list containing function \code{fromtheta()} which accepts and returns numeric vectors,
+#' defining a parameter transformation for which you would like the quantiles of.
+#' See \code{?compute_pdf_and_cdf}. This transformation must be monotone and the function
+#' checks whether it's increasing or decreasing and returns the transformed quantiles,
+#' ordered appropriately.
 #'
 #' @return A named numeric vector containing the quantiles you asked for, for the
 #' variable whose marginal posterior you provided.
@@ -388,26 +394,34 @@ compute_pdf_and_cdf.aghq <- function(obj,...) compute_pdf_and_cdf(obj$marginals,
 compute_quantiles <- function(obj,...) UseMethod("compute_quantiles")
 #' @rdname compute_quantiles
 #' @export
-compute_quantiles.default <- function(obj,q = c(.025,.975),...) {
+compute_quantiles.default <- function(obj,q = c(.025,.975),transformation = NULL,...) {
   pdfandcdf <- compute_pdf_and_cdf(obj)
   out <- numeric(length(q))
-  names(out) <- paste0(as.character(100 * q),"%")
+  increasing <- TRUE
 
-  for (i in 1:length(q)) {
-    out[i] <- pdfandcdf$theta[max(which(pdfandcdf$cdf < q[i]))]
+  for (i in 1:length(q)) out[i] <- pdfandcdf$theta[max(which(pdfandcdf$cdf < q[i]))]
+
+  if (!is.null(transformation)) {
+    if (is.null(transformation$fromtheta)) warning("transformation provided but transformation$fromtheta appears NULL.\n")
+    # Have to check if it's increasing or decreasing so can reverse order if necessary
+    increasing <- transformation$fromtheta(min(out)) <= transformation$fromtheta(max(out))
+    for (i in 1:length(out)) out[i] <- transformation$fromtheta(out[i])
   }
+
+  if (!increasing) out <- rev(out)
+  names(out) <- paste0(as.character(100 * q),"%")
   out
 }
 #' @rdname compute_quantiles
 #' @export
-compute_quantiles.list <- function(obj,...) {
+compute_quantiles.list <- function(obj,q = c(.025,.975),transformation = NULL,...) {
   out <- list()
-  for (i in 1:length(obj)) out[[i]] <- compute_quantiles(obj[[i]],...)
+  for (i in 1:length(obj)) out[[i]] <- compute_quantiles(obj[[i]],q,transformation,...)
   out
 }
 #' @rdname compute_quantiles
 #' @export
-compute_quantiles.aghq <- function(obj,...) compute_quantiles(obj$marginals,...)
+compute_quantiles.aghq <- function(obj,q = c(.025,.975),transformation = NULL,...) compute_quantiles(obj$marginals,q,transformation,...)
 
 #' Exact independent samples from an approximate posterior distribution
 #'
