@@ -287,6 +287,8 @@ compute_pdf_and_cdf <- function(obj,...) UseMethod("compute_pdf_and_cdf")
 #' @export
 compute_pdf_and_cdf.default <- function(obj,transformation = NULL,finegrid = NULL,...) {
 
+  if (!is.null(transformation)) transformation <- Map(match.fun,transformation)
+
   margpostinterp <- interpolate_marginal_posterior(obj)
 
   thetacol <- colnames(obj)[grep("theta",colnames(obj))]
@@ -403,6 +405,8 @@ compute_quantiles.default <- function(obj,q = c(.025,.975),transformation = NULL
 
   if (!is.null(transformation)) {
     if (is.null(transformation$fromtheta)) warning("transformation provided but transformation$fromtheta appears NULL.\n")
+    transformation <- Map(match.fun,transformation)
+
     # Have to check if it's increasing or decreasing so can reverse order if necessary
     increasing <- transformation$fromtheta(min(out)) <= transformation$fromtheta(max(out))
     for (i in 1:length(out)) out[i] <- transformation$fromtheta(out[i])
@@ -537,6 +541,7 @@ sample_marginal.aghq <- function(quad,M,transformation = NULL,...) {
 
   if (!is.null(transformation)) {
     if (is.null(transformation$fromtheta)) warning("transformation provided but transformation$fromtheta appears NULL.\n")
+    transformation <- Map(match.fun,transformation)
     for (i in 1:length(out)) out[[i]] <- transformation$fromtheta(out[[i]])
   }
   out
