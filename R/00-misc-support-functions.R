@@ -160,11 +160,24 @@ default_control_tmb <- function(...) {
 # From: https://stats.stackexchange.com/questions/381936/vectorised-computation-of-logsumexp
 # Accessed on: 2021/03/27 10:49AM
 logsumexp <- function(l) {
+  if (length(l) == 0) return(c())
+  if (length(l) == 1) return(l)
   n <- length(l)
   L <- sort(l, decreasing = TRUE)
   S <- rep(L[1], n)
   for (k in 1:(n-1)) {
     S[k+1] <- max(L[k+1], S[k]) + log1p(exp(-abs(L[k+1] - S[k])))
+  }
+  S[n]
+}
+logdiffexp <- function(l) {
+  if (length(l) == 0) return(c())
+  if (length(l) == 1) return(l)
+  n <- length(l)
+  L <- sort(l, decreasing = TRUE)
+  S <- rep(L[1], n)
+  for (k in 1:(n-1)) {
+    S[k+1] <- max(L[k+1], S[k]) - log1p(exp(-abs(L[k+1] - S[k])))
   }
   S[n]
 }
