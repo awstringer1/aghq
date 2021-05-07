@@ -77,7 +77,7 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,...) {
   }
   # Create the grid
   S <- length(optresults$mode) # Dimension
-  thegrid <- mvQuad::createNIGrid(dim = S,type = "GHe",level = k)
+  thegrid <- mvQuad::createNIGrid(dim = S,type = "GHe",level = k,...)
   # Reorder the mode and Hessian so that "whichfirst" is first
   # This does not change the normalizing constant of the joint,
   # but is necessary to compute marginals later.
