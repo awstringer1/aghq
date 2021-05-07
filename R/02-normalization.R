@@ -16,6 +16,8 @@
 #' @param whichfirst Integer between 1 and the dimension of the parameter space, default 1.
 #' The user shouldn't have to worry about this: it's used internally to re-order the parameter vector
 #' before doing the quadrature, which is useful when calculating marginal posteriors.
+#' @param ndConstruction Create a multivariate grid using a product or sparse construction?
+#' Passed directly to \code{mvQuad::createNIGrid()}, see that function for further details.
 #' @param ... Additional arguments to be passed to \code{optresults$ff}, see \code{?optimize_theta}.
 #'
 #' @return If k > 1, a list with elements:
@@ -69,7 +71,7 @@
 #'
 #' @export
 #'
-normalize_logpost <- function(optresults,k,whichfirst = 1,...) {
+normalize_logpost <- function(optresults,k,whichfirst = 1,ndConstruction = "product",...) {
   if (as.integer(k) != k) stop(paste0("Please provide an integer k, the number of quadrature points. You provided ",k,"which does not satisfy as.integer(k) == k"))
   if (k == 1) {
     # Laplace approx: just return the normalizing constant
@@ -77,7 +79,7 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,...) {
   }
   # Create the grid
   S <- length(optresults$mode) # Dimension
-  thegrid <- mvQuad::createNIGrid(dim = S,type = "GHe",level = k,...)
+  thegrid <- mvQuad::createNIGrid(dim = S,type = "GHe",level = k,ndConstruction = ndConstruction,...)
   # Reorder the mode and Hessian so that "whichfirst" is first
   # This does not change the normalizing constant of the joint,
   # but is necessary to compute marginals later.

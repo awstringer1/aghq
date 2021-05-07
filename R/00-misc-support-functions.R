@@ -32,6 +32,8 @@
 #' provided the log-posterior **without negation**. Set \code{negate = TRUE} if you
 #' have provided a template which computes the **negated** log-posterior and its
 #' derivatives.
+#' \item \code{ndConstruction}: construct a multivariate quadrature rule using a \code{"product"}
+#' rule or a \code{"sparse"} grid? Default \code{"product"}. See \code{?mvQuad::createNIGrid()}.
 #' }
 #'
 #' @examples
@@ -45,7 +47,8 @@
 default_control <- function(...) {
   out <- list(
     method = c("sparse_trust","trust","BFGS"),
-    negate = FALSE
+    negate = FALSE,
+    ndConstruction = "product"
   )
   specialargs <- list(...)
   for (arg in names(specialargs)) out[arg] <- specialargs[arg]
@@ -101,7 +104,8 @@ default_control_marglaplace <- function(...) {
   out <- list(
     method = c("BFGS","sparse_trust","trust"),
     inner_method = c("sparse_trust","trust","BFGS"),
-    negate = FALSE
+    negate = FALSE,
+    ndConstruction = "product"
   )
   specialargs <- list(...)
   for (arg in names(specialargs)) out[arg] <- specialargs[arg]

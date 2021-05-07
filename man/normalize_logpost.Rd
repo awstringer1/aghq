@@ -4,7 +4,13 @@
 \alias{normalize_logpost}
 \title{Normalize the joint posterior using AGHQ}
 \usage{
-normalize_logpost(optresults, k, whichfirst = 1, ...)
+normalize_logpost(
+  optresults,
+  k,
+  whichfirst = 1,
+  ndConstruction = "product",
+  ...
+)
 }
 \arguments{
 \item{optresults}{The results of calling \code{aghq::optimize_theta()}: see return value of that function.}
@@ -15,6 +21,9 @@ approximation.}
 \item{whichfirst}{Integer between 1 and the dimension of the parameter space, default 1.
 The user shouldn't have to worry about this: it's used internally to re-order the parameter vector
 before doing the quadrature, which is useful when calculating marginal posteriors.}
+
+\item{ndConstruction}{Create a multivariate grid using a product or sparse construction?
+Passed directly to \code{mvQuad::createNIGrid()}, see that function for further details.}
 
 \item{...}{Additional arguments to be passed to \code{optresults$ff}, see \code{?optimize_theta}.}
 }

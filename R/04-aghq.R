@@ -101,7 +101,7 @@ aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control(
   if (is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ffa,startingvalue,control,...))
 
   # Normalization
-  normalized_posterior <- normalize_logpost(optresults,k,...)
+  normalized_posterior <- normalize_logpost(optresults,k,ndConstruction = control$ndConstruction,...)
 
   # Marginals
   d <- length(startingvalue)

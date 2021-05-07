@@ -38,6 +38,8 @@ sampling with \code{tmbstan} assume you have coded your template to return the
 provided the log-posterior \strong{without negation}. Set \code{negate = TRUE} if you
 have provided a template which computes the \strong{negated} log-posterior and its
 derivatives.
+\item \code{ndConstruction}: construct a multivariate quadrature rule using a \code{"product"}
+rule or a \code{"sparse"} grid? Default \code{"product"}. See \code{?mvQuad::createNIGrid()}.
 }
 }
 \examples{
