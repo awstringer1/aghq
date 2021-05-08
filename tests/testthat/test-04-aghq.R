@@ -60,6 +60,11 @@ test_that("Quadrature works",{
   expect_equal(length(themargsamps3d_2$thetasamples[[2]]),10)
 
 
+  # Sparse grids!
+  expect_true(!any(is.na(sparsegrid_2d$normalized_posterior$nodesandweights$logpost_normalized)))
+  expect_true(!any(is.nan(sparsegrid_2d$normalized_posterior$nodesandweights$logpost_normalized)))
+  expect_true(all(is.numeric(sparsegrid_2d$normalized_posterior$nodesandweights$logpost_normalized)))
 
+  expect_equal(sparsenormconst_2d,1)
 
 })

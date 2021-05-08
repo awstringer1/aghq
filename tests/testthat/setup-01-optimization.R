@@ -325,6 +325,11 @@ themargsamps3d_2 <- aghq::sample_marginal(themarginallaplace3d_2,10)
 
 
 
+## Sparse Grids ##
+# doesn't make sense in 1d, do 2d
+sparsegrid_2d <- aghq(funlist2d,5,c(0,0),control = default_control(ndConstruction = 'sparse'))
+sparsenormconst_2d <- compute_moment(sparsegrid_2d) # Should be 1
+
 
 
 

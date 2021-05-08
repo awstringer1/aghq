@@ -106,10 +106,10 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,ndConstruction = "prod
 
   # lognormconst <- logsumexp(log(ww) + pp)
   # Account for negative weights (doesn't happen with GHQ but happens for e.g. sparse rules)
-  lognormconst <- logdiffexp(c(
+  lognormconst <- logdiffexp(
     logsumexp(log(ww[ww>0]) + pp[ww>0]),
     logsumexp(log(-ww[ww<0]) + pp[ww<0])
-  ))
+  )
 
   nodesandweights$logpost_normalized <- nodesandweights$logpost - lognormconst
 

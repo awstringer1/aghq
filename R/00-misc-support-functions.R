@@ -170,14 +170,9 @@ logsumexp <- function(l) {
   }
   S[n]
 }
-logdiffexp <- function(l) {
-  if (length(l) == 0) return(c())
-  if (length(l) == 1) return(l)
-  n <- length(l)
-  L <- sort(l, decreasing = TRUE)
-  S <- rep(L[1], n)
-  for (k in 1:(n-1)) {
-    S[k+1] <- max(L[k+1], S[k]) - log1p(exp(-abs(L[k+1] - S[k])))
-  }
-  S[n]
+logdiffexp <- function(a,b) {
+  # computes log(exp(a) - exp(b)) where a > b
+  if (length(b) == 0) return(a)
+  if (b > a) stop("Error: negative weights outweigh the positive weights for this quadrature rule. This would result in negative density estimates and is obviously incorrect.\n")
+  b + log(exp(a-b) - 1)
 }
