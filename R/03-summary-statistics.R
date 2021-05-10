@@ -7,13 +7,14 @@
 
 #' Marginal Posteriors
 #'
-#' Compute the marginal posterior for a given parameter using AGHQ.
+#' Compute the marginal posterior for a given parameter using AGHQ. This function is
+#' mostly called within \code{aghq()}.
 #'
 #' @inheritParams normalize_logpost
 #' @param j Integer between 1 and the dimension of the parameter space. Which
 #' index of the parameter vector to compute the marginal posterior for.
 #'
-#' @return a tbl_df/tbl/data.frame containing the normalized log marginal posterior
+#' @return a data.frame containing the normalized log marginal posterior
 #' for theta_j evaluated at the original quadrature points. Has columns
 #' \code{"thetaj","logpost_normalized","weights"}, where \code{j} is the \code{j} you specified.
 #'
@@ -57,8 +58,8 @@
 #'
 #' @export
 #'
-marginal_posterior <- function(optresults,k,j) {
-  normresults <- normalize_logpost(optresults,k,whichfirst = j)
+marginal_posterior <- function(optresults,k,j,ndConstruction = 'product') {
+  normresults <- normalize_logpost(optresults,k,whichfirst = j,ndConstruction)
   nodesandweights <- normresults$nodesandweights
   thetagridfull <- normresults$grid
   lognormconstorig <- normresults$lognormconst

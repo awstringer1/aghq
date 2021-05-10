@@ -4,7 +4,7 @@
 \alias{marginal_posterior}
 \title{Marginal Posteriors}
 \usage{
-marginal_posterior(optresults, k, j)
+marginal_posterior(optresults, k, j, ndConstruction = "product")
 }
 \arguments{
 \item{optresults}{The results of calling \code{aghq::optimize_theta()}: see return value of that function.}
@@ -14,14 +14,20 @@ approximation.}
 
 \item{j}{Integer between 1 and the dimension of the parameter space. Which
 index of the parameter vector to compute the marginal posterior for.}
+
+\item{ndConstruction}{Create a multivariate grid using a product or sparse construction?
+Passed directly to \code{mvQuad::createNIGrid()}, see that function for further details. Note
+that the use of sparse grids within \code{aghq} is currently \strong{experimental} and not supported
+by tests. In particular, calculation of marginal posteriors is known to fail currently.}
 }
 \value{
-a tbl_df/tbl/data.frame containing the normalized log marginal posterior
+a data.frame containing the normalized log marginal posterior
 for theta_j evaluated at the original quadrature points. Has columns
 \code{"thetaj","logpost_normalized","weights"}, where \code{j} is the \code{j} you specified.
 }
 \description{
-Compute the marginal posterior for a given parameter using AGHQ.
+Compute the marginal posterior for a given parameter using AGHQ. This function is
+mostly called within \code{aghq()}.
 }
 \examples{
 ## A 2d example ##

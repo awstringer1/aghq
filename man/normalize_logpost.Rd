@@ -23,7 +23,9 @@ The user shouldn't have to worry about this: it's used internally to re-order th
 before doing the quadrature, which is useful when calculating marginal posteriors.}
 
 \item{ndConstruction}{Create a multivariate grid using a product or sparse construction?
-Passed directly to \code{mvQuad::createNIGrid()}, see that function for further details.}
+Passed directly to \code{mvQuad::createNIGrid()}, see that function for further details. Note
+that the use of sparse grids within \code{aghq} is currently \strong{experimental} and not supported
+by tests. In particular, calculation of marginal posteriors is known to fail currently.}
 
 \item{...}{Additional arguments to be passed to \code{optresults$ff}, see \code{?optimize_theta}.}
 }

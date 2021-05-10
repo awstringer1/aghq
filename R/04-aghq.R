@@ -106,7 +106,7 @@ aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control(
   # Marginals
   d <- length(startingvalue)
   marginals <- vector(mode = "list",length = d)
-  for (j in 1:d) marginals[[j]] <- marginal_posterior(optresults,k,j)
+  for (j in 1:d) marginals[[j]] <- marginal_posterior(optresults,k,j,control$ndConstruction)
 
   out <- list(
     normalized_posterior = normalized_posterior,
