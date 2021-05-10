@@ -6,5 +6,4 @@
 ^Meta$
 ^cran-comments\.md$
 ^CRAN-RELEASE$
-^NEWS\.md$
 ^R/utils-pipe\.R$
