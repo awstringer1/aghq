@@ -156,6 +156,7 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
   else {
     stop(paste0("Unknown optimization method: ",method))
   }
+  # tmp
 
   out
 }
