@@ -149,7 +149,8 @@ default_control_tmb <- function(...) {
   out <- list(
     method = c("BFGS","sparse_trust","trust"),
     negate = TRUE,
-    numhessian = TRUE
+    numhessian = TRUE,
+    ndConstruction = 'product'
   )
   specialargs <- list(...)
   for (arg in names(specialargs)) out[arg] <- specialargs[arg]
