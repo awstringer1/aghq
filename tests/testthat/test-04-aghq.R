@@ -68,4 +68,9 @@ test_that("Quadrature works",{
   #
   # expect_equal(sparsenormconst_2d,1)
 
+  # Test control params have correct options
+  expect_true(all(c("method","negate","ndConstruction") %in% names(cntrl_base)))
+  expect_true(all(c("method","inner_method","negate","ndConstruction") %in% names(cntrl_marg)))
+  expect_true(all(c("method","numhessian","negate","ndConstruction") %in% names(cntrl_tmb)))
+
 })

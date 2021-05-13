@@ -9,6 +9,9 @@ with methods for objects of class `aghq`.
 
 ## Bug fixes
 
+- Fixed `default_control_tmb()` which was missing the `ndConstruction = 'product'` default argument
+which caused the function to throw a cryptic error.
+
 ## Other
 
 - Removed external dependencies:

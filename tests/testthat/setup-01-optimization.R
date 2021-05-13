@@ -330,6 +330,10 @@ themargsamps3d_2 <- aghq::sample_marginal(themarginallaplace3d_2,10)
 # sparsegrid_2d <- aghq(funlist2d,5,c(0,0),control = default_control(ndConstruction = 'sparse'))
 # sparsenormconst_2d <- compute_moment(sparsegrid_2d) # Should be 1
 
+## Control Params ##
+cntrl_base <- default_control()
+cntrl_marg <- default_control_marglaplace()
+cntrl_tmb <- default_control_tmb()
 
 
 
