@@ -4,10 +4,17 @@
 \alias{interpolate_marginal_posterior}
 \title{Interpolate the Marginal Posterior}
 \usage{
-interpolate_marginal_posterior(margpost)
+interpolate_marginal_posterior(margpost, method = c("polynomial", "spline"))
 }
 \arguments{
 \item{margpost}{The output of \code{aghq::marginal_posterior}. See the documentation for that function.}
+
+\item{method}{The method to use. Default is a \code{k} point polynomial interpolant using \code{polynom::poly.calc()}.
+This has been observed to result in unstable behaviour for larger numbers of quadrature points \code{k},
+which is of course undesirable. If \code{k > 3}, you can set \code{method = 'spline'} to use \code{splines::interpSpline()} instead,
+which uses cubic B-Splines. These should always be better than a straight polynomial, except don't work
+when \code{k < 4} which is why they aren't the default. If you try and set \code{method = 'spline'} with
+\code{k < 4} it will be changed back to polynomial, with a warning.}
 }
 \value{
 A function of \code{theta} which computes the log interpolated normalized marginal posterior.

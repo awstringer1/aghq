@@ -1,13 +1,17 @@
 context("Quadrature")
 
+quadnames <- c("normalized_posterior","marginals","optresults","control")
+quadnamesmarg <- c("normalized_posterior","marginals","optresults","modesandhessians","control")
+
+
 test_that("Quadrature works",{
   # AGHQ
   expect_is(thequadrature,"aghq")
-  expect_equal(names(thequadrature),c("normalized_posterior","marginals","optresults"))
+  expect_equal(names(thequadrature),quadnames)
   expect_is(summary(thequadrature),"aghqsummary")
 
   expect_is(thequadrature3d,"aghq")
-  expect_equal(names(thequadrature3d),c("normalized_posterior","marginals","optresults"))
+  expect_equal(names(thequadrature3d),quadnames)
   expect_is(summary(thequadrature3d),"aghqsummary")
 
 
@@ -20,15 +24,15 @@ test_that("Quadrature works",{
   # Marginal laplace approximation
   expect_is(themarginallaplace,"marginallaplace")
   expect_is(themarginallaplace,"aghq")
-  expect_equal(names(themarginallaplace),c("normalized_posterior","marginals","optresults","modesandhessians"))
+  expect_equal(names(themarginallaplace),quadnamesmarg)
 
   expect_is(themarginallaplace3d_1,"marginallaplace")
   expect_is(themarginallaplace3d_1,"aghq")
-  expect_equal(names(themarginallaplace3d_1),c("normalized_posterior","marginals","optresults","modesandhessians"))
+  expect_equal(names(themarginallaplace3d_1),quadnamesmarg)
 
   expect_is(themarginallaplace3d_2,"marginallaplace")
   expect_is(themarginallaplace3d_2,"aghq")
-  expect_equal(names(themarginallaplace3d_2),c("normalized_posterior","marginals","optresults","modesandhessians"))
+  expect_equal(names(themarginallaplace3d_2),quadnamesmarg)
 
   # Sampling from marginal Laplace approximation
   expect_is(themargsamps,"list")

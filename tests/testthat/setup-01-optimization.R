@@ -153,6 +153,21 @@ aghqnormconst2d_new <- compute_moment(thequadrature)
 
 aghqmean2d_new <- compute_moment(thequadrature,function(x) x)
 
+# Test the two types of interpolation
+thequadrature_k7 <- aghq(funlist2d,25,c(0,0)) # 25 quad points leads to bad poly interp
+pdf_poly_2d <- compute_pdf_and_cdf(thequadrature_k7,transformation = list(totheta = log,fromtheta = exp))
+pdf_spline_2d <- compute_pdf_and_cdf(thequadrature_k7,transformation = list(totheta = log,fromtheta = exp),interpolation = 'spline')
+# Sampling
+set.seed(708968)
+polysamps <- sample_marginal(thequadrature_k7,1e03)
+splinesamps <- sample_marginal(thequadrature_k7,1e03,interpolation = 'spline')
+if (FALSE) {
+  par(mfrow = c(1,2))
+  hist(polysamps[[1]],breaks = 50,freq=FALSE)
+  hist(splinesamps[[1]],breaks = 50,freq=FALSE)
+
+}
+
 # Laplace
 
 thelaplace <- laplace_approximation(funlist2d,c(0,0))

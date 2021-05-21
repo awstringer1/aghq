@@ -30,6 +30,11 @@ Valid options are:
 \item \code{negate}: {default \code{TRUE}. Assumes that your \code{TMB} function
 template computes the \strong{negated} log-posterior, which it must if you're using \code{TMB}'s automatic
 Laplace approximation, which you must be if you're using this function!}.
+\item \code{interpolation}: how to interpolate the marginal posteriors. The \code{'polynomial'}
+option (default) uses \code{polynom::poly.calc()} to construct a global polynomial interpolant
+and has been observed to be unstable as the number of quadrature points gets larger, which
+is obviously a bad thing. Try \code{'spline'} instead, which uses a cubic B-Spline
+interpolant from \code{splines::interpSpline()}.
 }
 }
 \examples{

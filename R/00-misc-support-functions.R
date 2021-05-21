@@ -34,6 +34,11 @@
 #' derivatives.
 #' \item \code{ndConstruction}: construct a multivariate quadrature rule using a \code{"product"}
 #' rule or a \code{"sparse"} grid? Default \code{"product"}. See \code{?mvQuad::createNIGrid()}.
+#' \item \code{interpolation}: how to interpolate the marginal posteriors. The \code{'polynomial'}
+#' option (default) uses \code{polynom::poly.calc()} to construct a global polynomial interpolant
+#' and has been observed to be unstable as the number of quadrature points gets larger, which
+#' is obviously a bad thing. Try \code{'spline'} instead, which uses a cubic B-Spline
+#' interpolant from \code{splines::interpSpline()}.
 #' }
 #'
 #' @examples
@@ -48,7 +53,8 @@ default_control <- function(...) {
   out <- list(
     method = c("sparse_trust","trust","BFGS"),
     negate = FALSE,
-    ndConstruction = "product"
+    ndConstruction = "product",
+    interpolation = 'polynomial'
   )
   specialargs <- list(...)
   for (arg in names(specialargs)) out[arg] <- specialargs[arg]
@@ -89,6 +95,11 @@ default_control <- function(...) {
 #' argument for \code{marginal_laplace}; if you are doing a marginal Laplace approximation
 #' using the automatic Laplace approximation provided by \code{TMB}, you should
 #' check out \code{aghq::marginal_laplace_tmb()}.
+#' \item \code{interpolation}: how to interpolate the marginal posteriors. The \code{'polynomial'}
+#' option (default) uses \code{polynom::poly.calc()} to construct a global polynomial interpolant
+#' and has been observed to be unstable as the number of quadrature points gets larger, which
+#' is obviously a bad thing. Try \code{'spline'} instead, which uses a cubic B-Spline
+#' interpolant from \code{splines::interpSpline()}.
 #' }
 #'
 #' @examples
@@ -105,7 +116,8 @@ default_control_marglaplace <- function(...) {
     method = c("BFGS","sparse_trust","trust"),
     inner_method = c("sparse_trust","trust","BFGS"),
     negate = FALSE,
-    ndConstruction = "product"
+    ndConstruction = "product",
+    interpolation = 'polynomial'
   )
   specialargs <- list(...)
   for (arg in names(specialargs)) out[arg] <- specialargs[arg]
@@ -134,6 +146,11 @@ default_control_marglaplace <- function(...) {
 #' \item \code{negate}: {default \code{TRUE}. Assumes that your \code{TMB} function
 #' template computes the **negated** log-posterior, which it must if you're using \code{TMB}'s automatic
 #' Laplace approximation, which you must be if you're using this function!}.
+#' \item \code{interpolation}: how to interpolate the marginal posteriors. The \code{'polynomial'}
+#' option (default) uses \code{polynom::poly.calc()} to construct a global polynomial interpolant
+#' and has been observed to be unstable as the number of quadrature points gets larger, which
+#' is obviously a bad thing. Try \code{'spline'} instead, which uses a cubic B-Spline
+#' interpolant from \code{splines::interpSpline()}.
 #' }
 #'
 #' @examples
@@ -150,7 +167,8 @@ default_control_tmb <- function(...) {
     method = c("BFGS","sparse_trust","trust"),
     negate = TRUE,
     numhessian = TRUE,
-    ndConstruction = 'product'
+    ndConstruction = 'product',
+    interpolation = 'polynomial'
   )
   specialargs <- list(...)
   for (arg in names(specialargs)) out[arg] <- specialargs[arg]

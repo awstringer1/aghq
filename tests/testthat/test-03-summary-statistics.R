@@ -150,5 +150,21 @@ test_that("Marginal posteriors computed correctly",{
   expect_lt(thequantiles3d_3[1],thequantiles3d_3[2])
   expect_lt(abs(exp(thequantiles3d_3[1]) - qgamma(.025,1+sum(y3),1+n3)),.07)
   expect_lt(abs(exp(thequantiles3d_3[2]) - qgamma(.975,1+sum(y3),1+n3)),.09)
+
+  # Spline interp
+  expect_warning(compute_pdf_and_cdf(thequadrature,transformation = list(totheta = log,fromtheta = exp),interpolation = 'spline')) # Too few points to use spline
+  # Unstable
+  expect_equal(max(pdf_poly_2d[[1]]$pdf_transparam),Inf)
+  expect_equal(min(pdf_poly_2d[[1]]$cdf),0,tolerance = 1e-05)
+  expect_equal(max(pdf_poly_2d[[1]]$cdf),Inf)
+  # Stable
+  expect_lt(max(pdf_spline_2d[[1]]$pdf_transparam),1)
+  expect_equal(min(pdf_spline_2d[[1]]$cdf),0,tolerance = 1e-05)
+  expect_equal(max(pdf_spline_2d[[1]]$cdf),1,tolerance = 1e-05)
+
+  # Spline interp and sampling
+  expect_lt(suppressWarnings(abs(ks.test(polysamps[[1]],splinesamps[[1]])$statistic)),.05)
+  expect_lt(suppressWarnings(abs(ks.test(polysamps[[2]],splinesamps[[2]])$statistic)),.05)
+
 })
 

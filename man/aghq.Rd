@@ -76,6 +76,7 @@ result of calling \code{aghq::optimize_theta}. This a list with elements:
 \item{\code{convergence}: }{specific to the optimizer used, a message indicating whether it converged}
 }
 }
+\item{control: }{the control parameters passed}
 }
 }
 \description{

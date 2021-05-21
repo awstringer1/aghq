@@ -9,7 +9,13 @@
 \usage{
 compute_quantiles(obj, ...)
 
-\method{compute_quantiles}{default}(obj, q = c(0.025, 0.975), transformation = NULL, ...)
+\method{compute_quantiles}{default}(
+  obj,
+  q = c(0.025, 0.975),
+  transformation = NULL,
+  interpolation = "polynomial",
+  ...
+)
 
 \method{compute_quantiles}{list}(obj, q = c(0.025, 0.975), transformation = NULL, ...)
 
@@ -30,6 +36,10 @@ defining a parameter transformation for which you would like the quantiles of.
 See \code{?compute_pdf_and_cdf}. This transformation must be monotone and the function
 checks whether it's increasing or decreasing and returns the transformed quantiles,
 ordered appropriately.}
+
+\item{interpolation}{Which method to use for interpolating the marginal posterior, \code{'polynomial'} (default)
+or \code{'spline'}? If \code{k > 3} then the polynomial may be unstable and you should use the spline, but the spline
+doesn't work \emph{unless} \code{k > 3} so it's not the default. See \code{interpolate_marginal_posterior()}.}
 }
 \value{
 A named numeric vector containing the quantiles you asked for, for the

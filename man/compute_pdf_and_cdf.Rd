@@ -9,7 +9,13 @@
 \usage{
 compute_pdf_and_cdf(obj, ...)
 
-\method{compute_pdf_and_cdf}{default}(obj, transformation = NULL, finegrid = NULL, ...)
+\method{compute_pdf_and_cdf}{default}(
+  obj,
+  transformation = NULL,
+  finegrid = NULL,
+  interpolation = "polynomial",
+  ...
+)
 
 \method{compute_pdf_and_cdf}{list}(obj, ...)
 
@@ -31,6 +37,10 @@ not provided, this is done using \code{numDeriv::jacobian}.}
 \item{finegrid}{Optional, a grid of values on which to compute the CDF. The default makes
 use of the values in \code{margpost} but if the results are unsuitable, you may wish to
 modify this manually.}
+
+\item{interpolation}{Which method to use for interpolating the marginal posterior, \code{'polynomial'} (default)
+or \code{'spline'}? If \code{k > 3} then the polynomial may be unstable and you should use the spline, but the spline
+doesn't work \emph{unless} \code{k > 3} so it's not the default. See \code{interpolate_marginal_posterior()}.}
 }
 \value{
 A tbl_df/tbl/data.frame with columns \code{theta}, \code{pdf} and \code{cdf} corresponding

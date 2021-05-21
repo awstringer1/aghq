@@ -28,7 +28,8 @@ Suggests:
     numDeriv,
     testthat (>= 2.1.0),
     knitr,
-    rmarkdown
+    rmarkdown,
+    splines
 VignetteBuilder: knitr
 Language: en-US
 Roxygen: list(markdown = TRUE)

@@ -48,6 +48,7 @@
 #' \item{\code{convergence}: }{specific to the optimizer used, a message indicating whether it converged}
 #' }
 #' }
+#' \item{control: }{the control parameters passed}
 #' }
 #'
 #' @examples
@@ -111,7 +112,8 @@ aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control(
   out <- list(
     normalized_posterior = normalized_posterior,
     marginals = marginals,
-    optresults = optresults
+    optresults = optresults,
+    control = control
   )
   class(out) <- "aghq"
   out
@@ -195,7 +197,7 @@ summary.aghq <- function(object,...) {
 
   # Quantiles
   thequants <- vector(mode = 'list',length = d)
-  for (j in 1:d) thequants[[j]] <- compute_quantiles(object$marginals[[j]],c(.025,.5,.975))
+  for (j in 1:d) thequants[[j]] <- compute_quantiles(object$marginals[[j]],c(.025,.5,.975),interpolation = object$control$interpolation)
   names(thequants) <- paste0("theta",1:d)
   thequants <- t(as.data.frame(thequants))
   colnames(thequants)[2] <- 'median'
@@ -388,7 +390,7 @@ plot.aghq <- function(x,...) {
   d <- length(x$marginals)
   # Compute pdf and cdf
   pdfandcdf <- vector(mode = 'list',length = d)
-  for (j in 1:d) pdfandcdf[[j]] <- compute_pdf_and_cdf(x$marginals[[j]])
+  for (j in 1:d) pdfandcdf[[j]] <- compute_pdf_and_cdf(x$marginals[[j]],interpolation = x$control$interpolation)
 
   for (j in 1:d) {
     graphics::plot(pdfandcdf[[j]]$pdf ~ pdfandcdf[[j]]$theta,
@@ -934,7 +936,8 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
     normalized_posterior = normalized_posterior,
     marginals = marginals,
     optresults = outeropt,
-    modesandhessians = modesandhessians
+    modesandhessians = modesandhessians,
+    control = control
   )
   class(out) <- c("marginallaplace","aghq")
   out
