@@ -21,6 +21,7 @@ sample_marginal(quad, ...)
   M,
   transformation = NULL,
   interpolation = "polynomial",
+  parallelcholsky = FALSE,
   ...
 )
 }
@@ -47,6 +48,11 @@ scale and then \code{transformation$fromtheta()} is called on them before return
 \item{interpolation}{Which method to use for interpolating the marginal posteriors (and hence to draw samples using the inverse CDF method), \code{'polynomial'} (default)
 or \code{'spline'}? If \code{k > 3} then the polynomial may be unstable and you should use the spline, but the spline
 doesn't work \emph{unless} \code{k > 3} so it's not the default. See \code{interpolate_marginal_posterior()}.}
+
+\item{parallelcholsky}{Logical, default \code{FALSE}, should the Cholesky decompositions of the Hessians be computed
+in parallel, for the Gaussian approximation involved for objects of class \code{marginallaplace}? This step is slow
+so may be sped up by parallelization, if the matrices are sparse (and hence the operation is just slow, but not memory-intensive).
+Uses the \code{parallel} package so is not available on Windows and you should set \code{options(mc.cores = ...)} beforehand, see \code{?parallel::mclapply}.}
 }
 \value{
 If run on a \code{marginallaplace} object, a list containing elements:

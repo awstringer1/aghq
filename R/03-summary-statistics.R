@@ -476,6 +476,10 @@ compute_quantiles.aghq <- function(obj,q = c(.025,.975),transformation = NULL,..
 #' @param interpolation Which method to use for interpolating the marginal posteriors (and hence to draw samples using the inverse CDF method), \code{'polynomial'} (default)
 #' or \code{'spline'}? If \code{k > 3} then the polynomial may be unstable and you should use the spline, but the spline
 #' doesn't work *unless* \code{k > 3} so it's not the default. See \code{interpolate_marginal_posterior()}.
+#' @param parallelcholsky Logical, default \code{FALSE}, should the Cholesky decompositions of the Hessians be computed
+#' in parallel, for the Gaussian approximation involved for objects of class \code{marginallaplace}? This step is slow
+#' so may be sped up by parallelization, if the matrices are sparse (and hence the operation is just slow, but not memory-intensive).
+#' Uses the \code{parallel} package so is not available on Windows and you should set \code{options(mc.cores = ...)} beforehand, see \code{?parallel::mclapply}.
 #' @param ... Used to pass additional arguments.
 #'
 #' @family sampling
@@ -576,11 +580,16 @@ sample_marginal.aghq <- function(quad,M,transformation = NULL,interpolation = 'p
 }
 #' @rdname sample_marginal
 #' @export
-sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpolation = 'polynomial',...) {
+sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpolation = 'polynomial',parallelcholsky = FALSE,...) {
   K <- as.numeric(quad$normalized_posterior$grid$level)[1]
   d <- dim(quad$modesandhessians$H[[1]])[1]
   simlist <- quad$modesandhessians
-  simlist$L <- lapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE))
+  if (parallelcholsky) {
+    # mclapply does not preserve the order of its arguments
+    simlist$L <- parallel::mclapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE))
+  } else {
+    simlist$L <- lapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE))
+  }
   simlist$lambda <- exp(quad$normalized_posterior$nodesandweights$logpost_normalized) * quad$normalized_posterior$nodesandweights$weights
 
   # Sample from the multinomial

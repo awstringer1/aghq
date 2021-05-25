@@ -29,7 +29,8 @@ Suggests:
     testthat (>= 2.1.0),
     knitr,
     rmarkdown,
-    splines
+    splines,
+    parallel
 VignetteBuilder: knitr
 Language: en-US
 Roxygen: list(markdown = TRUE)

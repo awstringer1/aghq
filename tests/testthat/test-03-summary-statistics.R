@@ -166,5 +166,9 @@ test_that("Marginal posteriors computed correctly",{
   expect_lt(suppressWarnings(abs(ks.test(polysamps[[1]],splinesamps[[1]])$statistic)),.05)
   expect_lt(suppressWarnings(abs(ks.test(polysamps[[2]],splinesamps[[2]])$statistic)),.05)
 
+  # Parallel sampling
+  expect_true(all(themargsamps$samps == themargsamps_parallel$samps))
+  expect_true(all(themargsamps$theta == themargsamps_parallel$theta))
+  expect_true(all(themargsamps$thetasamples[[1]] == themargsamps_parallel$thetasamples[[1]]))
 })
 

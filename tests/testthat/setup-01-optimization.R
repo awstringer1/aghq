@@ -1,4 +1,5 @@
 # devtools::load_all()
+options(mc.cores = 2)
 logfteta <- function(eta,y) {
   sum(y) * eta - (length(y) + 1) * exp(eta) - sum(lgamma(y+1)) + eta
 }
@@ -191,7 +192,10 @@ funlist2dmarg <- list(
 )
 
 themarginallaplace <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 0))
+set.seed(7809685)
 themargsamps <- aghq::sample_marginal(themarginallaplace,10)
+set.seed(7809685)
+themargsamps_parallel <- aghq::sample_marginal(themarginallaplace,10,parallelcholsky = TRUE)
 
 ## A 3d example ##
 # This is necessary because I want a 2d marginal example
