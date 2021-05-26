@@ -609,7 +609,7 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpo
 
   samps <- mapply(
     # function(.x,.y) as.numeric(solve(simlist$L[[as.numeric(.y)]],.x)) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
-    function(.x,.y) as.numeric(Matrix::solve(simlist$L[[as.numeric(.y)]],Matrix::solve(simlist$L[[as.numeric(.y)]],.x,system="L"),system='P')) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
+    function(.x,.y) as.numeric(Matrix::solve(simlist$L[[as.numeric(.y)]],Matrix::solve(simlist$L[[as.numeric(.y)]],.x,system="L"),system='Pt')) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
 
     Z,
     names(Z)
