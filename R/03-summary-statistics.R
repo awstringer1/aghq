@@ -586,12 +586,12 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpo
   simlist <- quad$modesandhessians
   if (numcores > 1) {
     # mclapply does not preserve the order of its arguments
-    # simlist$L <- parallel::mclapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE),mc.cores = numcores)
-    simlist$L <- parallel::mclapply(simlist$H,function(h) Matrix::Cholesky(Matrix::forceSymmetric(h),perm = TRUE,LDL=FALSE),mc.cores = numcores)
+    simlist$L <- parallel::mclapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE),mc.cores = numcores)
+    # simlist$L <- parallel::mclapply(simlist$H,function(h) Matrix::Cholesky(Matrix::forceSymmetric(h),perm = TRUE,LDL=FALSE),mc.cores = numcores)
 
   } else {
-    # simlist$L <- lapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE))
-    simlist$L <- lapply(simlist$H,function(h) Matrix::Cholesky(Matrix::forceSymmetric(h),perm = TRUE,LDL=FALSE))
+    simlist$L <- lapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE))
+    # simlist$L <- lapply(simlist$H,function(h) Matrix::Cholesky(Matrix::forceSymmetric(h),perm = TRUE,LDL=FALSE))
 
   }
   simlist$lambda <- exp(quad$normalized_posterior$nodesandweights$logpost_normalized) * quad$normalized_posterior$nodesandweights$weights
@@ -608,8 +608,8 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpo
   Z <- lapply(split(matrix(stats::rnorm(M*d),nrow = M),k),matrix,nrow = d)
 
   samps <- mapply(
-    # function(.x,.y) as.numeric(solve(simlist$L[[as.numeric(.y)]],.x)) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
-    function(.x,.y) as.numeric(Matrix::solve(simlist$L[[as.numeric(.y)]],.x,system="Lt")) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
+    function(.x,.y) as.numeric(solve(simlist$L[[as.numeric(.y)]],.x)) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
+    # function(.x,.y) as.numeric(Matrix::solve(simlist$L[[as.numeric(.y)]],.x,system="Lt")) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
 
     Z,
     names(Z)
