@@ -21,7 +21,7 @@ sample_marginal(quad, ...)
   M,
   transformation = NULL,
   interpolation = "polynomial",
-  parallelcholsky = FALSE,
+  numcores = getOption("mc.cores", 1L),
   ...
 )
 }
@@ -49,10 +49,10 @@ scale and then \code{transformation$fromtheta()} is called on them before return
 or \code{'spline'}? If \code{k > 3} then the polynomial may be unstable and you should use the spline, but the spline
 doesn't work \emph{unless} \code{k > 3} so it's not the default. See \code{interpolate_marginal_posterior()}.}
 
-\item{parallelcholsky}{Logical, default \code{FALSE}, should the Cholesky decompositions of the Hessians be computed
-in parallel, for the Gaussian approximation involved for objects of class \code{marginallaplace}? This step is slow
+\item{numcores}{Integer, default \code{getOption('mc.cores')}. If greater than 1, the Cholesky decompositions of the Hessians are computed
+in parallel using \code{parallel::mcapply}, for the Gaussian approximation involved for objects of class \code{marginallaplace}. This step is slow
 so may be sped up by parallelization, if the matrices are sparse (and hence the operation is just slow, but not memory-intensive).
-Uses the \code{parallel} package so is not available on Windows and you should set \code{options(mc.cores = ...)} beforehand, see \code{?parallel::mclapply}.}
+Uses the \code{parallel} package so is not available on Windows.}
 }
 \value{
 If run on a \code{marginallaplace} object, a list containing elements:

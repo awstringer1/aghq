@@ -195,7 +195,7 @@ themarginallaplace <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 
 set.seed(7809685)
 themargsamps <- aghq::sample_marginal(themarginallaplace,10)
 set.seed(7809685)
-themargsamps_parallel <- aghq::sample_marginal(themarginallaplace,10,parallelcholsky = TRUE)
+themargsamps_parallel <- aghq::sample_marginal(themarginallaplace,10,numcores = 2)
 
 ## A 3d example ##
 # This is necessary because I want a 2d marginal example

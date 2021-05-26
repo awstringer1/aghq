@@ -476,10 +476,10 @@ compute_quantiles.aghq <- function(obj,q = c(.025,.975),transformation = NULL,..
 #' @param interpolation Which method to use for interpolating the marginal posteriors (and hence to draw samples using the inverse CDF method), \code{'polynomial'} (default)
 #' or \code{'spline'}? If \code{k > 3} then the polynomial may be unstable and you should use the spline, but the spline
 #' doesn't work *unless* \code{k > 3} so it's not the default. See \code{interpolate_marginal_posterior()}.
-#' @param parallelcholsky Logical, default \code{FALSE}, should the Cholesky decompositions of the Hessians be computed
-#' in parallel, for the Gaussian approximation involved for objects of class \code{marginallaplace}? This step is slow
+#' @param numcores Integer, default \code{getOption('mc.cores')}. If greater than 1, the Cholesky decompositions of the Hessians are computed
+#' in parallel using \code{parallel::mcapply}, for the Gaussian approximation involved for objects of class \code{marginallaplace}. This step is slow
 #' so may be sped up by parallelization, if the matrices are sparse (and hence the operation is just slow, but not memory-intensive).
-#' Uses the \code{parallel} package so is not available on Windows and you should set \code{options(mc.cores = ...)} beforehand, see \code{?parallel::mclapply}.
+#' Uses the \code{parallel} package so is not available on Windows.
 #' @param ... Used to pass additional arguments.
 #'
 #' @family sampling
@@ -580,15 +580,19 @@ sample_marginal.aghq <- function(quad,M,transformation = NULL,interpolation = 'p
 }
 #' @rdname sample_marginal
 #' @export
-sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpolation = 'polynomial',parallelcholsky = FALSE,...) {
+sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpolation = 'polynomial',numcores = getOption('mc.cores',1L),...) {
   K <- as.numeric(quad$normalized_posterior$grid$level)[1]
   d <- dim(quad$modesandhessians$H[[1]])[1]
   simlist <- quad$modesandhessians
-  if (parallelcholsky) {
+  if (numcores > 1) {
     # mclapply does not preserve the order of its arguments
-    simlist$L <- parallel::mclapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE))
+    # simlist$L <- parallel::mclapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE),mc.cores = numcores)
+    simlist$L <- parallel::mclapply(simlist$H,function(h) Matrix::Cholesky(Matrix::forceSymmetric(h),perm = TRUE,LDL=FALSE),mc.cores = numcores)
+
   } else {
-    simlist$L <- lapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE))
+    # simlist$L <- lapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE))
+    simlist$L <- lapply(simlist$H,function(h) Matrix::Cholesky(Matrix::forceSymmetric(h),perm = TRUE,LDL=FALSE))
+
   }
   simlist$lambda <- exp(quad$normalized_posterior$nodesandweights$logpost_normalized) * quad$normalized_posterior$nodesandweights$weights
 
@@ -604,7 +608,9 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpo
   Z <- lapply(split(matrix(stats::rnorm(M*d),nrow = M),k),matrix,nrow = d)
 
   samps <- mapply(
-    function(.x,.y) as.numeric(solve(simlist$L[[as.numeric(.y)]],.x)) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
+    # function(.x,.y) as.numeric(solve(simlist$L[[as.numeric(.y)]],.x)) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
+    function(.x,.y) as.numeric(Matrix::solve(simlist$L[[as.numeric(.y)]],.x),system="Lt") + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
+
     Z,
     names(Z)
   )

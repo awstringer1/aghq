@@ -1,3 +1,19 @@
+# aghq 0.3.0 
+
+## New features
+
+- Added support for doing the multiple required Cholesky decompositions in parallel in `sample_marginal.marginallaplace`.
+
+- Added spline-based interpolation to `interpolate_marginal_posterior` and all downstream functions. Now the calculation
+of marginals doesn't get less stable as more quadrature points are added.
+
+
+## Bug fixes
+
+## Other
+
+
+
 # aghq 0.2.0
 
 ## New features
