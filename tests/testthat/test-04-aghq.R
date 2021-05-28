@@ -77,4 +77,10 @@ test_that("Quadrature works",{
   expect_true(all(c("method","inner_method","negate","ndConstruction") %in% names(cntrl_marg)))
   expect_true(all(c("method","numhessian","negate","ndConstruction") %in% names(cntrl_tmb)))
 
+  # Laplace approximation
+  expect_equal(la5,ls5)
+  expect_equal(la10,ls10)
+  expect_equal(la100,ls100)
+
+
 })

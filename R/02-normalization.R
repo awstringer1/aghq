@@ -77,7 +77,7 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,ndConstruction = "prod
   if (as.integer(k) != k) stop(paste0("Please provide an integer k, the number of quadrature points. You provided ",k,"which does not satisfy as.integer(k) == k"))
   if (k == 1) {
     # Laplace approx: just return the normalizing constant
-    return(optresults$ff$fn(optresults$mode,...) - as.numeric(.5 * determinant(optresults$hessian,logarithm = TRUE)$modulus)) + log(2*pi)
+    return(optresults$ff$fn(optresults$mode,...) - as.numeric(.5 * determinant(optresults$hessian,logarithm = TRUE)$modulus) + .5*log(2*pi))
   }
   # Create the grid
   S <- length(optresults$mode) # Dimension

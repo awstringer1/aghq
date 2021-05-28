@@ -354,6 +354,25 @@ cntrl_base <- default_control()
 cntrl_marg <- default_control_marglaplace()
 cntrl_tmb <- default_control_tmb()
 
+# Laplace approx
+logint1 <- function(x,n) n*log(x) - x
+logaghq <- function(n) {
+  ff <- list(
+    fn = function(x) logint1(x,n),
+    gr = function(x) numDeriv::grad(logint1,x,n=n),
+    he = function(x) numDeriv::hessian(logint1,x,n=n)
+  )
+  aghq::laplace_approximation(ff,n)$lognormconst
+}
+logstirling <- function(n) (1/2)*log(2*pi) + (1/2)*log(n) + n*(log(n) - 1)
+la5 <- round(logaghq(5),11)
+ls5 <- round(logstirling(5),11)
+la10 <- round(logaghq(10),11)
+ls10 <- round(logstirling(10),11)
+la100 <- round(logaghq(100),11)
+ls100 <- round(logstirling(100),11)
+
+
 
 
 
