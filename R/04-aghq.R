@@ -462,7 +462,18 @@ plot.aghq <- function(x,...) {
 #' @export
 #'
 laplace_approximation <- function(ff,startingvalue,optresults = NULL,control = default_control(),...) {
-  if(is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ff,startingvalue,control,...))
+  # Negate it if asked
+  if (control$negate) {
+    ffa <- list(
+      fn = function(theta) -1 * ff$fn(theta),
+      gr = function(theta) -1 * ff$gr(theta),
+      he = function(theta) -1 * ff$he(theta)
+    )
+  } else {
+    ffa <- ff
+  }
+
+  if(is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ffa,startingvalue,control,...))
   lognorm <- normalize_logpost(optresults,1,...)
   out <- list(lognormconst = lognorm,optresults = optresults)
   class(out) <- "laplace"
@@ -843,7 +854,7 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
     #   )
     # }
 
-    utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,optresults = optresults,control = list(method = control$inner_method)))
+    utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,optresults = optresults,control = list(method = control$inner_method,negate = FALSE)))
 
     add_elements(theta,lap$optresults$mode,lap$optresults$hessian,whichenv = whichenv)
 
@@ -906,7 +917,7 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
       he = function(W) ffa$he(W,theta)
     )
 
-    utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,control = list(method = control$inner_method)))
+    utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,control = list(method = control$inner_method,negate=FALSE)))
     modesandhessians[i,'mode'] <- list(list(lap$optresults$mode))
     modesandhessians[i,'H'] <- list(list(lap$optresults$hessian))
     modesandhessians[i,'logpost'] <- as.numeric(lap$lognormconst)

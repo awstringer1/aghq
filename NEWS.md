@@ -17,6 +17,9 @@ of marginals doesn't get less stable as more quadrature points are added.
 
 - `aghq::laplace_approximation()` had a typo and was returning the wrong value. This has been fixed and tests added for its accuracy based on an example with a known answer.
 
+- Fixed an issue in the optimization where the `trustOptim` package was not being checked
+for, and this was throwing a cryptic error. Now, it throws a less cryptic error.
+
 ## Other
 
 
