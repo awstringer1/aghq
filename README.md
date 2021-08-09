@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/awstringer1/aghq.svg?branch=master)](https://travis-ci.com/awstringer1/aghq)
+[![Build Status](https://travis-ci.com/awstringer1/aghq.svg?branch=master)](https://travis-ci.com/awstringer1/aghq) [![](https://cranlogs.r-pkg.org/badges/grand-total/aghq)](https://cran.rstudio.com/web/packages/grand-total/aghq/index.html)
 
 # AGHQ: Adaptive Gauss Hermite Quadrature for Bayesian Inference
 
