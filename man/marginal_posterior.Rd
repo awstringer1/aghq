@@ -4,7 +4,13 @@
 \alias{marginal_posterior}
 \title{Marginal Posteriors}
 \usage{
-marginal_posterior(optresults, k, j, ndConstruction = "product")
+marginal_posterior(
+  optresults,
+  k,
+  j,
+  basegrid = NULL,
+  ndConstruction = "product"
+)
 }
 \arguments{
 \item{optresults}{The results of calling \code{aghq::optimize_theta()}: see return value of that function.}
@@ -14,6 +20,12 @@ approximation.}
 
 \item{j}{Integer between 1 and the dimension of the parameter space. Which
 index of the parameter vector to compute the marginal posterior for.}
+
+\item{basegrid}{Optional. Provide an object of class \code{NIGrid} from the \code{mvQuad}
+package, representing the base quadrature rule that will be adapted. This is only
+for users who want more complete control over the quadrature, and is not necessary
+if you are fine with the default option which basically corresponds to
+\code{mvQuad::createNIGrid(length(theta),'GHe',k,'product')}.}
 
 \item{ndConstruction}{Create a multivariate grid using a product or sparse construction?
 Passed directly to \code{mvQuad::createNIGrid()}, see that function for further details. Note

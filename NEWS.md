@@ -10,7 +10,13 @@ in certain applications, notably where the hessian of the Gaussian variables has
 parts which are highly sparse.
 
 - Added spline-based interpolation to `interpolate_marginal_posterior` and all downstream functions. Now the calculation
-of marginals doesn't get less stable as more quadrature points are added.
+of marginals doesn't get less stable as more quadrature points are added. Added package `splines` to `Imports`
+to support this; since polynomial interpolation almost always gives unstable answers when the number of quadrature
+points is even moderate, I consider this a necessary `Import`.
+
+- Added the option `interpolation` to `default_control()` (see documentation).
+Default option of `auto` designed to always give stable marginal posterior interpolation
+regardless of the number of quadrature points.
 
 
 ## Bug fixes
@@ -19,6 +25,11 @@ of marginals doesn't get less stable as more quadrature points are added.
 
 - Fixed an issue in the optimization where the `trustOptim` package was not being checked
 for, and this was throwing a cryptic error. Now, it throws a less cryptic error.
+
+- Changed default options for optimization in all functions to `optim(...method = 'BFGS')`, in case
+users do not have the `trust` or `trustOptim` packages installed.
+
+- Added `expm1` to `logdiffexp()` to improve numerical stability.
 
 ## Other
 

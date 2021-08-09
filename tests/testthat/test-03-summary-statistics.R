@@ -163,8 +163,8 @@ test_that("Marginal posteriors computed correctly",{
   expect_equal(max(pdf_spline_2d[[1]]$cdf),1,tolerance = 1e-05)
 
   # Spline interp and sampling
-  expect_lt(suppressWarnings(abs(ks.test(polysamps[[1]],splinesamps[[1]])$statistic)),.05)
-  expect_lt(suppressWarnings(abs(ks.test(polysamps[[2]],splinesamps[[2]])$statistic)),.05)
+  expect_lte(suppressWarnings(abs(ks.test(polysamps[[1]],splinesamps[[1]])$statistic)),.05)
+  expect_lte(suppressWarnings(abs(ks.test(polysamps[[2]],splinesamps[[2]])$statistic)),.05)
 
   # Parallel sampling
   expect_true(all(themargsamps$samps == themargsamps_parallel$samps))

@@ -23,6 +23,11 @@
 #' overrides this, and is useful for when you know your optimization is too difficult to be
 #' handled by general-purpose software. See the software paper for several examples of this.
 #' If you're unsure whether this option is needed for your problem then it probably is not.
+#' @param basegrid Optional. Provide an object of class \code{NIGrid} from the \code{mvQuad}
+#' package, representing the base quadrature rule that will be adapted. This is only
+#' for users who want more complete control over the quadrature, and is not necessary
+#' if you are fine with the default option which basically corresponds to
+#' \code{mvQuad::createNIGrid(length(theta),'GHe',k,'product')}.
 #'
 #' @return An object of class \code{aghq} which is a list containing elements:
 #' \itemize{
@@ -86,7 +91,7 @@
 #'
 #' @export
 #'
-aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control(),...) {
+aghq <- function(ff,k,startingvalue,optresults = NULL,basegrid = NULL,control = default_control(),...) {
   # Negate it if asked
   if (control$negate) {
     ffa <- list(
@@ -102,12 +107,12 @@ aghq <- function(ff,k,startingvalue,optresults = NULL,control = default_control(
   if (is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ffa,startingvalue,control,...))
 
   # Normalization
-  normalized_posterior <- normalize_logpost(optresults,k,ndConstruction = control$ndConstruction,...)
+  normalized_posterior <- normalize_logpost(optresults,k,basegrid = basegrid,ndConstruction = control$ndConstruction,...)
 
   # Marginals
   d <- length(startingvalue)
   marginals <- vector(mode = "list",length = d)
-  for (j in 1:d) marginals[[j]] <- marginal_posterior(optresults,k,j,control$ndConstruction)
+  for (j in 1:d) marginals[[j]] <- marginal_posterior(optresults,k,j,basegrid,control$ndConstruction)
 
   out <- list(
     normalized_posterior = normalized_posterior,

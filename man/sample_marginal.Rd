@@ -8,19 +8,13 @@
 \usage{
 sample_marginal(quad, ...)
 
-\method{sample_marginal}{aghq}(
-  quad,
-  M,
-  transformation = NULL,
-  interpolation = "polynomial",
-  ...
-)
+\method{sample_marginal}{aghq}(quad, M, transformation = NULL, interpolation = "auto", ...)
 
 \method{sample_marginal}{marginallaplace}(
   quad,
   M,
   transformation = NULL,
-  interpolation = "polynomial",
+  interpolation = "auto",
   numcores = getOption("mc.cores", 1L),
   ...
 )
@@ -45,9 +39,11 @@ See \code{?compute_pdf_and_cdf}. Note that unlike there, where this operation is
 a bit more complicated, here all is done is samples are taken on the original
 scale and then \code{transformation$fromtheta()} is called on them before returning.}
 
-\item{interpolation}{Which method to use for interpolating the marginal posteriors (and hence to draw samples using the inverse CDF method), \code{'polynomial'} (default)
+\item{interpolation}{Which method to use for interpolating the marginal posteriors
+(and hence to draw samples using the inverse CDF method), \code{'auto'} (choose for you), \code{'polynomial'}
 or \code{'spline'}? If \code{k > 3} then the polynomial may be unstable and you should use the spline, but the spline
-doesn't work \emph{unless} \code{k > 3} so it's not the default. See \code{interpolate_marginal_posterior()}.}
+doesn't work \emph{unless} \code{k > 3} so it's not the default. The default of \code{'auto'} figures this out for you.
+See \code{interpolate_marginal_posterior()}.}
 
 \item{numcores}{Integer, default \code{getOption('mc.cores')}. If greater than 1, the Cholesky decompositions of the Hessians are computed
 in parallel using \code{parallel::mcapply}, for the Gaussian approximation involved for objects of class \code{marginallaplace}. This step is slow

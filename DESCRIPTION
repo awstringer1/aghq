@@ -21,7 +21,8 @@ Imports:
     mvQuad,
     Matrix,
     rlang,
-    polynom
+    polynom,
+    splines
 Suggests:
     trustOptim,
     trust,
@@ -29,7 +30,6 @@ Suggests:
     testthat (>= 2.1.0),
     knitr,
     rmarkdown,
-    splines,
     parallel
 VignetteBuilder: knitr
 Language: en-US

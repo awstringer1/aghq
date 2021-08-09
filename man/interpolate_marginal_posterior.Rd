@@ -4,7 +4,10 @@
 \alias{interpolate_marginal_posterior}
 \title{Interpolate the Marginal Posterior}
 \usage{
-interpolate_marginal_posterior(margpost, method = c("polynomial", "spline"))
+interpolate_marginal_posterior(
+  margpost,
+  method = c("auto", "polynomial", "spline")
+)
 }
 \arguments{
 \item{margpost}{The output of \code{aghq::marginal_posterior}. See the documentation for that function.}

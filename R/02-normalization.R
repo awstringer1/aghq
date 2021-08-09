@@ -16,6 +16,11 @@
 #' @param whichfirst Integer between 1 and the dimension of the parameter space, default 1.
 #' The user shouldn't have to worry about this: it's used internally to re-order the parameter vector
 #' before doing the quadrature, which is useful when calculating marginal posteriors.
+#' @param basegrid Optional. Provide an object of class \code{NIGrid} from the \code{mvQuad}
+#' package, representing the base quadrature rule that will be adapted. This is only
+#' for users who want more complete control over the quadrature, and is not necessary
+#' if you are fine with the default option which basically corresponds to
+#' \code{mvQuad::createNIGrid(length(theta),'GHe',k,'product')}.
 #' @param ndConstruction Create a multivariate grid using a product or sparse construction?
 #' Passed directly to \code{mvQuad::createNIGrid()}, see that function for further details. Note
 #' that the use of sparse grids within \code{aghq} is currently **experimental** and not supported
@@ -73,7 +78,7 @@
 #'
 #' @export
 #'
-normalize_logpost <- function(optresults,k,whichfirst = 1,ndConstruction = "product",...) {
+normalize_logpost <- function(optresults,k,whichfirst = 1,basegrid = NULL,ndConstruction = "product",...) {
   if (as.integer(k) != k) stop(paste0("Please provide an integer k, the number of quadrature points. You provided ",k,"which does not satisfy as.integer(k) == k"))
   if (k == 1) {
     # Laplace approx: just return the normalizing constant
@@ -81,7 +86,13 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,ndConstruction = "prod
   }
   # Create the grid
   S <- length(optresults$mode) # Dimension
-  thegrid <- mvQuad::createNIGrid(dim = S,type = "GHe",level = k,ndConstruction = ndConstruction,...)
+  if (!is.null(basegrid)) {
+    thegrid <- basegrid
+    # Check
+    if (thegrid$dim != S) stop(paste0("Your startingvalue has dimension ",S,", but the grid you supplied has dimension ",thegrid$dim))
+  } else {
+    thegrid <- mvQuad::createNIGrid(dim = S,type = "GHe",level = k,ndConstruction = ndConstruction,...)
+  }
   # Reorder the mode and Hessian so that "whichfirst" is first
   # This does not change the normalizing constant of the joint,
   # but is necessary to compute marginals later.

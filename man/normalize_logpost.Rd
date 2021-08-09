@@ -8,6 +8,7 @@ normalize_logpost(
   optresults,
   k,
   whichfirst = 1,
+  basegrid = NULL,
   ndConstruction = "product",
   ...
 )
@@ -21,6 +22,12 @@ approximation.}
 \item{whichfirst}{Integer between 1 and the dimension of the parameter space, default 1.
 The user shouldn't have to worry about this: it's used internally to re-order the parameter vector
 before doing the quadrature, which is useful when calculating marginal posteriors.}
+
+\item{basegrid}{Optional. Provide an object of class \code{NIGrid} from the \code{mvQuad}
+package, representing the base quadrature rule that will be adapted. This is only
+for users who want more complete control over the quadrature, and is not necessary
+if you are fine with the default option which basically corresponds to
+\code{mvQuad::createNIGrid(length(theta),'GHe',k,'product')}.}
 
 \item{ndConstruction}{Create a multivariate grid using a product or sparse construction?
 Passed directly to \code{mvQuad::createNIGrid()}, see that function for further details. Note

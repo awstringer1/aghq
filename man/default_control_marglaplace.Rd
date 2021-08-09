@@ -42,8 +42,9 @@ derivatives. \strong{Note} that I don't expect there to be any reason to need th
 argument for \code{marginal_laplace}; if you are doing a marginal Laplace approximation
 using the automatic Laplace approximation provided by \code{TMB}, you should
 check out \code{aghq::marginal_laplace_tmb()}.
-\item \code{interpolation}: how to interpolate the marginal posteriors. The \code{'polynomial'}
-option (default) uses \code{polynom::poly.calc()} to construct a global polynomial interpolant
+\item \code{interpolation}: how to interpolate the marginal posteriors. The \code{'auto'} option
+(default) chooses for you and should always work well. The \code{'polynomial'}
+option uses \code{polynom::poly.calc()} to construct a global polynomial interpolant
 and has been observed to be unstable as the number of quadrature points gets larger, which
 is obviously a bad thing. Try \code{'spline'} instead, which uses a cubic B-Spline
 interpolant from \code{splines::interpSpline()}.

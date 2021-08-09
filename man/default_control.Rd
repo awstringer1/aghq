@@ -40,8 +40,9 @@ have provided a template which computes the \strong{negated} log-posterior and i
 derivatives.
 \item \code{ndConstruction}: construct a multivariate quadrature rule using a \code{"product"}
 rule or a \code{"sparse"} grid? Default \code{"product"}. See \code{?mvQuad::createNIGrid()}.
-\item \code{interpolation}: how to interpolate the marginal posteriors. The \code{'polynomial'}
-option (default) uses \code{polynom::poly.calc()} to construct a global polynomial interpolant
+\item \code{interpolation}: how to interpolate the marginal posteriors. The \code{'auto'} option
+(default) chooses for you and should always work well. The \code{'polynomial'}
+option uses \code{polynom::poly.calc()} to construct a global polynomial interpolant
 and has been observed to be unstable as the number of quadrature points gets larger, which
 is obviously a bad thing. Try \code{'spline'} instead, which uses a cubic B-Spline
 interpolant from \code{splines::interpSpline()}.
