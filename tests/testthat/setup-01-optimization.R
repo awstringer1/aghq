@@ -346,8 +346,8 @@ themargsamps3d_2 <- aghq::sample_marginal(themarginallaplace3d_2,10)
 
 ## Sparse Grids ##
 # doesn't make sense in 1d, do 2d
-# sparsegrid_2d <- aghq(funlist2d,5,c(0,0),control = default_control(ndConstruction = 'sparse'))
-# sparsenormconst_2d <- compute_moment(sparsegrid_2d) # Should be 1
+sparsegrid_2d <- aghq(funlist2d,5,c(0,0),control = default_control(ndConstruction = 'sparse'))
+sparsenormconst_2d <- compute_moment(sparsegrid_2d) # Should be 1
 
 ## Control Params ##
 cntrl_base <- default_control()
@@ -372,7 +372,25 @@ ls10 <- round(logstirling(10),11)
 la100 <- round(logaghq(100),11)
 ls100 <- round(logstirling(100),11)
 
+## Custom grid ----
+# GHQ, 1d
+gg1 <- mvQuad::createNIGrid(1,'GHe',5)
+aghq_customgrid_gg1 <- aghq(funlist,5,0,basegrid = gg1)
+aghq_customgrid_auto1 <- aghq(funlist,5,0,basegrid = NULL)
 
+# GHQ, 2d
+gg2 <- mvQuad::createNIGrid(2,'GHe',5)
+aghq_customgrid_gg2 <- aghq(funlist2d,5,c(0,0),basegrid = gg2)
+aghq_customgrid_auto2 <- aghq(funlist2d,5,c(0,0),basegrid = NULL)
 
+# GHQ, 2d, sparse grid
+gg2s <- mvQuad::createNIGrid(2,'GHe',5,ndConstruction = 'sparse')
+aghq_customgrid_gg2s <- aghq(funlist2d,5,c(0,0),basegrid = gg2s)
+aghq_customgrid_auto2s <- aghq(funlist2d,5,c(0,0),basegrid = NULL,control = default_control(ndConstruction = 'sparse'))
 
+# Non-GHQ, 2d, but still Gaussian
+gg3 <- mvQuad::createNIGrid(2,'nHe',5)
+aghq_customgrid_gg3 <- aghq(funlist2d,5,c(0,0),basegrid = gg2)
 
+# Non-Gaussian kernel, should throw an error
+gg4 <- mvQuad::createNIGrid(2,'GLe',5)

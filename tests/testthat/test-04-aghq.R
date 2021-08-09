@@ -64,13 +64,12 @@ test_that("Quadrature works",{
   expect_equal(length(themargsamps3d_2$thetasamples[[2]]),10)
 
 
-  # Sparse grids!
-  # UPDATE: this is not a supported featufre right now
-  # expect_true(!any(is.na(sparsegrid_2d$normalized_posterior$nodesandweights$logpost_normalized)))
-  # expect_true(!any(is.nan(sparsegrid_2d$normalized_posterior$nodesandweights$logpost_normalized)))
-  # expect_true(all(is.numeric(sparsegrid_2d$normalized_posterior$nodesandweights$logpost_normalized)))
-  #
-  # expect_equal(sparsenormconst_2d,1)
+  # Sparse grids
+  expect_true(!any(is.na(sparsegrid_2d$normalized_posterior$nodesandweights$logpost_normalized)))
+  expect_true(!any(is.nan(sparsegrid_2d$normalized_posterior$nodesandweights$logpost_normalized)))
+  expect_true(all(is.numeric(sparsegrid_2d$normalized_posterior$nodesandweights$logpost_normalized)))
+
+  expect_equal(sparsenormconst_2d,1)
 
   # Test control params have correct options
   expect_true(all(c("method","negate","ndConstruction") %in% names(cntrl_base)))
@@ -82,5 +81,12 @@ test_that("Quadrature works",{
   expect_equal(la10,ls10)
   expect_equal(la100,ls100)
 
+  # Custom grid
+  expect_equal(aghq_customgrid_gg1$normalized_posterior$lognormconst,aghq_customgrid_auto1$normalized_posterior$lognormconst)
+  expect_equal(aghq_customgrid_gg2$normalized_posterior$lognormconst,aghq_customgrid_auto2$normalized_posterior$lognormconst)
+  expect_equal(aghq_customgrid_gg2s$normalized_posterior$lognormconst,aghq_customgrid_auto2s$normalized_posterior$lognormconst)
+
+  # Non-Gaussian custom grid- return an error
+  expect_error(aghq(funlist2d,5,c(0,0),basegrid = gg4))
 
 })

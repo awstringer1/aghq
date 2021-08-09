@@ -90,6 +90,7 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,basegrid = NULL,ndCons
     thegrid <- basegrid
     # Check
     if (thegrid$dim != S) stop(paste0("Your startingvalue has dimension ",S,", but the grid you supplied has dimension ",thegrid$dim))
+    if (!all(thegrid$features$initial.domain %in% c(-Inf,Inf))) stop("When supplying your own basegrid, you still have to choose a rule corresponding to a Gaussian kernel for the method to make sense. You chose a rule with initial domain not equal to (-Inf,Inf). Check the mvQuad::createNIGrid documentation for a list of available rules which have domain of integration (-Inf,Inf).")
   } else {
     thegrid <- mvQuad::createNIGrid(dim = S,type = "GHe",level = k,ndConstruction = ndConstruction,...)
   }

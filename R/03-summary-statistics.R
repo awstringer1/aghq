@@ -59,6 +59,14 @@
 #' @export
 #'
 marginal_posterior <- function(optresults,k,j,basegrid = NULL,ndConstruction = 'product') {
+
+  # If using sparse grids, marginals are currently not supported
+  dummyout <- data.frame(theta1 = 0,logmargpost = 0,w = 0)
+  if (!is.null(basegrid)) {
+    if (basegrid$ndConstruction != 'product') return(dummyout)
+  }
+  if (ndConstruction != 'product') return(dummyout)
+
   normresults <- normalize_logpost(optresults,k,whichfirst = j,basegrid=basegrid,ndConstruction = ndConstruction)
   nodesandweights <- normresults$nodesandweights
   thetagridfull <- normresults$grid

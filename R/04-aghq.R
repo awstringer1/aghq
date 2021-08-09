@@ -27,7 +27,9 @@
 #' package, representing the base quadrature rule that will be adapted. This is only
 #' for users who want more complete control over the quadrature, and is not necessary
 #' if you are fine with the default option which basically corresponds to
-#' \code{mvQuad::createNIGrid(length(theta),'GHe',k,'product')}.
+#' \code{mvQuad::createNIGrid(length(theta),'GHe',k,'product')}. **Note**: the \code{mvQuad}
+#' functions used within \code{aghq} operate on grids in memory, so your \code{basegrid}
+#' object will be changed after you run \code{aghq}.
 #'
 #' @return An object of class \code{aghq} which is a list containing elements:
 #' \itemize{
