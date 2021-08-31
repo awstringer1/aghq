@@ -253,5 +253,9 @@ test_that("Normalization works",{
     expect_equal(norm_sparse_3d_3$lognormconst,norm_sparse_3d_reorder_3$lognormconst)
 
 
+    # Extraction of normalizing constants
+    expect_equal(normconst1,thequadrature$normalized_posterior$lognormconst)
+    expect_equal(normconst2,thelaplace$lognormconst)
+    expect_equal(normconst3,themarginallaplace$normalized_posterior$lognormconst)
 
 })

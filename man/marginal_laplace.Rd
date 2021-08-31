@@ -111,6 +111,7 @@ funlist2dmarg <- list(
 \seealso{
 Other quadrature: 
 \code{\link{aghq}()},
+\code{\link{get_log_normconst}()},
 \code{\link{laplace_approximation}()},
 \code{\link{marginal_laplace_tmb}()},
 \code{\link{normalize_logpost}()},

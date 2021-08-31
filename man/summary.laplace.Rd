@@ -57,6 +57,7 @@ summary(thelaplace)
 \seealso{
 Other quadrature: 
 \code{\link{aghq}()},
+\code{\link{get_log_normconst}()},
 \code{\link{laplace_approximation}()},
 \code{\link{marginal_laplace_tmb}()},
 \code{\link{marginal_laplace}()},
@@ -71,6 +72,7 @@ Other quadrature:
 
 Other quadrature: 
 \code{\link{aghq}()},
+\code{\link{get_log_normconst}()},
 \code{\link{laplace_approximation}()},
 \code{\link{marginal_laplace_tmb}()},
 \code{\link{marginal_laplace}()},

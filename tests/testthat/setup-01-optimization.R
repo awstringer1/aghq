@@ -156,7 +156,7 @@ aghqmean2d_new <- compute_moment(thequadrature,function(x) x)
 
 # Test the two types of interpolation
 thequadrature_k7 <- aghq(funlist2d,25,c(0,0)) # 25 quad points leads to bad poly interp
-pdf_poly_2d <- compute_pdf_and_cdf(thequadrature_k7,transformation = list(totheta = log,fromtheta = exp))
+pdf_poly_2d <- compute_pdf_and_cdf(thequadrature_k7,transformation = list(totheta = log,fromtheta = exp),interpolation='polynomial')
 pdf_spline_2d <- compute_pdf_and_cdf(thequadrature_k7,transformation = list(totheta = log,fromtheta = exp),interpolation = 'spline')
 # Sampling
 set.seed(708968)
@@ -394,3 +394,12 @@ aghq_customgrid_gg3 <- aghq(funlist2d,5,c(0,0),basegrid = gg2)
 
 # Non-Gaussian kernel, should throw an error
 gg4 <- mvQuad::createNIGrid(2,'GLe',5)
+
+
+## Extraction of log normalizing constants
+normconst1 <- get_log_normconst(thequadrature)
+normconst2 <- get_log_normconst(thelaplace)
+normconst3 <- get_log_normconst(themarginallaplace)
+
+
+

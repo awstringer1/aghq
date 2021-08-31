@@ -337,7 +337,7 @@ compute_moment.aghq <- function(obj,ff = function(x) 1,...) compute_moment(obj$n
 compute_pdf_and_cdf <- function(obj,...) UseMethod("compute_pdf_and_cdf")
 #' @rdname compute_pdf_and_cdf
 #' @export
-compute_pdf_and_cdf.default <- function(obj,transformation = NULL,finegrid = NULL,interpolation = 'polynomial',...) {
+compute_pdf_and_cdf.default <- function(obj,transformation = NULL,finegrid = NULL,interpolation = 'auto',...) {
 
   if (!is.null(transformation)) transformation <- Map(match.fun,transformation)
 

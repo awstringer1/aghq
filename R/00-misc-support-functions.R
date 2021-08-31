@@ -201,3 +201,5 @@ logdiffexp <- function(a,b) {
   # b + log(exp(a-b) - 1)
   b + log(expm1(a-b))
 }
+
+

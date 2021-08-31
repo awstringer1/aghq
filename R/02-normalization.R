@@ -133,3 +133,33 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,basegrid = NULL,ndCons
     lognormconst = lognormconst
   )
 }
+
+#' Obtain the log-normalizing constant from a fitted quadrature object
+#'
+#' Quick helper S3 method to retrieve the log normalizing constant from an object
+#' created using the aghq package. Methods for a list (returned by \code{aghq::normalize_posterior})
+#' and for objects of class \code{aghq}, \code{laplace}, and \code{marginallaplace}.
+#'
+#' @param obj A list returned by \code{aghq::normalize_posterior} or an object of class \code{aghq}, \code{laplace}, or \code{marginallaplace}.
+#' @param ... Not used
+#'
+#' @return A number representing the natural logarithm of the approximated normalizing constant.
+#'
+#' @family quadrature
+#'
+#' @export
+#'
+get_log_normconst <- function(obj,...) UseMethod("get_log_normconst")
+#' @rdname get_log_normconst
+#' @export
+get_log_normconst.default <- function(obj,...) obj$lognormconst
+#' @rdname get_log_normconst
+#' @export
+get_log_normconst.aghq <- function(obj,...) get_log_normconst(obj$normalized_posterior)
+#' @rdname get_log_normconst
+#' @export
+get_log_normconst.laplace <- function(obj,...) obj$lognormconst
+#' @rdname get_log_normconst
+#' @export
+get_log_normconst.marginallaplace <- function(obj,...) get_log_normconst(obj$normalized_posterior)
+

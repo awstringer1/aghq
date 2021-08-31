@@ -90,6 +90,7 @@ which you'll have to modify yourself) using \code{default_control_tmb(numhessian
 \seealso{
 Other quadrature: 
 \code{\link{aghq}()},
+\code{\link{get_log_normconst}()},
 \code{\link{laplace_approximation}()},
 \code{\link{marginal_laplace}()},
 \code{\link{normalize_logpost}()},

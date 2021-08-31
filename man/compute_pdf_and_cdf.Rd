@@ -13,7 +13,7 @@ compute_pdf_and_cdf(obj, ...)
   obj,
   transformation = NULL,
   finegrid = NULL,
-  interpolation = "polynomial",
+  interpolation = "auto",
   ...
 )
 

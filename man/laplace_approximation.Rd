@@ -106,6 +106,7 @@ thequadrature <- aghq(funlist2d,3,c(0,0))
 \seealso{
 Other quadrature: 
 \code{\link{aghq}()},
+\code{\link{get_log_normconst}()},
 \code{\link{marginal_laplace_tmb}()},
 \code{\link{marginal_laplace}()},
 \code{\link{normalize_logpost}()},
