@@ -1013,14 +1013,14 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 #'
 #' @export
 #'
-marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,control = default_control_tmb(),...) {
+marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid = NULL,control = default_control_tmb(),...) {
   # Hessian
   if (control$numhessian) {
     ff$he <- function(theta) numDeriv::jacobian(ff$gr,theta,method = 'simple')
   }
   ## Do aghq ##
   # The aghq
-  quad <- aghq(ff,k,startingvalue,optresults,control,...)
+  quad <- aghq(ff = ff,k = k,startingvalue = startingvalue,optresults = optresults,basegrid = basegrid,control = control,...)
 
   ## Add on the info needed for marginal Laplace ##
   # Add on the quad point modes and curvatures

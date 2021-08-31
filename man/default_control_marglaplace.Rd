@@ -22,9 +22,10 @@ Valid options are:
 \itemize{
 \item{\code{method}: }{optimization method to use for the \code{theta} optimization:
 \itemize{
-\item{'sparse_trust' (default): }{\code{trustOptim::trust.optim}}
+\item{'BFGS' (default): }{\code{optim(...,method = "BFGS")}}
+\item{'sparse_trust': }{\code{trustOptim::trust.optim}}
+\item{'SR1': }{\code{trustOptim::trust.optim} with \code{method = 'SR1'}}
 \item{'sparse': }{\code{trust::trust}}
-\item{'BFGS': }{\code{optim(...,method = "BFGS")}}
 }
 }
 \item{\code{inner_method}: }{optimization method to use for the \code{W} optimization; same

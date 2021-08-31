@@ -16,7 +16,7 @@ funlist <- list(
   he = function(x) numDeriv::hessian(objfunc,x)
 )
 
-opt_sparsetrust <- optimize_theta(funlist,1.5)
+opt_sparsetrust <- optimize_theta(funlist,1.5,control = list(method = "sparse_trust"))
 opt_sr1 <- optimize_theta(funlist,1.5,control = list(method = "SR1"))
 opt_trust <- optimize_theta(funlist,1.5,control = list(method = "trust"))
 opt_bfgs <- optimize_theta(funlist,1.5,control = list(method = "BFGS"))
@@ -80,7 +80,7 @@ funlist2d <- list(
   he = function(x) numDeriv::hessian(objfunc2d,x)
 )
 
-opt_sparsetrust_2d <- optimize_theta(funlist2d,c(1.5,1.5))
+opt_sparsetrust_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = list(method = "sparse_trust"))
 opt_trust_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = list(method = "trust"))
 opt_sr1_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = list(method = "SR1"))
 opt_bfgs_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = list(method = "BFGS"))
@@ -240,7 +240,7 @@ funlist3d <- list(
 )
 
 
-opt_sparsetrust_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5))
+opt_sparsetrust_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = list(method = "sparse_trust"))
 opt_trust_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = list(method = "trust"))
 opt_sr1_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = list(method = "SR1"))
 opt_bfgs_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = list(method = "BFGS"))

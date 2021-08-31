@@ -9,6 +9,7 @@ marginal_laplace_tmb(
   k,
   startingvalue,
   optresults = NULL,
+  basegrid = NULL,
   control = default_control_tmb(),
   ...
 )
@@ -36,6 +37,14 @@ posterior, formatted according to the output of \code{aghq::optimize_theta}. The
 overrides this, and is useful for when you know your optimization is too difficult to be
 handled by general-purpose software. See the software paper for several examples of this.
 If you're unsure whether this option is needed for your problem then it probably is not.}
+
+\item{basegrid}{Optional. Provide an object of class \code{NIGrid} from the \code{mvQuad}
+package, representing the base quadrature rule that will be adapted. This is only
+for users who want more complete control over the quadrature, and is not necessary
+if you are fine with the default option which basically corresponds to
+\code{mvQuad::createNIGrid(length(theta),'GHe',k,'product')}. \strong{Note}: the \code{mvQuad}
+functions used within \code{aghq} operate on grids in memory, so your \code{basegrid}
+object will be changed after you run \code{aghq}.}
 
 \item{control}{A list of control parameters. See \code{?default_control} for details. Valid options are:
 \itemize{

@@ -16,10 +16,10 @@
 #' \itemize{
 #' \item{\code{method}: }{optimization method to use:
 #' \itemize{
-#' \item{'sparse_trust' (default): }{\code{trustOptim::trust.optim} with \code{method = 'sparse'}}
-#' \item{'SR1' (default): }{\code{trustOptim::trust.optim} with \code{method = 'SR1'}}
-#' \item{'trust': }{\code{trust::trust}}
-#' \item{'BFGS': }{\code{optim(...,method = "BFGS")}}
+#' \item{'BFGS' (default): }{\code{optim(...,method = "BFGS")}}
+#' \item{'sparse_trust': }{\code{trustOptim::trust.optim}}
+#' \item{'SR1': }{\code{trustOptim::trust.optim} with \code{method = 'SR1'}}
+#' \item{'sparse': }{\code{trust::trust}}
 #' }
 #' Default is 'sparse_trust'.
 #' }
@@ -52,7 +52,7 @@
 #'
 default_control <- function(...) {
   out <- list(
-    method = c("sparse_trust","trust","BFGS"),
+    method = c("BFGS","sparse_trust","trust"),
     negate = FALSE,
     ndConstruction = "product",
     interpolation = 'auto'
@@ -76,9 +76,10 @@ default_control <- function(...) {
 #' \itemize{
 #' \item{\code{method}: }{optimization method to use for the \code{theta} optimization:
 #' \itemize{
-#' \item{'sparse_trust' (default): }{\code{trustOptim::trust.optim}}
+#' \item{'BFGS' (default): }{\code{optim(...,method = "BFGS")}}
+#' \item{'sparse_trust': }{\code{trustOptim::trust.optim}}
+#' \item{'SR1': }{\code{trustOptim::trust.optim} with \code{method = 'SR1'}}
 #' \item{'sparse': }{\code{trust::trust}}
-#' \item{'BFGS': }{\code{optim(...,method = "BFGS")}}
 #' }
 #' }
 #' \item{\code{inner_method}: }{optimization method to use for the \code{W} optimization; same
@@ -140,9 +141,10 @@ default_control_marglaplace <- function(...) {
 #' \itemize{
 #' \item{\code{method}: }{optimization method to use for the \code{theta} optimization:
 #' \itemize{
-#' \item{'sparse_trust' (default): }{\code{trustOptim::trust.optim}}
+#' \item{'BFGS' (default): }{\code{optim(...,method = "BFGS")}}
+#' \item{'sparse_trust': }{\code{trustOptim::trust.optim}}
+#' \item{'SR1': }{\code{trustOptim::trust.optim} with \code{method = 'SR1'}}
 #' \item{'sparse': }{\code{trust::trust}}
-#' \item{'BFGS': }{\code{optim(...,method = "BFGS")}}
 #' }
 #' }
 #' \item \code{negate}: {default \code{TRUE}. Assumes that your \code{TMB} function

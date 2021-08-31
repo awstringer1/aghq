@@ -22,10 +22,10 @@ Valid options are:
 \itemize{
 \item{\code{method}: }{optimization method to use:
 \itemize{
-\item{'sparse_trust' (default): }{\code{trustOptim::trust.optim} with \code{method = 'sparse'}}
-\item{'SR1' (default): }{\code{trustOptim::trust.optim} with \code{method = 'SR1'}}
-\item{'trust': }{\code{trust::trust}}
-\item{'BFGS': }{\code{optim(...,method = "BFGS")}}
+\item{'BFGS' (default): }{\code{optim(...,method = "BFGS")}}
+\item{'sparse_trust': }{\code{trustOptim::trust.optim}}
+\item{'SR1': }{\code{trustOptim::trust.optim} with \code{method = 'SR1'}}
+\item{'sparse': }{\code{trust::trust}}
 }
 Default is 'sparse_trust'.
 }
