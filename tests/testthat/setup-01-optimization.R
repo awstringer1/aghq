@@ -395,6 +395,16 @@ aghq_customgrid_gg3 <- aghq(funlist2d,5,c(0,0),basegrid = gg2)
 # Non-Gaussian kernel, should throw an error
 gg4 <- mvQuad::createNIGrid(2,'GLe',5)
 
+# Create a new grid for later check
+gg5 <- mvQuad::createNIGrid(2,'GHe',5)
+# Check that not providing k works
+gg6 <- mvQuad::createNIGrid(2,'GHe',5)
+aghq_customgrid_gg6 <- aghq(funlist2d,startingvalue = c(0,0),basegrid = gg6)
+
+# Check that the grid isn't modified
+gg7 <- mvQuad::createNIGrid(1,'GHe',5)
+
+
 
 ## Extraction of log normalizing constants
 normconst1 <- get_log_normconst(thequadrature)

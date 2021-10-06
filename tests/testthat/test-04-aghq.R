@@ -126,4 +126,12 @@ test_that("Quadrature works",{
   expect_false(inherits(marglaplace_normconst1,'marginallaplace'))
   expect_equal(marglaplace_normconst1,get_log_normconst(themarginallaplace))
 
+  # Warnings for custom grids
+  expect_warning(aghq(funlist2d,3,c(0,0),basegrid = gg5))
+
+  # Setting k with custom grid works
+  expect_equal(nrow(aghq_customgrid_gg6$normalized_posterior$nodesandweights),5^2)
+
+  # Not modifying the grid
+  expect_equal(gg1$features$move,gg7$features$move)
 })
