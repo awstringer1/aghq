@@ -89,4 +89,41 @@ test_that("Quadrature works",{
   # Non-Gaussian custom grid- return an error
   expect_error(aghq(funlist2d,5,c(0,0),basegrid = gg4))
 
+
+  # Control validation
+  expect_error(validate_control(default_control_tmb(),type = "foo"))
+  expect_true(validate_control(default_control()))
+  expect_true(validate_control(default_control(),type = "aghq"))
+  expect_true(validate_control(default_control_marglaplace(),type = "marglaplace"))
+  expect_true(validate_control(default_control_tmb(),type = "tmb"))
+
+  expect_error(validate_control(default_control(),type = 'marglaplace'))
+  # expect_error(validate_control(default_control(),type = 'tmb')) # Currently, these have the same arguments
+  expect_error(validate_control(default_control_marglaplace(),type = 'aghq'))
+  expect_error(validate_control(default_control_marglaplace(),type = 'tmb'))
+  # expect_error(validate_control(default_control_tmb(),type = 'aghq')) # Currently, these have the same arguments
+  expect_error(validate_control(default_control_tmb(),type = 'marglaplace'))
+
+  expect_error(validate_control(badcontrol1_aghq))
+  expect_error(validate_control(badcontrol2_aghq))
+  expect_error(validate_control(badcontrol3_aghq))
+
+  expect_error(validate_control(badcontrol1_marglaplace,type='marglaplace'))
+  expect_error(validate_control(badcontrol2_marglaplace,type='marglaplace'))
+  expect_error(validate_control(badcontrol3_marglaplace,type='marglaplace'))
+
+  expect_error(validate_control(badcontrol1_tmb,type='tmb'))
+  expect_error(validate_control(badcontrol2_tmb,type='tmb'))
+  expect_error(validate_control(badcontrol3_tmb,type='tmb'))
+
+  # Test returning only normconst works
+  expect_equal(class(aghq_normconst1),"numeric")
+  expect_false(inherits(aghq_normconst1,'aghq'))
+  expect_equal(aghq_normconst1,get_log_normconst(aghq_controlworks1))
+
+  expect_equal(class(marglaplace_normconst1),"numeric")
+  expect_false(inherits(marglaplace_normconst1,'aghq'))
+  expect_false(inherits(marglaplace_normconst1,'marginallaplace'))
+  expect_equal(marglaplace_normconst1,get_log_normconst(themarginallaplace))
+
 })

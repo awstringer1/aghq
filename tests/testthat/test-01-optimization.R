@@ -57,4 +57,20 @@ test_that("optimizations works", {
   expect_true(opt_trust_3d$convergence)
   expect_equal(opt_bfgs_3d$convergence,0)
 
+  # Control arguments pass correctly
+  expect_equal(opt_controlworks1$convergence,0)
+  expect_equal(opt_controlworks2$convergence,0)
+  expect_equal(opt_controlworks3$convergence,0)
+
+  expect_true(all(opt_controlworks1$mode == opt_controlworks2$mode))
+  expect_true(all(opt_controlworks1$hessian == opt_controlworks2$hessian))
+  expect_true(all(opt_controlworks1$mode == opt_controlworks3$mode))
+  # Be a little tolerant of the numeric hessian
+  expect_lt(sum(abs(opt_controlworks1$hessian - opt_controlworks3$hessian)),.01)
+
+  expect_equal(get_log_normconst(aghq_controlworks1),get_log_normconst(aghq_controlworks2))
+  expect_equal(get_log_normconst(aghq_controlworks1),get_log_normconst(aghq_controlworks3))
+
+
+
 })

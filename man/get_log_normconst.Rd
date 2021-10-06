@@ -3,6 +3,7 @@
 \name{get_log_normconst}
 \alias{get_log_normconst}
 \alias{get_log_normconst.default}
+\alias{get_log_normconst.numeric}
 \alias{get_log_normconst.aghq}
 \alias{get_log_normconst.laplace}
 \alias{get_log_normconst.marginallaplace}
@@ -11,6 +12,8 @@
 get_log_normconst(obj, ...)
 
 \method{get_log_normconst}{default}(obj, ...)
+
+\method{get_log_normconst}{numeric}(obj, ...)
 
 \method{get_log_normconst}{aghq}(obj, ...)
 

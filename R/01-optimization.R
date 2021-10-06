@@ -66,8 +66,8 @@
 #' )
 #'
 #' optimize_theta(funlist,1.5)
-#' optimize_theta(funlist,1.5,control = list(method = "trust"))
-#' optimize_theta(funlist,1.5,control = list(method = "BFGS"))
+#' optimize_theta(funlist,1.5,control = default_control(method = "trust"))
+#' optimize_theta(funlist,1.5,control = default_control(method = "BFGS"))
 #'
 #' @family quadrature
 #'
@@ -76,9 +76,28 @@
 #' @importFrom methods as
 #' @export
 optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
-  optfunc <- function(x,...) -1 * ff$fn(x,...)
-  optgrad <- function(x,...) as.numeric(-1 * ff$gr(x,...))
-  opthess <- function(x,...) as.matrix(-1 * ff$he(x,...))
+  # Negate it if asked
+  if (control$negate) {
+    ffa <- list(
+      fn = function(theta) -1 * ff$fn(theta),
+      gr = function(theta) -1 * ff$gr(theta),
+      he = function(theta) -1 * ff$he(theta)
+    )
+  } else {
+    ffa <- ff
+  }
+  # Confusing, this negation is separate from the above
+  # This one is so that the optimization receives the negative logpost
+  optfunc <- function(x,...) -1 * ffa$fn(x,...)
+  optgrad <- function(x,...) as.numeric(-1 * ffa$gr(x,...))
+  opthess <- function(x,...) as.matrix(-1 * ffa$he(x,...))
+
+  # Add the numerically differentiated hessian for the user, if requested
+  if (exists('numhessian',control)) {
+    if (control$numhessian) {
+      ff$he <- function(theta) numDeriv::jacobian(ffa$gr,theta,method = 'simple')
+    }
+  }
 
   method <- control$method[1]
 
@@ -95,7 +114,7 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
       ...
     )
     out <- list(
-      ff = ff,
+      ff = ffa,
       mode = opt$solution,
       hessian = opt$hessian,
       convergence = opt$status
@@ -113,7 +132,7 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
       ...
     )
     out <- list(
-      ff = ff,
+      ff = ffa,
       mode = opt$solution,
       hessian = as(opthess(opt$solution,...),"dgCMatrix"),
       convergence = opt$status
@@ -137,7 +156,7 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
       ...
     )
     out <- list(
-      ff = ff,
+      ff = ffa,
       mode = opt$argument,
       hessian = opt$hessian,
       convergence = opt$converged
@@ -147,7 +166,7 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
     if (is.null(control$optcontrol)) control$optcontrol <- list()
     opt <- optim(startingvalue,optfunc,optgrad,method = "BFGS",control = list(),...)
     out <- list(
-      ff = ff,
+      ff = ffa,
       mode = opt$par,
       hessian = opthess(opt$par,...),
       convergence = opt$convergence

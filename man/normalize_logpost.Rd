@@ -70,8 +70,8 @@ funlist <- list(
   he = function(x) numDeriv::hessian(objfunc,x)
 )
 opt_sparsetrust <- optimize_theta(funlist,1.5)
-opt_trust <- optimize_theta(funlist,1.5,control = list(method = "trust"))
-opt_bfgs <- optimize_theta(funlist,1.5,control = list(method = "BFGS"))
+opt_trust <- optimize_theta(funlist,1.5,control = default_control(method = "trust"))
+opt_bfgs <- optimize_theta(funlist,1.5,control = default_control(method = "BFGS"))
 
 # Quadrature with 3, 5, and 7 points using sparse trust region optimization:
 norm_sparse_3 <- normalize_logpost(opt_sparsetrust,3,1)

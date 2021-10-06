@@ -46,6 +46,12 @@ option uses \code{polynom::poly.calc()} to construct a global polynomial interpo
 and has been observed to be unstable as the number of quadrature points gets larger, which
 is obviously a bad thing. Try \code{'spline'} instead, which uses a cubic B-Spline
 interpolant from \code{splines::interpSpline()}.
+\item{numhessian}: logical, default \code{FALSE}. Replace the \code{ff$he} with a numerically-differentiated
+version, by calling \code{numDeriv::jacobian} on \code{ff$gr}. Used mainly for \code{TMB} with the automatic
+Laplace approximation, which does not have an automatic Hessian.
+\item{onlynormconst}: logical, default \code{FALSE}. Skip everything after the calculation of the log integral,
+and just return the numeric value of the log integral. Saves computation time, and most useful in cases
+where \code{aghq} is being used as a step in a more complicated procedure.
 }
 }
 \examples{

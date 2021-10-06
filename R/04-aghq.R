@@ -94,22 +94,16 @@
 #' @export
 #'
 aghq <- function(ff,k,startingvalue,optresults = NULL,basegrid = NULL,control = default_control(),...) {
-  # Negate it if asked
-  if (control$negate) {
-    ffa <- list(
-      fn = function(theta) -1 * ff$fn(theta),
-      gr = function(theta) -1 * ff$gr(theta),
-      he = function(theta) -1 * ff$he(theta)
-    )
-  } else {
-    ffa <- ff
-  }
+
+  validate_control(control)
 
   # Optimization
-  if (is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ffa,startingvalue,control,...))
+  if (is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ff,startingvalue,control,...))
 
   # Normalization
   normalized_posterior <- normalize_logpost(optresults,k,basegrid = basegrid,ndConstruction = control$ndConstruction,...)
+
+  if (control$onlynormconst) return(normalized_posterior$lognormconst)
 
   # Marginals
   d <- length(startingvalue)
@@ -469,6 +463,9 @@ plot.aghq <- function(x,...) {
 #' @export
 #'
 laplace_approximation <- function(ff,startingvalue,optresults = NULL,control = default_control(),...) {
+
+  validate_control(control)
+
   # Negate it if asked
   if (control$negate) {
     ffa <- list(
@@ -756,6 +753,8 @@ print.laplacesummary <- function(x,...) {
 #'
 marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = default_control_marglaplace(),...) {
 
+  validate_control(control,type = 'marglaplace')
+
   # Negate it if asked
   if (control$negate) {
     ffa <- list(
@@ -861,7 +860,7 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
     #   )
     # }
 
-    utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,optresults = optresults,control = list(method = control$inner_method,negate = FALSE)))
+    utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,optresults = optresults,control = default_control(method = control$inner_method,negate = FALSE)))
 
     add_elements(theta,lap$optresults$mode,lap$optresults$hessian,whichenv = whichenv)
 
@@ -924,7 +923,7 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
       he = function(W) ffa$he(W,theta)
     )
 
-    utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,control = list(method = control$inner_method,negate=FALSE)))
+    utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,control = default_control(method = control$inner_method,negate=FALSE)))
     modesandhessians[i,'mode'] <- list(list(lap$optresults$mode))
     modesandhessians[i,'H'] <- list(list(lap$optresults$hessian))
     modesandhessians[i,'logpost'] <- as.numeric(lap$lognormconst)
@@ -936,6 +935,7 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
   ww <- nodesandweights$weights
 
   lognormconst <- logsumexp(log(ww) + lp)
+  if (control$onlynormconst) return(lognormconst)
 
   nodesandweights$logpost <- lp
   nodesandweights$logpost_normalized <- lp - lognormconst
@@ -1014,6 +1014,9 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 #' @export
 #'
 marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid = NULL,control = default_control_tmb(),...) {
+
+  validate_control(control,type='tmb')
+
   # Hessian
   if (control$numhessian) {
     ff$he <- function(theta) numDeriv::jacobian(ff$gr,theta,method = 'simple')
@@ -1021,6 +1024,7 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid =
   ## Do aghq ##
   # The aghq
   quad <- aghq(ff = ff,k = k,startingvalue = startingvalue,optresults = optresults,basegrid = basegrid,control = control,...)
+  if (control$onlynormconst) return(quad) # NOTE: control was passed to aghq here so quad should itself just be a number
 
   ## Add on the info needed for marginal Laplace ##
   # Add on the quad point modes and curvatures

@@ -16,10 +16,10 @@ funlist <- list(
   he = function(x) numDeriv::hessian(objfunc,x)
 )
 
-opt_sparsetrust <- optimize_theta(funlist,1.5,control = list(method = "sparse_trust"))
-opt_sr1 <- optimize_theta(funlist,1.5,control = list(method = "SR1"))
-opt_trust <- optimize_theta(funlist,1.5,control = list(method = "trust"))
-opt_bfgs <- optimize_theta(funlist,1.5,control = list(method = "BFGS"))
+opt_sparsetrust <- optimize_theta(funlist,1.5,control = default_control(method = "sparse_trust"))
+opt_sr1 <- optimize_theta(funlist,1.5,control = default_control(method = "SR1"))
+opt_trust <- optimize_theta(funlist,1.5,control = default_control(method = "trust"))
+opt_bfgs <- optimize_theta(funlist,1.5,control = default_control(method = "BFGS"))
 
 norm_sparse_3 <- normalize_logpost(opt_sparsetrust,3,1)
 norm_sparse_5 <- normalize_logpost(opt_sparsetrust,5,1)
@@ -80,10 +80,10 @@ funlist2d <- list(
   he = function(x) numDeriv::hessian(objfunc2d,x)
 )
 
-opt_sparsetrust_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = list(method = "sparse_trust"))
-opt_trust_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = list(method = "trust"))
-opt_sr1_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = list(method = "SR1"))
-opt_bfgs_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = list(method = "BFGS"))
+opt_sparsetrust_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = default_control(method = "sparse_trust"))
+opt_trust_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = default_control(method = "trust"))
+opt_sr1_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = default_control(method = "SR1"))
+opt_bfgs_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = default_control(method = "BFGS"))
 
 norm_sparse_2d_3 <- normalize_logpost(opt_sparsetrust_2d,3,1)
 norm_sparse_2d_5 <- normalize_logpost(opt_sparsetrust_2d,5,1)
@@ -240,10 +240,10 @@ funlist3d <- list(
 )
 
 
-opt_sparsetrust_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = list(method = "sparse_trust"))
-opt_trust_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = list(method = "trust"))
-opt_sr1_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = list(method = "SR1"))
-opt_bfgs_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = list(method = "BFGS"))
+opt_sparsetrust_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = default_control(method = "sparse_trust"))
+opt_trust_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = default_control(method = "trust"))
+opt_sr1_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = default_control(method = "SR1"))
+opt_bfgs_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = default_control(method = "BFGS"))
 
 norm_sparse_3d_3 <- normalize_logpost(opt_sparsetrust_3d,3,1)
 norm_sparse_3d_5 <- normalize_logpost(opt_sparsetrust_3d,5,1)
@@ -401,5 +401,58 @@ normconst1 <- get_log_normconst(thequadrature)
 normconst2 <- get_log_normconst(thelaplace)
 normconst3 <- get_log_normconst(themarginallaplace)
 
+## Optimization: controls work
 
+funlist3dneg <- with(funlist3d,list(
+  fn = function(x) -1*fn(x),
+  gr = function(x) -1*gr(x),
+  he = function(x) -1*he(x)
+))
+opt_controlworks1 <- optimize_theta(funlist3d,c(0,0,0))
+# Negate
+opt_controlworks2 <- optimize_theta(funlist3dneg,c(0,0,0),control=default_control(negate=TRUE))
+# Numeric hessian
+funlist3dnohess <- funlist3dneg
+funlist3dnohess$he <- NULL
+opt_controlworks3 <- optimize_theta(funlist3d,c(0,0,0),control = default_control_tmb(negate=FALSE,numhessian = TRUE))
+
+# but now, make sure aghq still works!
+aghq_controlworks1 <- aghq(funlist3d,5,c(0,0,0))
+aghq_controlworks2 <- aghq(funlist3dneg,5,c(0,0,0),control=default_control(negate=TRUE))
+aghq_controlworks3 <- aghq(funlist3d,5,c(0,0,0),control = default_control(negate=FALSE,numhessian = TRUE))
+
+
+
+## Control argument validation
+goodcontrol_aghq <- default_control()
+goodcontrol_marglaplace <- default_control_marglaplace()
+goodcontrol_tmb <- default_control_tmb()
+
+badcontrol1_aghq <- goodcontrol_aghq
+badcontrol1_aghq$negate <- NULL
+badcontrol2_aghq <- goodcontrol_aghq
+badcontrol2_aghq$foo <- 'bar'
+badcontrol3_aghq <- goodcontrol_aghq
+badcontrol3_aghq$foo <- 'bar'
+badcontrol3_aghq$negate <- NULL
+
+badcontrol1_marglaplace <- goodcontrol_marglaplace
+badcontrol1_marglaplace$negate <- NULL
+badcontrol2_marglaplace <- goodcontrol_marglaplace
+badcontrol2_marglaplace$foo <- 'bar'
+badcontrol3_marglaplace <- goodcontrol_marglaplace
+badcontrol3_marglaplace$foo <- 'bar'
+badcontrol3_marglaplace$negate <- NULL
+
+badcontrol1_tmb <- goodcontrol_tmb
+badcontrol1_tmb$negate <- NULL
+badcontrol2_tmb <- goodcontrol_tmb
+badcontrol2_tmb$foo <- 'bar'
+badcontrol3_tmb <- goodcontrol_tmb
+badcontrol3_tmb$foo <- 'bar'
+badcontrol3_tmb$negate <- NULL
+
+## Test returning only the normconst
+aghq_normconst1 <- aghq(funlist3d,5,c(0,0,0),control = default_control(onlynormconst = TRUE))
+marglaplace_normconst1 <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 0),control = default_control_marglaplace(onlynormconst = TRUE))
 

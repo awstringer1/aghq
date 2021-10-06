@@ -73,8 +73,8 @@ funlist <- list(
 )
 
 optimize_theta(funlist,1.5)
-optimize_theta(funlist,1.5,control = list(method = "trust"))
-optimize_theta(funlist,1.5,control = list(method = "BFGS"))
+optimize_theta(funlist,1.5,control = default_control(method = "trust"))
+optimize_theta(funlist,1.5,control = default_control(method = "BFGS"))
 
 }
 \seealso{

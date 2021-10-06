@@ -18,6 +18,10 @@ points is even moderate, I consider this a necessary `Import`.
 Default option of `auto` designed to always give stable marginal posterior interpolation
 regardless of the number of quadrature points.
 
+- Added an internal `validate_control` check to all functions which use a `control` argument, which makes sure the user inputs a control list with the correct names and value types.
+This helps prevent further cryptic downstream errors.
+
+- Added a `onlynormconst` option to `aghq` and related functions. Simply returns the numeric value of the log integral, avoiding all the extra stuff, at greater speed.
 
 ## Bug fixes
 
@@ -30,6 +34,8 @@ for, and this was throwing a cryptic error. Now, it throws a less cryptic error.
 users do not have the `trust` or `trustOptim` packages installed.
 
 - Added `expm1` to `logdiffexp()` to improve numerical stability.
+
+- Fixed `optimize_theta` so that `control` arguments are passed correctly. 
 
 ## Other
 

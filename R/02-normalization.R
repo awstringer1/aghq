@@ -56,8 +56,8 @@
 #'   he = function(x) numDeriv::hessian(objfunc,x)
 #' )
 #' opt_sparsetrust <- optimize_theta(funlist,1.5)
-#' opt_trust <- optimize_theta(funlist,1.5,control = list(method = "trust"))
-#' opt_bfgs <- optimize_theta(funlist,1.5,control = list(method = "BFGS"))
+#' opt_trust <- optimize_theta(funlist,1.5,control = default_control(method = "trust"))
+#' opt_bfgs <- optimize_theta(funlist,1.5,control = default_control(method = "BFGS"))
 #'
 #' # Quadrature with 3, 5, and 7 points using sparse trust region optimization:
 #' norm_sparse_3 <- normalize_logpost(opt_sparsetrust,3,1)
@@ -153,6 +153,9 @@ get_log_normconst <- function(obj,...) UseMethod("get_log_normconst")
 #' @rdname get_log_normconst
 #' @export
 get_log_normconst.default <- function(obj,...) obj$lognormconst
+#' @rdname get_log_normconst
+#' @export
+get_log_normconst.numeric <- function(obj,...) obj
 #' @rdname get_log_normconst
 #' @export
 get_log_normconst.aghq <- function(obj,...) get_log_normconst(obj$normalized_posterior)
