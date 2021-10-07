@@ -95,7 +95,7 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
   # Add the numerically differentiated hessian for the user, if requested
   if (exists('numhessian',control)) {
     if (control$numhessian) {
-      ffa$he <- function(theta) numDeriv::jacobian(ffa$gr,theta,method = 'simple')
+      ffa$he <- function(theta) numDeriv::jacobian(ffa$gr,theta,method = 'Richardson')
     }
   }
 

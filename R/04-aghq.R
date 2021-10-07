@@ -1055,7 +1055,7 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid =
   if (is.null(thetanames)) {
     thetanames <- colnames(distinctthetas)
   } else {
-    colnames(distinctthetas) <- thetanames
+    colnames(modesandhessians)[colnames(distinctthetas)] <- thetanames
   }
 
     for (i in 1:nrow(distinctthetas)) {
