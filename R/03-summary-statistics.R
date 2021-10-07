@@ -248,7 +248,9 @@ compute_moment <- function(obj,...) {
 compute_moment.default <- function(obj,ff = function(x) 1,...) {
   nodesandweights <- obj$nodesandweights
 
-  whereistheta <- grep('theta',colnames(nodesandweights))
+  # whereistheta <- grep('theta',colnames(nodesandweights))
+  whereistheta <- 1:(ncol(nodesandweights)-3)
+
 
   lengthof_f <- length(ff(nodesandweights[1,whereistheta]))
 
