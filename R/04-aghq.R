@@ -199,11 +199,13 @@ aghq <- function(ff,k,startingvalue,optresults = NULL,basegrid = NULL,control = 
 summary.aghq <- function(object,...) {
   d <- length(object$optresults$mode)
 
+  thetanames <- colnames(object$normalized_posterior$nodesandweights)[1:d]
+
   # Moments
   themeans <- compute_moment(object$normalized_posterior,function(x) x)
   thesds <- numeric(d)
   for (j in 1:d) thesds[j] <- sqrt(compute_moment(object$normalized_posterior,function(x) (x - themeans[j])^2)[j])
-  names(thesds) <- names(themeans)
+  names(thesds) <- names(themeans) <- thetanames
 
   themoments <- cbind(themeans,thesds)
   colnames(themoments) <- c('mean','sd')
@@ -212,12 +214,13 @@ summary.aghq <- function(object,...) {
   # Quantiles
   thequants <- vector(mode = 'list',length = d)
   for (j in 1:d) thequants[[j]] <- compute_quantiles(object$marginals[[j]],c(.025,.5,.975),interpolation = object$control$interpolation)
-  names(thequants) <- paste0("theta",1:d)
+  names(thequants) <- thetanames
   thequants <- t(as.data.frame(thequants))
   colnames(thequants)[2] <- 'median'
 
   thesummary <- cbind(themoments,thequants,data.frame(mode = object$optresults$mode))
   thesummary <- thesummary[ ,c('mean','median','mode','sd','2.5%','97.5%')]
+
 
   out <- list()
   class(out) <- "aghqsummary"
@@ -1032,7 +1035,7 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid =
 
   # Get names from TMB function template
   thetanames <- NULL
-  if (exists('par',ff)) thetanames <- ff$par
+  if (exists('par',ff)) thetanames <- names(ff$par)
 
   # Hessian
   if (control$numhessian) {
@@ -1055,7 +1058,8 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid =
   if (is.null(thetanames)) {
     thetanames <- colnames(distinctthetas)
   } else {
-    colnames(modesandhessians)[colnames(distinctthetas)] <- thetanames
+    colnames(modesandhessians)[colnames(modesandhessians) == colnames(distinctthetas)] <- thetanames
+    colnames(quad$normalized_posterior$nodesandweights)[grep('theta',colnames(quad$normalized_posterior$nodesandweights))] <- thetanames
   }
 
     for (i in 1:nrow(distinctthetas)) {
