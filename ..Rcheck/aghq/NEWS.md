@@ -1,4 +1,4 @@
-# aghq 0.3.0
+# aghq 0.3.0 
 
 ## New features
 
@@ -40,12 +40,6 @@ users do not have the `trust` or `trustOptim` packages installed.
 ## Other
 
 - Re-added `numDeriv` as an Import, since it is used in core functionality.
-
-- Switched default optimization control arguments to use `base::optim`, to facilitate
-removal of `trustOptim` and `trust` as Import dependencies.
-
-- Switched default method for numerically differentiated Hessians to `'Richardson'`,
-for more accurate results.
 
 # aghq 0.2.0
 

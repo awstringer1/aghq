@@ -1,0 +1,36 @@
+aghq                    Adaptive Gauss-Hermite Quadrature
+compute_moment          Compute moments
+compute_pdf_and_cdf     Density and Cumulative Distribution Function
+compute_quantiles       Quantiles
+default_control         Default control arguments for 'aghq::aghq()'.
+default_control_marglaplace
+                        Default control arguments for
+                        'aghq::marginal_laplace()'.
+default_control_tmb     Default control arguments for
+                        'aghq::marginal_laplace_tmb()'.
+gcdata                  Globular Clusters data for Milky Way mass
+                        estimation
+gcdatalist              Transformed Globular Clusters data
+get_log_normconst       Obtain the log-normalizing constant from a
+                        fitted quadrature object
+interpolate_marginal_posterior
+                        Interpolate the Marginal Posterior
+laplace_approximation   Laplace Approximation
+marginal_laplace        Marginal Laplace approximation
+marginal_laplace_tmb    AGHQ-normalized marginal Laplace approximation
+                        from a TMB function template
+marginal_posterior      Marginal Posteriors
+normalize_logpost       Normalize the joint posterior using AGHQ
+optimize_theta          Obtain function information necessary for
+                        performing quadrature
+plot.aghq               Plot method for AGHQ objects
+print.aghq              Print method for AGHQ objects
+print.aghqsummary       Print method for AGHQ summary objects
+print.laplace           Print method for AGHQ objects
+print.laplacesummary    Print method for laplacesummary objects
+sample_marginal         Exact independent samples from an approximate
+                        posterior distribution
+summary.aghq            Summary statistics computed using AGHQ
+summary.laplace         Summary method for Laplace Approximation
+                        objects
+validate_control        Validate a control list

@@ -102,7 +102,7 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
   method <- control$method[1]
 
   if (method == "sparse_trust") {
-    if (!("trustOptim" %in% rownames(installed.packages()))) stop("Method = sparse_trust requires the trustOptim package, but you do not have this package installed.")
+    if (!requireNamespace("trustOptim", quietly = TRUE)) stop("Method = sparse_trust requires the trustOptim package, but you do not have this package installed.")
     if (is.null(control$optcontrol)) control$optcontrol <- list(maxit = 1e03)
     opt <- trustOptim::trust.optim(
       x = startingvalue,
@@ -121,7 +121,7 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
     )
   }
   else if (method == "SR1") {
-    if (!("trustOptim" %in% rownames(installed.packages()))) stop("Method = SR1 requires the trustOptim package, but you do not have this package installed.")
+    if (!requireNamespace("trustOptim", quietly = TRUE)) stop("Method = SR1 requires the trustOptim package, but you do not have this package installed.")
     if (is.null(control$optcontrol)) control$optcontrol <- list(maxit = 1e03)
     opt <- trustOptim::trust.optim(
       x = startingvalue,
@@ -139,7 +139,7 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
     )
   }
   else if (method == "trust") {
-    if (!("trust" %in% rownames(installed.packages()))) stop("Method = trust requires the trust package, but you do not have this package installed.")
+    if (!requireNamespace("trust", quietly = TRUE)) stop("Method = trust requires the trust package, but you do not have this package installed.")
     funlist <- function(x,...) {
       list(
         value = optfunc(x,...),

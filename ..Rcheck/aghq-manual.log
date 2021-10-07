@@ -1,0 +1,998 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  7 OCT 2021 09:56
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**\nonstopmode \input ./Rd2.tex \input ./Rd2.tex \input ./Rd2.tex \input ./Rd2.
+tex
+(./Rd2.tex
+(/usr/local/texlive/2020/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2019/12/20 v1.4l Standard LaTeX document class
+(/usr/local/texlive/2020/texmf-dist/tex/latex/base/bk10.clo
+File: bk10.clo 2019/12/20 v1.4l Standard LaTeX file (size option)
+)
+\c@part=\count167
+\c@chapter=\count168
+\c@section=\count169
+\c@subsection=\count170
+\c@subsubsection=\count171
+\c@paragraph=\count172
+\c@subparagraph=\count173
+\c@figure=\count174
+\c@table=\count175
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen134
+)
+(/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/Rd.sty
+Package: Rd 
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/tools/longtable.sty
+Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
+\LTleft=\skip49
+\LTright=\skip50
+\LTpre=\skip51
+\LTpost=\skip52
+\LTchunksize=\count176
+\LTcapwidth=\dimen135
+\LT@head=\box45
+\LT@firsthead=\box46
+\LT@foot=\box47
+\LT@lastfoot=\box48
+\LT@cols=\count177
+\LT@rows=\count178
+\c@LT@tables=\count179
+\c@LT@chunks=\count180
+\LT@p@ftn=\toks15
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/tools/bm.sty
+Package: bm 2019/07/24 v1.2d Bold Symbol Support (DPC/FMi)
+\symboldoperators=\mathgroup4
+\symboldletters=\mathgroup5
+\symboldsymbols=\mathgroup6
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 141.
+LaTeX Info: Redefining \bm on input line 209.
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/base/alltt.sty
+Package: alltt 1997/06/16 v2.0g defines alltt environment
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/tools/verbatim.sty
+Package: verbatim 2019/11/10 v1.5r LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks16
+\verbatim@line=\toks17
+\verbatim@in@stream=\read2
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip16
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
+)
+\ldescriptionwidth=\skip53
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2020/02/11 v2.0o Standard LaTeX package
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/times.sty
+Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/inconsolata/zi4.sty
+Package: zi4 2019/05/17 v1.12
+
+`inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+Package: xkeyval 2014/12/03 v2.7a package option processing (HA)
+
+(/usr/local/texlive/2020/texmf-dist/tex/generic/xkeyval/xkeyval.tex
+(/usr/local/texlive/2020/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+\XKV@toks=\toks18
+\XKV@tempa@toks=\toks19
+
+(/usr/local/texlive/2020/texmf-dist/tex/generic/xkeyval/keyval.tex))
+\XKV@depth=\count181
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+))
+\zifour@ocount=\count182
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2019/11/23 v1.2a Standard LaTeX Color (DPC)
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package color Info: Driver file: pdftex.def on input line 147.
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+(/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2020/01/14 v7.00d Hypertext links for LaTeX
+
+(/usr/local/texlive/2020/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2019/12/15 v1.24 LaTeX kernel commands for general use (HO)
+)
+(/usr/local/texlive/2020/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2020/03/06 v1.0d TeX engine tests
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/pdftexcmds/pdftexcmds.sty
+Package: pdftexcmds 2019/11/24 v0.31 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/local/texlive/2020/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+(/usr/local/texlive/2020/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty
+Package: kvsetkeys 2019/12/15 v1.18 Key value parser (HO)
+)
+(/usr/local/texlive/2020/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+)
+(/usr/local/texlive/2020/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/hycolor/hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty
+Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/auxhook/auxhook.sty
+Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2019/11/29 v3.13 Key value format for package options (HO)
+)
+\@linkdim=\dimen136
+\Hy@linkcounter=\count183
+\Hy@pagecounter=\count184
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2020/01/14 v7.00d Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+)
+(/usr/local/texlive/2020/texmf-dist/tex/generic/intcalc/intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+(/usr/local/texlive/2020/texmf-dist/tex/generic/etexcmds/etexcmds.sty
+Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
+)
+\Hy@SavedSpaceFactor=\count185
+Package hyperref Info: Hyper figures OFF on input line 4547.
+Package hyperref Info: Link nesting OFF on input line 4552.
+Package hyperref Info: Hyper index ON on input line 4555.
+Package hyperref Info: Plain pages OFF on input line 4562.
+Package hyperref Info: Backreferencing OFF on input line 4567.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4800.
+\c@Hy@tempcnt=\count186
+LaTeX Info: Redefining \url on input line 5159.
+\XeTeXLinkMargin=\dimen137
+
+(/usr/local/texlive/2020/texmf-dist/tex/generic/bitset/bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+
+(/usr/local/texlive/2020/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
+)
+))
+\Fld@menulength=\count187
+\Field@Width=\dimen138
+\Fld@charsize=\dimen139
+Package hyperref Info: Hyper figures OFF on input line 6430.
+Package hyperref Info: Link nesting OFF on input line 6435.
+Package hyperref Info: Hyper index ON on input line 6438.
+Package hyperref Info: backreferencing OFF on input line 6445.
+Package hyperref Info: Link coloring OFF on input line 6450.
+Package hyperref Info: Link coloring with OCG OFF on input line 6455.
+Package hyperref Info: PDF/A mode OFF on input line 6460.
+LaTeX Info: Redefining \ref on input line 6500.
+LaTeX Info: Redefining \pageref on input line 6504.
+
+(/usr/local/texlive/2020/texmf-dist/tex/generic/atbegshi/atbegshi.sty
+Package: atbegshi 2019/12/05 v1.19 At begin shipout hook (HO)
+)
+\Hy@abspage=\count188
+\c@Item=\count189
+\c@Hfootnote=\count190
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2020/01/14 v7.00d Hyperref driver for pdfTeX
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/atveryend/atveryend.sty
+Package: atveryend 2019-12-11 v1.11 Hooks at the very end of document (HO)
+Package atveryend Info: \enddocument detected (standard20110627).
+)
+\Fld@listcount=\count191
+\c@bookmark@seq@number=\count192
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+Package: rerunfilecheck 2019/12/05 v1.9 Rerun checks for auxiliary files (HO)
+
+(/usr/local/texlive/2020/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+86.
+)
+\Hy@SectionHShift=\skip54
+)
+
+Package hyperref Warning: Option `hyperindex' has already been used,
+(hyperref)                setting the option has no effect on input line 377.
+
+Package hyperref Info: Option `colorlinks' set `true' on input line 377.
+
+Package hyperref Warning: Option `pagebackref' has already been used,
+(hyperref)                setting the option has no effect on input line 377.
+
+Package hyperref Info: Option `linktocpage' set `true' on input line 377.
+Package hyperref Info: Option `plainpages' set `false' on input line 377.
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/base/makeidx.sty
+Package: makeidx 2014/09/29 v1.0m Standard LaTeX package
+)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2018/08/11 v1.3c Input encoding file
+\inpenc@prehook=\toks20
+\inpenc@posthook=\toks21
+)
+\@indexfile=\write3
+\openout3 = `Rd2.idx'.
+
+
+Writing index file Rd2.idx
+(/usr/local/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
+File: l3backend-pdfmode.def 2020-03-12 L3 backend support: PDF mode
+\l__kernel_color_stack_int=\count193
+\l__pdf_internal_box=\box49
+)
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpL5XPQ6/Rd2pdffa23
+256bb7d3/Rd2.aux)
+\openout1 = `Rd2.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Trying to load font information for T1+ptm on input line 8.
+
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/t1ptm.fd
+File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
+) (/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count194
+\scratchdimen=\dimen140
+\scratchbox=\box50
+\nofMPsegments=\count195
+\nofMParguments=\count196
+\everyMPshowfont=\toks22
+\MPscratchCnt=\count197
+\MPscratchDim=\dimen141
+\MPnumerator=\count198
+\makeMPintoPDFobject=\count199
+\everyMPtoPDFconversion=\toks23
+)
+\AtBeginShipoutBox=\box51
+Package hyperref Info: Link coloring ON on input line 8.
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/refcount/refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+)
+(/usr/local/texlive/2020/texmf-dist/tex/generic/gettitlestring/gettitlestring.s
+ty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+)
+\c@section@level=\count266
+)
+LaTeX Info: Redefining \ref on input line 8.
+LaTeX Info: Redefining \pageref on input line 8.
+LaTeX Info: Redefining \nameref on input line 8.
+
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpL5XPQ6/Rd2pdffa23
+256bb7d3/Rd2.out)
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpL5XPQ6/Rd2pdffa23
+256bb7d3/Rd2.out)
+\@outlinefile=\write4
+\openout4 = `Rd2.out'.
+
+LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 21
+.
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/inconsolata/t1zi4.fd
+File: t1zi4.fd 2018/01/14 T1/zi4 (Inconsolata)
+)
+LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
+(Font)              scaled to size 10.0pt on input line 21.
+Package textcomp Info: Symbol \textasciigrave not provided by
+(textcomp)             font family ptm in TS1 encoding.
+(textcomp)             Default family used instead on input line 28.
+Package textcomp Info: Symbol \textasciigrave not provided by
+(textcomp)             font family ptm in TS1 encoding.
+(textcomp)             Default family used instead on input line 28.
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 2
+8.
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
+LaTeX Font Info:    Trying to load font information for T1+phv on input line 41
+.
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/t1phv.fd
+File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
+
+
+LaTeX Warning: Font shape declaration has incorrect series value `mc'.
+               It should not contain an `m'! Please correct it.
+               Found on input line 20.
+
+
+LaTeX Warning: Font shape declaration has incorrect series value `mc'.
+               It should not contain an `m'! Please correct it.
+               Found on input line 23.
+
+
+LaTeX Warning: Font shape declaration has incorrect series value `mc'.
+               It should not contain an `m'! Please correct it.
+               Found on input line 26.
+
+
+LaTeX Warning: Font shape declaration has incorrect series value `mc'.
+               It should not contain an `m'! Please correct it.
+               Found on input line 46.
+
+)
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpL5XPQ6/Rd2pdffa23
+256bb7d3/Rd2.toc
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 1.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 1.
+ [1
+
+
+{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map}])
+\tf@toc=\write5
+\openout5 = `Rd2.toc'.
+
+ [2]
+Overfull \hbox (12.61926pt too wide) in paragraph at lines 88--91
+[]\T1/ptm/m/n/10 Value to start the op-ti-miza-tion. \T1/zi4/m/n/10 ff$fn(start
+ingvalue)\T1/ptm/m/n/10 , \T1/zi4/m/n/10 ff$gr(startingvalue)\T1/ptm/m/n/10 ,
+ []
+
+LaTeX Font Info:    Trying to load font information for TS1+zi4 on input line 1
+03.
+(/usr/local/texlive/2020/texmf-dist/tex/latex/inconsolata/ts1zi4.fd
+File: ts1zi4.fd 2018/01/14 TS1/zi4 (Inconsolata)
+)
+LaTeX Font Info:    Font shape `TS1/zi4/m/n' will be
+(Font)              scaled to size 10.0pt on input line 103.
+
+Overfull \hbox (180.96864pt too wide) in paragraph at lines 99--106
+\T1/ptm/m/n/10 fine with the de-fault op-tion which ba-si-cally cor-re-sponds t
+o \T1/zi4/m/n/10 mvQuad::createNIGrid(length(theta),\TS1/zi4/m/n/10 '\T1/zi4/m/
+n/10 GHe\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 ,k,\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 prod
+uct\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 )\T1/ptm/m/n/10 .
+ []
+
+
+Overfull \hbox (30.01932pt too wide) in paragraph at lines 113--114
+[]\T1/ptm/m/n/10 'sparse_trust' (de-fault): \T1/zi4/m/n/10 trustOptim::trust.op
+tim \T1/ptm/m/n/10 with \T1/zi4/m/n/10 method = \TS1/zi4/m/n/10 '\T1/zi4/m/n/10
+ sparse\TS1/zi4/m/n/10 ' 
+ []
+
+
+Overfull \hbox (66.3282pt too wide) in paragraph at lines 133--137
+[]\T1/ptm/m/n/10 When \T1/zi4/m/n/10 k = 1 \T1/ptm/m/n/10 the AGHQ method is a 
+Laplace ap-prox-i-ma-tion, and you should use the \T1/zi4/m/n/10 aghq::laplace_
+approximation
+ []
+
+
+Overfull \hbox (31.2681pt too wide) in paragraph at lines 133--137
+\T1/ptm/m/n/10 Ob-jects of class \T1/zi4/m/n/10 laplace \T1/ptm/m/n/10 have dif
+-fer-ent meth-ods suited to this case. See \T1/zi4/m/n/10 ?aghq::laplace_approx
+imation\T1/ptm/m/n/10 . 
+ []
+
+
+Overfull \hbox (0.69838pt too wide) in paragraph at lines 147--148
+[]\T1/zi4/m/n/10 nodesandweights\T1/ptm/m/n/10 : a dataframe con-tain-ing the n
+odes and weights for the adap-tive quadra-
+ []
+
+[3]
+Overfull \hbox (9.33022pt too wide) in paragraph at lines 178--192
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 get_log_normconst[][][](
+)\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 laplace_approximation[][][]()\T1/ptm/m/n/1
+0 , [][]\T1/zi4/m/n/10 marginal_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (40.36096pt too wide) in paragraph at lines 178--192
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 optimize_theta[][]
+[]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1/ptm/m/n/10 , [][]\
+T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (22.86096pt too wide) in paragraph at lines 178--192
+[][]\T1/zi4/m/n/10 print.aghq[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 print.
+laplacesummary[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 print.laplace[][][]()
+\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 summary.aghq[][][]()\T1/ptm/m/n/10 , [][]\T
+1/zi4/m/n/10 summary.laplace[][][]() 
+ []
+
+LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
+(Font)              scaled to size 9.0pt on input line 195.
+[4]
+Overfull \hbox (49.89989pt too wide) in paragraph at lines 265--270
+[]\T1/ptm/m/n/10 Other sum-maries: [][]\T1/zi4/m/n/10 compute_pdf_and_cdf[][][]
+()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 compute_quantiles[][][]()\T1/ptm/m/n/10 ,
+ [][]\T1/zi4/m/n/10 interpolate_marginal_posterior[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[5]
+Overfull \hbox (39.75941pt too wide) in paragraph at lines 314--314
+ []\T1/zi4/m/n/9 lambda1sd <- sqrt(compute_moment(norm_sparse_2d_7,ff = functio
+n(x) (exp(x) - lambdameans[1])^2))[1][] 
+ []
+
+
+Overfull \hbox (14.21867pt too wide) in paragraph at lines 363--368
+\T1/ptm/m/n/10 bian of the trans-for-ma-tion; if not pro-vided, this is done us
+-ing \T1/zi4/m/n/10 numDeriv::jacobian\T1/ptm/m/n/10 . 
+ []
+
+[6]
+Overfull \hbox (24.89989pt too wide) in paragraph at lines 385--390
+[]\T1/ptm/m/n/10 Other sum-maries: [][]\T1/zi4/m/n/10 compute_moment[][][]()\T1
+/ptm/m/n/10 , [][]\T1/zi4/m/n/10 compute_quantiles[][][]()\T1/ptm/m/n/10 , [][]
+\T1/zi4/m/n/10 interpolate_marginal_posterior[][][]()\T1/ptm/m/n/10 ,
+ []
+
+LaTeX Font Info:    Font shape `TS1/zi4/m/n' will be
+(Font)              scaled to size 9.0pt on input line 423.
+[7] [8]
+Overfull \hbox (34.89989pt too wide) in paragraph at lines 491--496
+[]\T1/ptm/m/n/10 Other sum-maries: [][]\T1/zi4/m/n/10 compute_moment[][][]()\T1
+/ptm/m/n/10 , [][]\T1/zi4/m/n/10 compute_pdf_and_cdf[][][]()\T1/ptm/m/n/10 , []
+[]\T1/zi4/m/n/10 interpolate_marginal_posterior[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[9]
+Overfull \hbox (9.92845pt too wide) in paragraph at lines 585--587
+[]\T1/zi4/m/n/10 ndConstruction\T1/ptm/m/n/10 : con-struct a mul-ti-vari-ate qu
+adra-ture rule us-ing a \T1/zi4/m/n/10 "product" \T1/ptm/m/n/10 rule or a \T1/z
+i4/m/n/10 "sparse"
+ []
+
+
+Overfull \hbox (36.07918pt too wide) in paragraph at lines 587--593
+\T1/ptm/m/n/10 chooses for you and should al-ways work well. The \TS1/zi4/m/n/1
+0 '\T1/zi4/m/n/10 polynomial\TS1/zi4/m/n/10 ' \T1/ptm/m/n/10 op-tion uses \T1/z
+i4/m/n/10 polynom::poly.calc()
+ []
+
+[10]
+Overfull \hbox (1.7371pt too wide) in paragraph at lines 653--655
+[]\T1/zi4/m/n/10 inner_method\T1/ptm/m/n/10 : op-ti-miza-tion method to use for
+ the \T1/zi4/m/n/10 W \T1/ptm/m/n/10 op-ti-miza-tion; same op-tions as for \T1/
+zi4/m/n/10 method\T1/ptm/m/n/10 .
+ []
+
+
+Overfull \hbox (36.07918pt too wide) in paragraph at lines 668--674
+\T1/ptm/m/n/10 chooses for you and should al-ways work well. The \TS1/zi4/m/n/1
+0 '\T1/zi4/m/n/10 polynomial\TS1/zi4/m/n/10 ' \T1/ptm/m/n/10 op-tion uses \T1/z
+i4/m/n/10 polynom::poly.calc()
+ []
+
+[11]
+Overfull \hbox (36.07918pt too wide) in paragraph at lines 738--744
+\T1/ptm/m/n/10 chooses for you and should al-ways work well. The \TS1/zi4/m/n/1
+0 '\T1/zi4/m/n/10 polynomial\TS1/zi4/m/n/10 ' \T1/ptm/m/n/10 op-tion uses \T1/z
+i4/m/n/10 polynom::poly.calc()
+ []
+
+[12] [13] [14]
+Overfull \hbox (38.85023pt too wide) in paragraph at lines 864--878
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/z
+i4/m/n/10 marginal_laplace_tmb[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 margi
+nal_laplace[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (10.36096pt too wide) in paragraph at lines 864--878
+[][]\T1/zi4/m/n/10 normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10
+ optimize_theta[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1
+/ptm/m/n/10 , [][]\T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 , [][]
+\T1/zi4/m/n/10 print.aghq[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (54.62833pt too wide) in paragraph at lines 901--907
+[]\T1/ptm/m/n/10 The method to use. De-fault is a \T1/zi4/m/n/10 k \T1/ptm/m/n/
+10 point poly-no-mial in-ter-polant us-ing \T1/zi4/m/n/10 polynom::poly.calc()\
+T1/ptm/m/n/10 .
+ []
+
+
+Overfull \hbox (71.9199pt too wide) in paragraph at lines 915--920
+[]\T1/ptm/m/n/10 Other sum-maries: [][]\T1/zi4/m/n/10 compute_moment[][][]()\T1
+/ptm/m/n/10 , [][]\T1/zi4/m/n/10 compute_pdf_and_cdf[][][]()\T1/ptm/m/n/10 , []
+[]\T1/zi4/m/n/10 compute_quantiles[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 m
+arginal_posterior[][][]() 
+ []
+
+[15]
+Overfull \hbox (12.61926pt too wide) in paragraph at lines 968--971
+[]\T1/ptm/m/n/10 Value to start the op-ti-miza-tion. \T1/zi4/m/n/10 ff$fn(start
+ingvalue)\T1/ptm/m/n/10 , \T1/zi4/m/n/10 ff$gr(startingvalue)\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (30.01932pt too wide) in paragraph at lines 985--986
+[]\T1/ptm/m/n/10 'sparse_trust' (de-fault): \T1/zi4/m/n/10 trustOptim::trust.op
+tim \T1/ptm/m/n/10 with \T1/zi4/m/n/10 method = \TS1/zi4/m/n/10 '\T1/zi4/m/n/10
+ sparse\TS1/zi4/m/n/10 ' 
+ []
+
+[16]
+Overfull \hbox (18.85023pt too wide) in paragraph at lines 1012--1026
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 marginal_laplace_tmb[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal_
+laplace[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (10.36096pt too wide) in paragraph at lines 1012--1026
+[][]\T1/zi4/m/n/10 normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10
+ optimize_theta[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1
+/ptm/m/n/10 , [][]\T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 , [][]
+\T1/zi4/m/n/10 print.aghq[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[17] [18]
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 1151--1165
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (10.36096pt too wide) in paragraph at lines 1151--1165
+[][]\T1/zi4/m/n/10 normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10
+ optimize_theta[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1
+/ptm/m/n/10 , [][]\T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 , [][]
+\T1/zi4/m/n/10 print.aghq[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[19]
+Overfull \hbox (12.61926pt too wide) in paragraph at lines 1249--1252
+[]\T1/ptm/m/n/10 Value to start the op-ti-miza-tion. \T1/zi4/m/n/10 ff$fn(start
+ingvalue)\T1/ptm/m/n/10 , \T1/zi4/m/n/10 ff$gr(startingvalue)\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (180.96864pt too wide) in paragraph at lines 1260--1267
+\T1/ptm/m/n/10 fine with the de-fault op-tion which ba-si-cally cor-re-sponds t
+o \T1/zi4/m/n/10 mvQuad::createNIGrid(length(theta),\TS1/zi4/m/n/10 '\T1/zi4/m/
+n/10 GHe\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 ,k,\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 prod
+uct\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 )\T1/ptm/m/n/10 .
+ []
+
+[20]
+Overfull \hbox (73.59853pt too wide) in paragraph at lines 1295--1299
+\T1/ptm/m/n/10 turn this off (us-ing \T1/zi4/m/n/10 ff$he() \T1/ptm/m/n/10 in-s
+tead, which you'll have to mod-ify your-self) us-ing \T1/zi4/m/n/10 default_con
+trol_tmb(numhessian
+ []
+
+
+Overfull \hbox (23.85023pt too wide) in paragraph at lines 1310--1324
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (10.36096pt too wide) in paragraph at lines 1310--1324
+[][]\T1/zi4/m/n/10 normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10
+ optimize_theta[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1
+/ptm/m/n/10 , [][]\T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 , [][]
+\T1/zi4/m/n/10 print.aghq[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[21]
+Overfull \hbox (180.96864pt too wide) in paragraph at lines 1356--1361
+\T1/ptm/m/n/10 fine with the de-fault op-tion which ba-si-cally cor-re-sponds t
+o \T1/zi4/m/n/10 mvQuad::createNIGrid(length(theta),\TS1/zi4/m/n/10 '\T1/zi4/m/
+n/10 GHe\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 ,k,\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 prod
+uct\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 )\T1/ptm/m/n/10 . 
+ []
+
+
+Overfull \hbox (131.9199pt too wide) in paragraph at lines 1376--1381
+[]\T1/ptm/m/n/10 Other sum-maries: [][]\T1/zi4/m/n/10 compute_moment[][][]()\T1
+/ptm/m/n/10 , [][]\T1/zi4/m/n/10 compute_pdf_and_cdf[][][]()\T1/ptm/m/n/10 , []
+[]\T1/zi4/m/n/10 compute_quantiles[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 i
+nterpolate_marginal_posterior[][][]() 
+ []
+
+[22]
+Overfull \hbox (6.87798pt too wide) in paragraph at lines 1425--1430
+\T1/ptm/m/n/10 with the quadra-ture points, weights, and nor-mal-iza-tion in-fo
+r-ma-tion. Like \T1/zi4/m/n/10 aghq::optimize_theta()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (180.96864pt too wide) in paragraph at lines 1456--1461
+\T1/ptm/m/n/10 fine with the de-fault op-tion which ba-si-cally cor-re-sponds t
+o \T1/zi4/m/n/10 mvQuad::createNIGrid(length(theta),\TS1/zi4/m/n/10 '\T1/zi4/m/
+n/10 GHe\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 ,k,\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 prod
+uct\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 )\T1/ptm/m/n/10 . 
+ []
+
+[23]
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 1488--1502
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (5.36096pt too wide) in paragraph at lines 1488--1502
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+optimize_theta[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1/
+ptm/m/n/10 , [][]\T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 , [][]\
+T1/zi4/m/n/10 print.aghq[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[24]
+Overfull \hbox (12.61926pt too wide) in paragraph at lines 1576--1579
+[]\T1/ptm/m/n/10 Value to start the op-ti-miza-tion. \T1/zi4/m/n/10 ff$fn(start
+ingvalue)\T1/ptm/m/n/10 , \T1/zi4/m/n/10 ff$gr(startingvalue)\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (30.01932pt too wide) in paragraph at lines 1586--1587
+[]\T1/ptm/m/n/10 'sparse_trust' (de-fault): \T1/zi4/m/n/10 trustOptim::trust.op
+tim \T1/ptm/m/n/10 with \T1/zi4/m/n/10 method = \TS1/zi4/m/n/10 '\T1/zi4/m/n/10
+ sparse\TS1/zi4/m/n/10 ' 
+ []
+
+
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 1619--1633
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (20.36096pt too wide) in paragraph at lines 1619--1633
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\
+T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 , []
+[]\T1/zi4/m/n/10 print.aghq[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[25]
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 1685--1699
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (45.36096pt too wide) in paragraph at lines 1685--1699
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 optimize_theta[][]
+[]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10
+ , [][]\T1/zi4/m/n/10 print.aghq[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 1700--1714
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (45.36096pt too wide) in paragraph at lines 1700--1714
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 optimize_theta[][]
+[]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10
+ , [][]\T1/zi4/m/n/10 print.aghq[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[26]
+Overfull \hbox (13.127pt too wide) in paragraph at lines 1755--1757
+[]\T1/ptm/m/n/10 Pretty print the object-- just gives some ba-sic in-for-ma-tio
+n and then sug-gests the user call \T1/zi4/m/n/10 summary(...)\T1/ptm/m/n/10 . 
+
+ []
+
+[27]
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 1779--1793
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (40.36096pt too wide) in paragraph at lines 1779--1793
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 optimize_theta[][]
+[]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1/ptm/m/n/10 , [][]\
+T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[28]
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 1858--1872
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (5.36096pt too wide) in paragraph at lines 1858--1872
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 optimize_theta[][]
+[]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1/ptm/m/n/10 , [][]\
+T1/zi4/m/n/10 print.aghq[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 1873--1887
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (5.36096pt too wide) in paragraph at lines 1873--1887
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 optimize_theta[][]
+[]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1/ptm/m/n/10 , [][]\
+T1/zi4/m/n/10 print.aghq[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[29]
+Overfull \hbox (13.127pt too wide) in paragraph at lines 1929--1931
+[]\T1/ptm/m/n/10 Pretty print the object-- just gives some ba-sic in-for-ma-tio
+n and then sug-gests the user call \T1/zi4/m/n/10 summary(...)\T1/ptm/m/n/10 . 
+
+ []
+
+
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 1953--1967
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (40.36096pt too wide) in paragraph at lines 1953--1967
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 optimize_theta[][]
+[]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1/ptm/m/n/10 , [][]\
+T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[30]
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 2032--2046
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (40.36096pt too wide) in paragraph at lines 2032--2046
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 optimize_theta[][]
+[]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1/ptm/m/n/10 , [][]\
+T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 2047--2061
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (40.36096pt too wide) in paragraph at lines 2047--2061
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 optimize_theta[][]
+[]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1/ptm/m/n/10 , [][]\
+T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[31]
+Overfull \hbox (59.65926pt too wide) in paragraph at lines 2105--2109
+\T1/ptm/m/n/10 over in a marginal Laplace ap-prox-i-ma-tion fit us-ing \T1/zi4/
+m/n/10 aghq::marginal_laplace \T1/ptm/m/n/10 or \T1/zi4/m/n/10 aghq::marginal_l
+aplace_tmb\T1/ptm/m/n/10 . 
+ []
+
+
+Overfull \hbox (26.25813pt too wide) in paragraph at lines 2132--2139
+[]\T1/ptm/m/n/10 Object from which to draw sam-ples. An ob-ject in-her-it-ing f
+rom class \T1/zi4/m/n/10 marginallaplace
+ []
+
+
+Overfull \hbox (24.8201pt too wide) in paragraph at lines 2132--2139
+\T1/ptm/m/n/10 (the re-sult of run-ning \T1/zi4/m/n/10 aghq::marginal_laplace \
+T1/ptm/m/n/10 or \T1/zi4/m/n/10 aghq::marginal_laplace_tmb\T1/ptm/m/n/10 ),
+ []
+
+[32]
+Overfull \hbox (26.33849pt too wide) in paragraph at lines 2151--2156
+\T1/ptm/m/n/10 draw sam-ples us-ing the in-verse CDF method), \TS1/zi4/m/n/10 '
+\T1/zi4/m/n/10 auto\TS1/zi4/m/n/10 ' \T1/ptm/m/n/10 (choose for you), \TS1/zi4/
+m/n/10 '\T1/zi4/m/n/10 polynomial\TS1/zi4/m/n/10 '
+ []
+
+
+Overfull \hbox (17.25974pt too wide) in paragraph at lines 2151--2156
+\T1/ptm/m/n/10 fault of \TS1/zi4/m/n/10 '\T1/zi4/m/n/10 auto\TS1/zi4/m/n/10 ' \
+T1/ptm/m/n/10 fig-ures this out for you. See \T1/zi4/m/n/10 interpolate_margina
+l_posterior()\T1/ptm/m/n/10 . 
+ []
+
+
+Overfull \hbox (7.17824pt too wide) in paragraph at lines 2157--2161
+\T1/ptm/m/n/10 com-po-si-tions of the Hes-sians are com-puted in par-al-lel us-
+ing \T1/zi4/m/n/10 parallel::mcapply\T1/ptm/m/n/10 ,
+ []
+
+[33] [34]
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 2292--2306
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (40.36096pt too wide) in paragraph at lines 2292--2306
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 optimize_theta[][]
+[]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1/ptm/m/n/10 , [][]\
+T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[35]
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 2378--2392
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (40.36096pt too wide) in paragraph at lines 2378--2392
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 optimize_theta[][]
+[]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1/ptm/m/n/10 , [][]\
+T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (43.85023pt too wide) in paragraph at lines 2393--2407
+[]\T1/ptm/m/n/10 Other quadra-ture: [][]\T1/zi4/m/n/10 aghq[][][]()\T1/ptm/m/n/
+10 , [][]\T1/zi4/m/n/10 get_log_normconst[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m
+/n/10 laplace_approximation[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 marginal
+_laplace_tmb[][][]()\T1/ptm/m/n/10 ,
+ []
+
+
+Overfull \hbox (40.36096pt too wide) in paragraph at lines 2393--2407
+[][]\T1/zi4/m/n/10 marginal_laplace[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 
+normalize_logpost[][][]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 optimize_theta[][]
+[]()\T1/ptm/m/n/10 , [][]\T1/zi4/m/n/10 plot.aghq[][][]()\T1/ptm/m/n/10 , [][]\
+T1/zi4/m/n/10 print.aghqsummary[][][]()\T1/ptm/m/n/10 ,
+ []
+
+[36]
+Overfull \hbox (35.96817pt too wide) in paragraph at lines 2464--2467
+\T1/ptm/m/n/10 date. Will ba-si-cally val-i-date against the ar-gu-ments re-qui
+red by \T1/zi4/m/n/10 aghq\T1/ptm/m/n/10 , \T1/zi4/m/n/10 marginal_laplace\T1/p
+tm/m/n/10 ,
+ []
+
+
+Overfull \hbox (77.20955pt too wide) in paragraph at lines 2473--2476
+[]\T1/ptm/m/n/10 To users read-ing this: just use \T1/zi4/m/n/10 default_contro
+l()\T1/ptm/m/n/10 , \T1/zi4/m/n/10 default_control_marglaplace()\T1/ptm/m/n/10 
+, or \T1/zi4/m/n/10 default_control_tmb()
+ []
+
+
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpL5XPQ6/Rd2pdffa23
+256bb7d3/Rd2.ind [37] [38
+
+])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 2491.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 2491.
+
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpL5XPQ6/Rd2pdffa23
+256bb7d3/Rd2.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 2491.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 2491.
+
+Package rerunfilecheck Info: File `Rd2.out' has not changed.
+(rerunfilecheck)             Checksum: 27E43B832B0F8F83BFC9D0BFC529910D;1871.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 2491.
+ ) 
+Here is how much of TeX's memory you used:
+ 6315 strings out of 480608
+ 96423 string characters out of 5903631
+ 357547 words of memory out of 5000000
+ 21806 multiletter control sequences out of 15000+600000
+ 567814 words of font info for 61 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 44i,6n,40p,288b,604s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/
+usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texli
+ve/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}{/usr/local/texliv
+e/2020/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}</usr/local/texlive/2
+020/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/local/
+texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/t
+exlive/2020/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/tex
+live/2020/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/20
+20/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2020/texmf-d
+ist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/
+type1/urw/times/utmr8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/
+times/utmri8a.pfb>
+Output written on Rd2.pdf (38 pages, 194232 bytes).
+PDF statistics:
+ 1062 PDF objects out of 1200 (max. 8388607)
+ 1003 compressed objects within 11 object streams
+ 260 named destinations out of 1000 (max. 500000)
+ 217 words of extra memory for PDF output out of 10000 (max. 10000000)
+

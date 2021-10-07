@@ -1030,9 +1030,13 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid =
 
   validate_control(control,type='tmb')
 
+  # Get names from TMB function template
+  thetanames <- NULL
+  if (exists('par',ff)) thetanames <- ff$par
+
   # Hessian
   if (control$numhessian) {
-    ff$he <- function(theta) numDeriv::jacobian(ff$gr,theta,method = 'simple')
+    ff$he <- function(theta) numDeriv::jacobian(ff$gr,theta,method = 'Richardson')
   }
   ## Do aghq ##
   # The aghq
@@ -1048,8 +1052,11 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid =
   modesandhessians$mode <- vector(mode = 'list',length = nrow(distinctthetas))
   modesandhessians$H <- vector(mode = 'list',length = nrow(distinctthetas))
 
-  thetanames <- colnames(distinctthetas)
-
+  if (is.null(thetanames)) {
+    thetanames <- colnames(distinctthetas)
+  } else {
+    colnames(distinctthetas) <- thetanames
+  }
 
     for (i in 1:nrow(distinctthetas)) {
       # Get the theta

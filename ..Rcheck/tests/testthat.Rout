@@ -1,0 +1,199 @@
+
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(testthat)
+> library(aghq)
+> 
+> test_check("aghq")
+Beginning optimization
+
+iter         f        nrm_gr                     status
+   1   22.294265    0.000902                 Continuing
+   2   22.294265    0.000000                 Continuing
+
+Iteration has terminated
+   2   22.294265    0.000000                    Success
+
+Beginning optimization
+
+iter         f        nrm_gr                     status
+   1   22.295171    0.298580   Continuing - TR contract
+   2   22.295171    0.298580   Continuing - TR contract
+   3   22.295171    0.298580   Continuing - TR contract
+   4   22.295171    0.298580   Continuing - TR contract
+   5   22.295171    0.298580   Continuing - TR contract
+   6   22.295171    0.298580   Continuing - TR contract
+   7   22.295171    0.298580   Continuing - TR contract
+   8   22.295171    0.298580   Continuing - TR contract
+   9   22.295171    0.298580   Continuing - TR contract
+  10   22.295171    0.298580   Continuing - TR contract
+  11   22.294300    0.058451                 Continuing
+  12   22.294265    0.000177                 Continuing
+  13   22.294265    0.000000                 Continuing
+  14   22.294265    0.000000   Continuing - TR contract
+  15   22.294265    0.000000   Continuing - TR contract
+  16   22.294265    0.000000   Continuing - TR contract
+  17   22.294265    0.000000   Continuing - TR contract
+  18   22.294265    0.000000   Continuing - TR contract
+  19   22.294265    0.000000   Continuing - TR contract
+  20   22.294265    0.000000   Continuing - TR contract
+  21   22.294265    0.000000   Continuing - TR contract
+  22   22.294265    0.000000   Continuing - TR contract
+  23   22.294265    0.000000   Continuing - TR contract
+  24   22.294265    0.000000   Continuing - TR contract
+  25   22.294265    0.000000   Continuing - TR contract
+
+iter         f        nrm_gr                     status
+  26   22.294265    0.000000   Continuing - TR contract
+  27   22.294265    0.000000   Continuing - TR contract
+  28   22.294265    0.000000   Continuing - TR contract
+  29   22.294265    0.000000   Continuing - TR contract
+  30   22.294265    0.000000   Continuing - TR contract
+  31   22.294265    0.000000   Continuing - TR contract
+  32   22.294265    0.000000   Continuing - TR contract
+
+Iteration has terminated
+  32   22.294265    0.000000Radius of trust region is less than stop.trust.radius
+
+Beginning optimization
+
+iter         f        nrm_gr                     status
+   1   24.982155    0.268296                 Continuing
+   2   24.980602    0.001541                 Continuing
+   3   24.980602    0.000000                 Continuing
+   4   24.980602    0.000000   Continuing - TR contract
+   5   24.980602    0.000000   Continuing - TR contract
+   6   24.980602    0.000000   Continuing - TR contract
+   7   24.980602    0.000000   Continuing - TR contract
+   8   24.980602    0.000000   Continuing - TR contract
+   9   24.980602    0.000000   Continuing - TR contract
+  10   24.980602    0.000000   Continuing - TR contract
+  11   24.980602    0.000000   Continuing - TR contract
+  12   24.980602    0.000000   Continuing - TR contract
+  13   24.980602    0.000000   Continuing - TR contract
+  14   24.980602    0.000000   Continuing - TR contract
+  15   24.980602    0.000000   Continuing - TR contract
+  16   24.980602    0.000000   Continuing - TR contract
+  17   24.980602    0.000000   Continuing - TR contract
+  18   24.980602    0.000000   Continuing - TR contract
+  19   24.980602    0.000000   Continuing - TR contract
+  20   24.980602    0.000000   Continuing - TR contract
+  21   24.980602    0.000000   Continuing - TR contract
+  22   24.980602    0.000000   Continuing - TR contract
+  23   24.980602    0.000000   Continuing - TR contract
+  24   24.980602    0.000000   Continuing - TR contract
+  25   24.980602    0.000000   Continuing - TR contract
+
+iter         f        nrm_gr                     status
+  26   24.980602    0.000000   Continuing - TR contract
+  27   24.980602    0.000000   Continuing - TR contract
+  28   24.980602    0.000000   Continuing - TR contract
+  29   24.980602    0.000000   Continuing - TR contract
+  30   24.980602    0.000000   Continuing - TR contract
+  31   24.980602    0.000000   Continuing - TR contract
+  32   24.980602    0.000000   Continuing - TR contract
+
+Iteration has terminated
+  32   24.980602    0.000000Radius of trust region is less than stop.trust.radius
+
+Beginning optimization
+
+iter         f        nrm_gr                     status
+   1   25.276860    3.891686   Continuing - TR contract
+   2   25.276860    3.891686   Continuing - TR contract
+   3   25.276860    3.891686   Continuing - TR contract
+   4   25.276860    3.891686   Continuing - TR contract
+   5   25.276860    3.891686   Continuing - TR contract
+   6   24.980604    0.009185                 Continuing
+   7   24.980604    0.009185   Continuing - TR contract
+   8   24.980604    0.009185   Continuing - TR contract
+   9   24.980604    0.009185   Continuing - TR contract
+  10   24.980604    0.009185   Continuing - TR contract
+  11   24.980604    0.009185   Continuing - TR contract
+  12   24.980604    0.009185   Continuing - TR contract
+  13   24.980604    0.009185   Continuing - TR contract
+  14   24.980604    0.009185   Continuing - TR contract
+  15   24.980604    0.009185   Continuing - TR contract
+  16   24.980602    0.001017                 Continuing
+  17   24.980602    0.000020                 Continuing
+  18   24.980602    0.000000                 Continuing
+  19   24.980602    0.000000                 Continuing
+
+Iteration has terminated
+  19   24.980602    0.000000                    Success
+
+Beginning optimization
+
+iter         f        nrm_gr                     status
+   1   36.248678    1.085856                 Continuing
+   2   36.219043    0.027173                 Continuing
+   3   36.219023    0.000019                 Continuing
+   4   36.219023    0.000000                 Continuing
+
+Iteration has terminated
+   4   36.219023    0.000000                    Success
+
+Beginning optimization
+
+iter         f        nrm_gr                     status
+   1   37.806326    8.797695   Continuing - TR contract
+   2   37.806326    8.797695   Continuing - TR contract
+   3   37.806326    8.797695   Continuing - TR contract
+   4   37.806326    8.797695   Continuing - TR contract
+   5   36.266498    1.383027                 Continuing
+   6   36.266498    1.383027   Continuing - TR contract
+   7   36.266498    1.383027   Continuing - TR contract
+   8   36.235038    0.864961                 Continuing
+   9   36.220710    0.279083                 Continuing
+  10   36.220710    0.279083   Continuing - TR contract
+  11   36.220710    0.279083   Continuing - TR contract
+  12   36.220710    0.279083   Continuing - TR contract
+  13   36.219089    0.054231     Continuing - TR expand
+  14   36.219023    0.002561                 Continuing
+  15   36.219023    0.000294                 Continuing
+  16   36.219023    0.000000                 Continuing
+  17   36.219023    0.000000   Continuing - TR contract
+  18   36.219023    0.000000   Continuing - TR contract
+  19   36.219023    0.000000   Continuing - TR contract
+  20   36.219023    0.000000   Continuing - TR contract
+  21   36.219023    0.000000   Continuing - TR contract
+  22   36.219023    0.000000   Continuing - TR contract
+  23   36.219023    0.000000   Continuing - TR contract
+  24   36.219023    0.000000   Continuing - TR contract
+  25   36.219023    0.000000   Continuing - TR contract
+
+iter         f        nrm_gr                     status
+  26   36.219023    0.000000   Continuing - TR contract
+  27   36.219023    0.000000   Continuing - TR contract
+  28   36.219023    0.000000   Continuing - TR contract
+  29   36.219023    0.000000   Continuing - TR contract
+  30   36.219023    0.000000   Continuing - TR contract
+  31   36.219023    0.000000   Continuing - TR contract
+  32   36.219023    0.000000   Continuing - TR contract
+  33   36.219023    0.000000   Continuing - TR contract
+  34   36.219023    0.000000   Continuing - TR contract
+  35   36.219023    0.000000   Continuing - TR contract
+  36   36.219023    0.000000   Continuing - TR contract
+  37   36.219023    0.000000   Continuing - TR contract
+
+Iteration has terminated
+  37   36.219023    0.000000Radius of trust region is less than stop.trust.radius
+
+> 
+> proc.time()
+   user  system elapsed 
+  4.337   0.352   4.632 
