@@ -76,15 +76,12 @@
 #' @importFrom methods as
 #' @export
 optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
+  ffa <- ff
   # Negate it if asked
   if (control$negate) {
-    ffa <- list(
-      fn = function(theta) -1 * ff$fn(theta),
-      gr = function(theta) -1 * ff$gr(theta),
-      he = function(theta) -1 * ff$he(theta)
-    )
-  } else {
-    ffa <- ff
+    ffa$fn = function(theta) -1 * ff$fn(theta)
+    ffa$gr = function(theta) -1 * ff$gr(theta)
+    ffa$he = function(theta) -1 * ff$he(theta)
   }
   # Confusing, this negation is separate from the above
   # This one is so that the optimization receives the negative logpost

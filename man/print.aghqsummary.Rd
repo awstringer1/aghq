@@ -64,8 +64,10 @@ Other quadrature:
 \code{\link{print.aghq}()},
 \code{\link{print.laplacesummary}()},
 \code{\link{print.laplace}()},
+\code{\link{print.marginallaplacesummary}()},
 \code{\link{summary.aghq}()},
-\code{\link{summary.laplace}()}
+\code{\link{summary.laplace}()},
+\code{\link{summary.marginallaplace}()}
 
 Other quadrature: 
 \code{\link{aghq}()},
@@ -79,7 +81,9 @@ Other quadrature:
 \code{\link{print.aghq}()},
 \code{\link{print.laplacesummary}()},
 \code{\link{print.laplace}()},
+\code{\link{print.marginallaplacesummary}()},
 \code{\link{summary.aghq}()},
-\code{\link{summary.laplace}()}
+\code{\link{summary.laplace}()},
+\code{\link{summary.marginallaplace}()}
 }
 \concept{quadrature}

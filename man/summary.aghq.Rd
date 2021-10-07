@@ -81,6 +81,8 @@ Other quadrature:
 \code{\link{print.aghq}()},
 \code{\link{print.laplacesummary}()},
 \code{\link{print.laplace}()},
-\code{\link{summary.laplace}()}
+\code{\link{print.marginallaplacesummary}()},
+\code{\link{summary.laplace}()},
+\code{\link{summary.marginallaplace}()}
 }
 \concept{quadrature}

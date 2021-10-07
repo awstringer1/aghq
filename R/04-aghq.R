@@ -342,14 +342,14 @@ print.aghqsummary <- function(x,...) {
   cat("AGHQ on a",x$dim,"dimensional posterior with ",x$quadpoints,"quadrature points\n\n")
   cat("The posterior mode is:",x$mode,"\n\n")
   cat("The log of the normalizing constant/marginal likelihood is:",x$lognormconst,"\n\n")
-  cat("The posterior Hessian at the mode is:\n")
-  print(as.matrix(x$hessian))
-  cat("\n")
+  # cat("The posterior Hessian at the mode is:\n")
+  # print(as.matrix(x$hessian))
+  # cat("\n")
   cat("The covariance matrix used for the quadrature is...\n")
   print(as.matrix(x$covariance))
-  cat("\n")
-  cat("...and its Cholesky is:\n")
-  print(as.matrix(x$cholesky))
+  # cat("\n")
+  # cat("...and its Cholesky is:\n")
+  # print(as.matrix(x$cholesky))
   cat("\n")
   cat("Here are some moments and quantiles for theta:\n\n")
   print(x$summarytable)
@@ -1080,4 +1080,172 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid =
 
   class(quad) <- c("marginallaplace","aghq")
   quad
+}
+
+#' Summary statistics for models using marginal Laplace approximations
+#'
+#' The \code{summary.marginallaplace} calls \code{summary.aghq}, but also computes
+#' summary statistics of the random effects, by drawing from their approximate
+#' posterior using \code{aghq::sample_marginal} with the specified number
+#' of samples.
+#'
+#' @param object Object inheriting from **both** classes \code{aghq} and \code{marginallaplace},
+#' for example as returned by \code{aghq::marginal_laplace} or \code{aghq::marginal_laplace_tmb}.
+#' @param M Number of samples to use to compute summary statistics of the random effects.
+#' Default \code{1000}. Lower runs faster, higher is more accurate.
+#' @param max_print Sometimes there are a lot of random effects. If there are more random
+#' effects than \code{max_print}, the random effects aren't summarized, and a note is printed
+#' to this effect. Default \code{30}.
+#' @param ... not used.
+#'
+#' @return A list containing an object of class \code{aghqsummary} (see \code{summary.aghq})
+#' plus the following objects:
+#'
+#' @family quadrature
+#'
+#' @examples
+#' logfteta2d <- function(eta,y) {
+#'   # eta is now (eta1,eta2)
+#'   # y is now (y1,y2)
+#'   n <- length(y)
+#'   n1 <- ceiling(n/2)
+#'   n2 <- floor(n/2)
+#'   y1 <- y[1:n1]
+#'   y2 <- y[(n1+1):(n1+n2)]
+#'   eta1 <- eta[1]
+#'   eta2 <- eta[2]
+#'   sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+#'     sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+#' }
+#' set.seed(84343124)
+#' n1 <- 5
+#' n2 <- 5
+#' n <- n1+n2
+#' y1 <- rpois(n1,5)
+#' y2 <- rpois(n2,5)
+#
+#' objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+#' objfunc2dmarg <- function(W,theta) objfunc2d(c(W,theta))
+#' objfunc2dmarggr <- function(W,theta) {
+#'   fn <- function(W) objfunc2dmarg(W,theta)
+#'   numDeriv::grad(fn,W)
+#' }
+#' objfunc2dmarghe <- function(W,theta) {
+#'   fn <- function(W) objfunc2dmarg(W,theta)
+#'   numDeriv::hessian(fn,W)
+#' }
+#'
+#' funlist2dmarg <- list(
+#'   fn = objfunc2dmarg,
+#'   gr = objfunc2dmarggr,
+#'   he = objfunc2dmarghe
+#' )
+#'
+#' themarginallaplace <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 0))
+#' summary(themarginallaplace)
+#' @export
+#'
+summary.marginallaplace <- function(object,M=1e03,max_print=30,...) {
+
+  p <- length(object$modesandhessians$mode[[1]])
+  summ <- aghq:::summary.aghq(object,...)
+  if (p > max_print) {
+    cat(paste0("There are ",p," random effects, but max_print = ",max_print,", so not computing their summary information.\nSet max_print higher than ",p," if you would like to summarize the random effects.\n"))
+    return(summ)
+  }
+
+  samps <- aghq::sample_marginal(object,M,...)
+  means <- apply(samps$samps,1,mean)
+  medians <- apply(samps$samps,1,median)
+  sds <- apply(samps$samps,1,sd)
+  quants <- t(apply(samps$samps,1,quantile,probs = c(.025,.975)))
+
+  modes <- with(object,mapply(modesandhessians$mode,exp(normalized_posterior$nodesandweights$logpost_normalized)*normalized_posterior$nodesandweights$weights,FUN = '*'))
+  if (is.array(modes)) {
+    modes <- apply(modes,1,sum)
+  } else {
+    modes <- sum(modes)
+  }
+
+  randomeffectsummary <- data.frame(
+    mean = means,
+    median = medians,
+    mode = modes,
+    sd = sds,
+    `2.5%` = quants[ ,1],
+    `97.5%` = quants[ ,2]
+  )
+  colnames(randomeffectsummary) <- colnames(summ$summarytable)
+
+  out <- list(
+    aghqsummary = summ,
+    randomeffectsummary = randomeffectsummary,
+    info = c("M" = M,"max_print" = max_print)
+  )
+  class(out) <- "marginallaplacesummary"
+  out
+}
+
+#' Summary statistics for models using marginal Laplace approximations
+#'
+#' The \code{summary.marginallaplace} calls \code{summary.aghq}, but also computes
+#' summary statistics of the random effects, by drawing from their approximate
+#' posterior using \code{aghq::sample_marginal} with the specified number
+#' of samples.
+#'
+#' @param x Object of class \code{marginallaplacesummary} returned by calling
+#' \code{summary} on an object of class \code{marginallaplace}.
+#' @param ... not used.
+#'
+#' @return Nothing. Prints contents.
+#'
+#' @family quadrature
+#'
+#' @examples
+#' logfteta2d <- function(eta,y) {
+#'   # eta is now (eta1,eta2)
+#'   # y is now (y1,y2)
+#'   n <- length(y)
+#'   n1 <- ceiling(n/2)
+#'   n2 <- floor(n/2)
+#'   y1 <- y[1:n1]
+#'   y2 <- y[(n1+1):(n1+n2)]
+#'   eta1 <- eta[1]
+#'   eta2 <- eta[2]
+#'   sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+#'     sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+#' }
+#' set.seed(84343124)
+#' n1 <- 5
+#' n2 <- 5
+#' n <- n1+n2
+#' y1 <- rpois(n1,5)
+#' y2 <- rpois(n2,5)
+#
+#' objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+#' objfunc2dmarg <- function(W,theta) objfunc2d(c(W,theta))
+#' objfunc2dmarggr <- function(W,theta) {
+#'   fn <- function(W) objfunc2dmarg(W,theta)
+#'   numDeriv::grad(fn,W)
+#' }
+#' objfunc2dmarghe <- function(W,theta) {
+#'   fn <- function(W) objfunc2dmarg(W,theta)
+#'   numDeriv::hessian(fn,W)
+#' }
+#'
+#' funlist2dmarg <- list(
+#'   fn = objfunc2dmarg,
+#'   gr = objfunc2dmarggr,
+#'   he = objfunc2dmarghe
+#' )
+#'
+#' themarginallaplace <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 0))
+#' summary(themarginallaplace)
+#' @export
+#'
+print.marginallaplacesummary <- function(x,...) {
+  cat(paste0("Fixed effects:\n"))
+  print(x$aghqsummary)
+  cat(paste0("Random effects, based on ",x$info['M']," approximate posterior samples:\n"))
+  print(x$randomeffectsummary)
 }
