@@ -940,7 +940,9 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
     )
 
     utils::capture.output(lap <- laplace_approximation(ffinner,Wstart,control = default_control(method = control$inner_method,negate=FALSE)))
-    modesandhessians[i,'mode'] <- list(list(lap$optresults$mode))
+    mtmp <- lap$optresults$mode
+    names(mtmp) <- paste0("W",1:length(mtmp))
+    modesandhessians[i,'mode'] <- list(list(mtmp))
     modesandhessians[i,'H'] <- list(list(lap$optresults$hessian))
     modesandhessians[i,'logpost'] <- as.numeric(lap$lognormconst)
 
@@ -1148,7 +1150,7 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid =
 summary.marginallaplace <- function(object,M=1e03,max_print=30,...) {
 
   p <- length(object$modesandhessians$mode[[1]])
-  summ <- aghq:::summary.aghq(object,...)
+  summ <- summary.aghq(object,...)
   if (p > max_print) {
     cat(paste0("There are ",p," random effects, but max_print = ",max_print,", so not computing their summary information.\nSet max_print higher than ",p," if you would like to summarize the random effects.\n"))
     return(summ)
@@ -1156,9 +1158,9 @@ summary.marginallaplace <- function(object,M=1e03,max_print=30,...) {
 
   samps <- aghq::sample_marginal(object,M,...)
   means <- apply(samps$samps,1,mean)
-  medians <- apply(samps$samps,1,median)
-  sds <- apply(samps$samps,1,sd)
-  quants <- t(apply(samps$samps,1,quantile,probs = c(.025,.975)))
+  medians <- apply(samps$samps,1,stats::median)
+  sds <- apply(samps$samps,1,stats::sd)
+  quants <- t(apply(samps$samps,1,stats::quantile,probs = c(.025,.975)))
 
   modes <- with(object,mapply(modesandhessians$mode,exp(normalized_posterior$nodesandweights$logpost_normalized)*normalized_posterior$nodesandweights$weights,FUN = '*'))
   if (is.array(modes)) {
@@ -1176,6 +1178,7 @@ summary.marginallaplace <- function(object,M=1e03,max_print=30,...) {
     `97.5%` = quants[ ,2]
   )
   colnames(randomeffectsummary) <- colnames(summ$summarytable)
+  rownames(randomeffectsummary) <- names(object$modesandhessians$mode[[1]])
 
   out <- list(
     aghqsummary = summ,
@@ -1244,8 +1247,10 @@ summary.marginallaplace <- function(object,M=1e03,max_print=30,...) {
 #' @export
 #'
 print.marginallaplacesummary <- function(x,...) {
+  cat("\n==========================================================\n\n")
   cat(paste0("Fixed effects:\n"))
   print(x$aghqsummary)
+  cat("==========================================================\n\n")
   cat(paste0("Random effects, based on ",x$info['M']," approximate posterior samples:\n"))
   print(x$randomeffectsummary)
 }

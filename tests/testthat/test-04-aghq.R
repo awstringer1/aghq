@@ -134,4 +134,32 @@ test_that("Quadrature works",{
 
   # Not modifying the grid
   expect_equal(gg1$features$move,gg7$features$move)
+
+  # Test summary of marglaplace
+  expect_equal(names(mlsumm1),c("aghqsummary","randomeffectsummary","info"))
+  expect_equal(names(mlsumm2),c("aghqsummary","randomeffectsummary","info"))
+  expect_equal(names(mlsumm3),c("aghqsummary","randomeffectsummary","info"))
+
+  expect_is(mlsumm1,"marginallaplacesummary")
+  expect_is(mlsumm2,"marginallaplacesummary")
+  expect_is(mlsumm3,"marginallaplacesummary")
+  expect_is(mlsumm4,"aghqsummary")
+  expect_equal(nrow(mlsumm1$randomeffectsummary),1)
+  expect_equal(nrow(mlsumm2$randomeffectsummary),2)
+  expect_equal(nrow(mlsumm3$randomeffectsummary),1)
+
+  expect_equal(rownames(mlsumm1$randomeffectsummary),"W1")
+  expect_equal(rownames(mlsumm2$randomeffectsummary),c("W1","W2"))
+  expect_equal(rownames(mlsumm3$randomeffectsummary),"W1")
+
+  expect_equal(mlsumm1$info["M"],c("M" = 1000))
+  expect_equal(mlsumm2$info["M"],c("M" = 1000))
+  expect_equal(mlsumm3$info["M"],c("M" = 100))
+
+  expect_output(summary(themarginallaplace3d_1,max_print=1))
+
+  # Test naming in marginallaplace
+  expect_equal(names(themarginallaplace$modesandhessians$mode[[1]]),"W1")
+  expect_equal(names(themarginallaplace3d_1$modesandhessians$mode[[1]]),c("W1","W2"))
+
 })

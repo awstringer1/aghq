@@ -466,3 +466,10 @@ badcontrol3_tmb$negate <- NULL
 aghq_normconst1 <- aghq(funlist3d,5,c(0,0,0),control = default_control(onlynormconst = TRUE))
 marglaplace_normconst1 <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 0),control = default_control_marglaplace(onlynormconst = TRUE))
 
+## Test summary for marglaplace
+mlsumm1 <- summary(themarginallaplace)
+mlsumm2 <- summary(themarginallaplace3d_1)
+mlsumm3 <- summary(themarginallaplace,M=100)
+mlsumm4 <- summary(themarginallaplace3d_1,max_print=1)
+
+
