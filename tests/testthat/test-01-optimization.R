@@ -65,11 +65,29 @@ test_that("optimizations works", {
   expect_true(all(opt_controlworks1$mode == opt_controlworks2$mode))
   expect_true(all(opt_controlworks1$hessian == opt_controlworks2$hessian))
   expect_true(all(opt_controlworks1$mode == opt_controlworks3$mode))
+
+  expect_equal(with(opt_controlworks1,ff$fn(mode)),with(opt_controlworks2,ff$fn(mode)))
+  expect_equal(with(opt_controlworks1,ff$fn(mode)),with(opt_controlworks3,ff$fn(mode)))
+
+  expect_equal(with(opt_controlworks1,ff$fn(mode)),-1*funlist3dneg$fn(opt_controlworks1$mode))
+  expect_equal(with(opt_controlworks2,ff$fn(mode)),-1*funlist3dneg$fn(opt_controlworks2$mode))
+  expect_equal(with(opt_controlworks3,ff$fn(mode)),-1*funlist3dneg$fn(opt_controlworks3$mode))
+
+
+  expect_true(all(eigen(opt_controlworks2$hessian)$values > 0))
   # Be a little tolerant of the numeric hessian
   expect_lt(sum(abs(opt_controlworks1$hessian - opt_controlworks3$hessian)),.01)
 
   expect_equal(get_log_normconst(aghq_controlworks1),get_log_normconst(aghq_controlworks2))
   expect_equal(get_log_normconst(aghq_controlworks1),get_log_normconst(aghq_controlworks3))
+
+  expect_true(all(opt_controlworks1$mode == aghq_controlworks1$optresults$mode))
+  expect_true(all(opt_controlworks2$mode == aghq_controlworks2$optresults$mode))
+  expect_true(all(opt_controlworks3$mode == aghq_controlworks3$optresults$mode))
+
+  expect_equal(with(aghq_controlworks1$optresults,ff$fn(mode)),-1*funlist3dneg$fn(opt_controlworks1$mode))
+  expect_equal(with(aghq_controlworks2$optresults,ff$fn(mode)),-1*funlist3dneg$fn(opt_controlworks2$mode))
+  expect_equal(with(aghq_controlworks3$optresults,ff$fn(mode)),-1*funlist3dneg$fn(opt_controlworks3$mode))
 
 
 
