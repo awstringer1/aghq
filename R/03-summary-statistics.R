@@ -661,8 +661,8 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpo
   samps <- Reduce(cbind,samps)
   samps <- samps[ ,ord]
 
-  theta <- simlist[k,paste0('theta',seq(1,length(grep('theta',colnames(simlist)))))]
-
+  # theta <- simlist[k, paste0("theta", seq(1, length(grep("theta",colnames(simlist)))))]
+  theta <- simlist[k, 1:(ncol(simlist)-5)]
   # In one dimension, R's indexing is not type consistent
   if (!is.matrix(samps)) {
     samps <- rbind(samps)
