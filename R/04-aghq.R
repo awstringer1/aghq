@@ -1178,7 +1178,9 @@ summary.marginallaplace <- function(object,M=1e03,max_print=30,...) {
     `97.5%` = quants[ ,2]
   )
   colnames(randomeffectsummary) <- colnames(summ$summarytable)
-  rownames(randomeffectsummary) <- names(object$modesandhessians$mode[[1]])
+  rownames(randomeffectsummary) <- NULL
+
+  randomeffectsummary$variable <- names(object$modesandhessians$mode[[1]])
 
   out <- list(
     aghqsummary = summ,

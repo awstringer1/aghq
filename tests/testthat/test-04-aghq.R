@@ -148,9 +148,9 @@ test_that("Quadrature works",{
   expect_equal(nrow(mlsumm2$randomeffectsummary),2)
   expect_equal(nrow(mlsumm3$randomeffectsummary),1)
 
-  expect_equal(rownames(mlsumm1$randomeffectsummary),"W1")
-  expect_equal(rownames(mlsumm2$randomeffectsummary),c("W1","W2"))
-  expect_equal(rownames(mlsumm3$randomeffectsummary),"W1")
+  expect_equal(mlsumm1$randomeffectsummary$variable,"W1")
+  expect_equal(mlsumm2$randomeffectsummary$variable,c("W1","W2"))
+  expect_equal(mlsumm3$randomeffectsummary$variable,"W1")
 
   expect_equal(mlsumm1$info["M"],c("M" = 1000))
   expect_equal(mlsumm2$info["M"],c("M" = 1000))
