@@ -23,6 +23,8 @@ This helps prevent further cryptic downstream errors.
 
 - Added a `onlynormconst` option to `aghq` and related functions. Simply returns the numeric value of the log integral, avoiding all the extra stuff, at greater speed.
 
+- Added a new summary method for objects of class `marginallaplace`, that includes information on the random effects.
+
 ## Bug fixes
 
 - `aghq::laplace_approximation()` had a typo and was returning the wrong value. This has been fixed and tests added for its accuracy based on an example with a known answer.

@@ -1054,15 +1054,21 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid =
   if (!is.data.frame(distinctthetas)) distinctthetas <- data.frame(theta1 = distinctthetas)
 
   modesandhessians <- distinctthetas
-  modesandhessians$mode <- vector(mode = 'list',length = nrow(distinctthetas))
-  modesandhessians$H <- vector(mode = 'list',length = nrow(distinctthetas))
-
   if (is.null(thetanames)) {
     thetanames <- colnames(distinctthetas)
   } else {
-    colnames(modesandhessians)[colnames(modesandhessians) == colnames(distinctthetas)] <- thetanames
+    colnames(modesandhessians) <- thetanames
     colnames(quad$normalized_posterior$nodesandweights)[grep('theta',colnames(quad$normalized_posterior$nodesandweights))] <- thetanames
   }
+  modesandhessians$mode <- vector(mode = 'list',length = nrow(distinctthetas))
+  modesandhessians$H <- vector(mode = 'list',length = nrow(distinctthetas))
+
+  # if (is.null(thetanames)) {
+  #   thetanames <- colnames(distinctthetas)
+  # } else {
+  #   colnames(modesandhessians)[colnames(modesandhessians) == colnames(distinctthetas)] <- thetanames
+  #   colnames(quad$normalized_posterior$nodesandweights)[grep('theta',colnames(quad$normalized_posterior$nodesandweights))] <- thetanames
+  # }
 
     for (i in 1:nrow(distinctthetas)) {
       # Get the theta
