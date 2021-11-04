@@ -199,4 +199,4 @@ Set max_print higher than 2 if you would like to summarize the random effects.
 > 
 > proc.time()
    user  system elapsed 
-  4.113   0.231   4.341 
+  3.526   0.210   3.732 

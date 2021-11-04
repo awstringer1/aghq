@@ -646,8 +646,8 @@ l()\T1/ptm/m/n/10 , \T1/zi4/m/n/10 default_control_marglaplace()\T1/ptm/m/n/10
 [39]
 No file Rd2.ind.
 [40]
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.aux)
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.aux)
 
 Package rerunfilecheck Warning: File `Rd2.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
@@ -665,7 +665,7 @@ ype1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/ur
 w/times/utmb8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/ut
 mr8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><
 /usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (40 pages, 181965 bytes).
+Output written on Rd2.pdf (40 pages, 181959 bytes).
 Transcript written on Rd2.log.
 This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex)
  restricted \write18 enabled.
@@ -731,18 +731,19 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 (/usr/local/texlive/2020/texmf-dist/tex/latex/base/inputenc.sty)
 Writing index file Rd2.idx
 (/usr/local/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def)
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.aux) (/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/t1ptm.fd
-) (/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.aux)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/t1ptm.fd)
+(/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
 (/usr/local/texlive/2020/texmf-dist/tex/latex/refcount/refcount.sty)
 (/usr/local/texlive/2020/texmf-dist/tex/generic/gettitlestring/gettitlestring.s
 ty))
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.out)
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.out)
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.out)
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.out)
 (/usr/local/texlive/2020/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
 (/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
 (/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/t1phv.fd
@@ -767,9 +768,9 @@ LaTeX Warning: Font shape declaration has incorrect series value `mc'.
                Found on input line 46.
 
 )
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.toc [1{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/p
-dftex.map}]) [2]
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.toc [1{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/
+pdftex.map}]) [2]
 Overfull \hbox (12.61926pt too wide) in paragraph at lines 87--90
 []\T1/ptm/m/n/10 Value to start the op-ti-miza-tion. \T1/zi4/m/n/10 ff$fn(start
 ingvalue)\T1/ptm/m/n/10 , \T1/zi4/m/n/10 ff$gr(startingvalue)\T1/ptm/m/n/10 ,
@@ -1321,8 +1322,8 @@ l()\T1/ptm/m/n/10 , \T1/zi4/m/n/10 default_control_marglaplace()\T1/ptm/m/n/10
 [40]
 No file Rd2.ind.
 [41]
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.aux) )
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.aux) )
 (see the transcript file for additional information){/usr/local/texlive/2020/te
 xmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/usr/local/texlive/2020/texmf-
 dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/
@@ -1334,7 +1335,7 @@ ype1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/ur
 w/times/utmb8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/ut
 mr8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><
 /usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (41 pages, 185091 bytes).
+Output written on Rd2.pdf (41 pages, 185080 bytes).
 Transcript written on Rd2.log.
 This is makeindex, version 2.15 [TeX Live 2020] (kpathsea + Thai support).
 Scanning input file Rd2.idx....done (372 entries accepted, 0 rejected).
@@ -1406,18 +1407,19 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 (/usr/local/texlive/2020/texmf-dist/tex/latex/base/inputenc.sty)
 Writing index file Rd2.idx
 (/usr/local/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def)
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.aux) (/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/t1ptm.fd
-) (/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.aux)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/t1ptm.fd)
+(/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
 (/usr/local/texlive/2020/texmf-dist/tex/latex/refcount/refcount.sty)
 (/usr/local/texlive/2020/texmf-dist/tex/generic/gettitlestring/gettitlestring.s
 ty))
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.out)
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.out)
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.out)
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.out)
 (/usr/local/texlive/2020/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
 (/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
 (/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/t1phv.fd
@@ -1442,9 +1444,9 @@ LaTeX Warning: Font shape declaration has incorrect series value `mc'.
                Found on input line 46.
 
 )
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.toc [1{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/p
-dftex.map}]) [2]
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.toc [1{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/
+pdftex.map}]) [2]
 Overfull \hbox (12.61926pt too wide) in paragraph at lines 87--90
 []\T1/ptm/m/n/10 Value to start the op-ti-miza-tion. \T1/zi4/m/n/10 ff$fn(start
 ingvalue)\T1/ptm/m/n/10 , \T1/zi4/m/n/10 ff$gr(startingvalue)\T1/ptm/m/n/10 ,
@@ -1994,10 +1996,10 @@ Overfull \hbox (77.20955pt too wide) in paragraph at lines 2700--2703
 l()\T1/ptm/m/n/10 , \T1/zi4/m/n/10 default_control_marglaplace()\T1/ptm/m/n/10 
 , or \T1/zi4/m/n/10 default_control_tmb()
 [40]
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.ind [41] [42])
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.aux)
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.ind [41] [42])
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.aux)
 
 Package rerunfilecheck Warning: File `Rd2.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
@@ -2016,7 +2018,7 @@ pe1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw
 /times/utmb8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utm
 r8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></
 usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (42 pages, 202367 bytes).
+Output written on Rd2.pdf (42 pages, 202357 bytes).
 Transcript written on Rd2.log.
 This is makeindex, version 2.15 [TeX Live 2020] (kpathsea + Thai support).
 Scanning input file Rd2.idx....done (372 entries accepted, 0 rejected).
@@ -2088,18 +2090,19 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 (/usr/local/texlive/2020/texmf-dist/tex/latex/base/inputenc.sty)
 Writing index file Rd2.idx
 (/usr/local/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def)
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.aux) (/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/t1ptm.fd
-) (/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.aux)
+(/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/t1ptm.fd)
+(/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
 (/usr/local/texlive/2020/texmf-dist/tex/latex/refcount/refcount.sty)
 (/usr/local/texlive/2020/texmf-dist/tex/generic/gettitlestring/gettitlestring.s
 ty))
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.out)
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.out)
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.out)
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.out)
 (/usr/local/texlive/2020/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
 (/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
 (/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/t1phv.fd
@@ -2124,9 +2127,9 @@ LaTeX Warning: Font shape declaration has incorrect series value `mc'.
                Found on input line 46.
 
 )
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.toc [1{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/p
-dftex.map}]) [2]
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.toc [1{/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/
+pdftex.map}]) [2]
 Overfull \hbox (12.61926pt too wide) in paragraph at lines 87--90
 []\T1/ptm/m/n/10 Value to start the op-ti-miza-tion. \T1/zi4/m/n/10 ff$fn(start
 ingvalue)\T1/ptm/m/n/10 , \T1/zi4/m/n/10 ff$gr(startingvalue)\T1/ptm/m/n/10 ,
@@ -2676,10 +2679,10 @@ Overfull \hbox (77.20955pt too wide) in paragraph at lines 2700--2703
 l()\T1/ptm/m/n/10 , \T1/zi4/m/n/10 default_control_marglaplace()\T1/ptm/m/n/10 
 , or \T1/zi4/m/n/10 default_control_tmb()
 [40]
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.ind [41] [42])
-(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpjASOWJ/Rd2pdf782a
-6b0130bd/Rd2.aux) )
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.ind [41] [42])
+(/private/var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T/RtmpF0nUEP/Rd2pdf15c7
+448784a95/Rd2.aux) )
 (see the transcript file for additional information){/usr/local/texlive/2020/te
 xmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/usr/local/texlive/2020/texmf-
 dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/
@@ -2692,8 +2695,8 @@ pe1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw
 /times/utmb8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utm
 r8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></
 usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (42 pages, 203189 bytes).
+Output written on Rd2.pdf (42 pages, 203175 bytes).
 Transcript written on Rd2.log.
 Saving output to ‘aghq-manual.pdf’ ...
 Done
-You may want to clean up by 'rm -Rf /var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T//RtmpjASOWJ/Rd2pdf782a6b0130bd'
+You may want to clean up by 'rm -Rf /var/folders/1r/z2ws_s0j5k5f2f9p03d2gt2h0000gn/T//RtmpF0nUEP/Rd2pdf15c7448784a95'

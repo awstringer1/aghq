@@ -804,12 +804,12 @@ $ff
 $ff$fn
 function (x) 
 logfteta(x, y)
-<bytecode: 0x7fe3efd65fa0>
+<bytecode: 0x7ffea2b689a0>
 
 $ff$gr
 function (x) 
 numDeriv::grad(objfunc, x)
-<bytecode: 0x7fe3efa01040>
+<bytecode: 0x7ffea1717640>
 
 $ff$he
 function (x) 
@@ -831,17 +831,17 @@ $ff
 $ff$fn
 function (x) 
 logfteta(x, y)
-<bytecode: 0x7fe3efd65fa0>
+<bytecode: 0x7ffea2b689a0>
 
 $ff$gr
 function (x) 
 numDeriv::grad(objfunc, x)
-<bytecode: 0x7fe3efa01040>
+<bytecode: 0x7ffea1717640>
 
 $ff$he
 function (x) 
 numDeriv::hessian(objfunc, x)
-<bytecode: 0x7fe3ef8dd2e0>
+<bytecode: 0x7ffea15f38e0>
 
 
 $mode
@@ -859,17 +859,17 @@ $ff
 $ff$fn
 function (x) 
 logfteta(x, y)
-<bytecode: 0x7fe3efd65fa0>
+<bytecode: 0x7ffea2b689a0>
 
 $ff$gr
 function (x) 
 numDeriv::grad(objfunc, x)
-<bytecode: 0x7fe3efa01040>
+<bytecode: 0x7ffea1717640>
 
 $ff$he
 function (x) 
 numDeriv::hessian(objfunc, x)
-<bytecode: 0x7fe3ef8dd2e0>
+<bytecode: 0x7ffea15f38e0>
 
 
 $mode
@@ -1557,7 +1557,7 @@ Random effects, based on 1000 approximate posterior samples:
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  3.287 0.138 3.44 0 0 
+Time elapsed:  3.617 0.162 3.824 0 0 
 > grDevices::dev.off()
 null device 
           1 

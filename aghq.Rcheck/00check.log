@@ -8,29 +8,15 @@
 * this is package ‘aghq’ version ‘0.3.0’
 * package encoding: UTF-8
 * checking CRAN incoming feasibility ... NOTE
-Maintainer: ‘Alex Stringer <alex.stringer@mail.utoronto.ca>’
+Maintainer: ‘Alex Stringer <alex.stringer@uwaterloo.ca>’
 
 New submission
 
 Package was archived on CRAN
 
-Non-FOSS package license (file LICENSE)
-
 CRAN repository db overrides:
   X-CRAN-Comment: Archived on 2021-10-22 as check problems were not
     corrected in time.
-
-Found the following (possibly) invalid URLs:
-  URL: https://cran.rstudio.com/web/packages/grand-total/aghq/index.html
-    From: README.md
-    Status: 404
-    Message: Not Found
-    CRAN URL not in canonical form
-  URL: https://travis-ci.com/awstringer1/aghq (moved to https://www.travis-ci.com/awstringer1/aghq)
-    From: README.md
-    Status: 404
-    Message: Not Found
-  Canonical CRAN.R-project.org URLs use https.
 * checking package namespace information ... OK
 * checking package dependencies ... OK
 * checking if this is a source package ... OK
