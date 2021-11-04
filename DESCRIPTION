@@ -3,7 +3,7 @@ Type: Package
 Title: Adaptive Gauss Hermite Quadrature for Bayesian Inference
 Version: 0.3.0
 Author: Alex Stringer
-Maintainer: Alex Stringer <alex.stringer@mail.utoronto.ca>
+Maintainer: Alex Stringer <alex.stringer@uwaterloo.ca>
 Description: Adaptive Gauss Hermite Quadrature for Bayesian inference.
     The AGHQ method for normalizing posterior distributions
     and making Bayesian inferences based on them. Functions are provided for doing

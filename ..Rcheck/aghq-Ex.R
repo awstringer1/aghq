@@ -1,18 +1,6 @@
 pkgname <- "aghq"
 source(file.path(R.home("share"), "R", "examples-header.R"))
 options(warn = 1)
-base::assign(".ExTimings", "aghq-Ex.timings", pos = 'CheckExEnv')
-base::cat("name\tuser\tsystem\telapsed\n", file=base::get(".ExTimings", pos = 'CheckExEnv'))
-base::assign(".format_ptime",
-function(x) {
-  if(!is.na(x[4L])) x[1L] <- x[1L] + x[4L]
-  if(!is.na(x[5L])) x[2L] <- x[2L] + x[5L]
-  options(OutDec = '.')
-  format(x[1L:3L], digits = 7L)
-},
-pos = 'CheckExEnv')
-
-### * </HEADER>
 library('aghq')
 
 base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
@@ -23,7 +11,6 @@ nameEx("aghq")
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: aghq
 ### Title: Adaptive Gauss-Hermite Quadrature
 ### Aliases: aghq
@@ -62,15 +49,12 @@ thequadrature <- aghq(funlist2d,3,c(0,0))
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("aghq", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("compute_moment")
 ### * compute_moment
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: compute_moment
 ### Title: Compute moments
 ### Aliases: compute_moment compute_moment.default compute_moment.aghq
@@ -122,15 +106,12 @@ lambda1sd <- sqrt(compute_moment(norm_sparse_2d_7,ff = function(x) (exp(x) - lam
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("compute_moment", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("compute_pdf_and_cdf")
 ### * compute_pdf_and_cdf
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: compute_pdf_and_cdf
 ### Title: Density and Cumulative Distribution Function
 ### Aliases: compute_pdf_and_cdf compute_pdf_and_cdf.default
@@ -174,15 +155,12 @@ with(thepdfandcdf,{
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("compute_pdf_and_cdf", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("compute_quantiles")
 ### * compute_quantiles
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: compute_quantiles
 ### Title: Quantiles
 ### Aliases: compute_quantiles compute_quantiles.default
@@ -230,15 +208,12 @@ qgamma(.975,1+sum(y1),1+n1)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("compute_quantiles", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("default_control")
 ### * default_control
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: default_control
 ### Title: Default control arguments for 'aghq::aghq()'.
 ### Aliases: default_control
@@ -253,15 +228,12 @@ default_control(negate = TRUE)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("default_control", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("default_control_marglaplace")
 ### * default_control_marglaplace
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: default_control_marglaplace
 ### Title: Default control arguments for 'aghq::marginal_laplace()'.
 ### Aliases: default_control_marglaplace
@@ -277,15 +249,12 @@ default_control_marglaplace(negate = TRUE)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("default_control_marglaplace", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("default_control_tmb")
 ### * default_control_tmb
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: default_control_tmb
 ### Title: Default control arguments for 'aghq::marginal_laplace_tmb()'.
 ### Aliases: default_control_tmb
@@ -301,15 +270,12 @@ default_control_marglaplace(negate = TRUE)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("default_control_tmb", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("laplace_approximation")
 ### * laplace_approximation
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: laplace_approximation
 ### Title: Laplace Approximation
 ### Aliases: laplace_approximation
@@ -348,15 +314,12 @@ thequadrature <- aghq(funlist2d,3,c(0,0))
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("laplace_approximation", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("marginal_laplace")
 ### * marginal_laplace
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: marginal_laplace
 ### Title: Marginal Laplace approximation
 ### Aliases: marginal_laplace
@@ -401,15 +364,12 @@ funlist2dmarg <- list(
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("marginal_laplace", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("marginal_posterior")
 ### * marginal_posterior
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: marginal_posterior
 ### Title: Marginal Posteriors
 ### Aliases: marginal_posterior
@@ -452,15 +412,12 @@ marginal_posterior(opt_sparsetrust_2d,7,2)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("marginal_posterior", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("normalize_logpost")
 ### * normalize_logpost
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: normalize_logpost
 ### Title: Normalize the joint posterior using AGHQ
 ### Aliases: normalize_logpost
@@ -502,15 +459,12 @@ norm_bfgs_7 <- normalize_logpost(opt_bfgs,7,1)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("normalize_logpost", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("optimize_theta")
 ### * optimize_theta
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: optimize_theta
 ### Title: Obtain function information necessary for performing quadrature
 ### Aliases: optimize_theta
@@ -538,15 +492,12 @@ optimize_theta(funlist,1.5,control = default_control(method = "BFGS"))
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("optimize_theta", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.aghq")
 ### * plot.aghq
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.aghq
 ### Title: Plot method for AGHQ objects
 ### Aliases: plot.aghq
@@ -586,15 +537,12 @@ plot(thequadrature)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.aghq", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("print.aghq")
 ### * print.aghq
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: print.aghq
 ### Title: Print method for AGHQ objects
 ### Aliases: print.aghq
@@ -634,15 +582,12 @@ thequadrature
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("print.aghq", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("print.aghqsummary")
 ### * print.aghqsummary
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: print.aghqsummary
 ### Title: Print method for AGHQ summary objects
 ### Aliases: print.aghqsummary
@@ -683,15 +628,12 @@ summary(thequadrature)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("print.aghqsummary", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("print.laplace")
 ### * print.laplace
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: print.laplace
 ### Title: Print method for AGHQ objects
 ### Aliases: print.laplace
@@ -731,15 +673,12 @@ thequadrature
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("print.laplace", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("print.laplacesummary")
 ### * print.laplacesummary
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: print.laplacesummary
 ### Title: Print method for laplacesummary objects
 ### Aliases: print.laplacesummary
@@ -780,15 +719,66 @@ summary(thelaplace)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("print.laplacesummary", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+cleanEx()
+nameEx("print.marginallaplacesummary")
+### * print.marginallaplacesummary
+
+flush(stderr()); flush(stdout())
+
+### Name: print.marginallaplacesummary
+### Title: Summary statistics for models using marginal Laplace
+###   approximations
+### Aliases: print.marginallaplacesummary
+
+### ** Examples
+
+logfteta2d <- function(eta,y) {
+  # eta is now (eta1,eta2)
+  # y is now (y1,y2)
+  n <- length(y)
+  n1 <- ceiling(n/2)
+  n2 <- floor(n/2)
+  y1 <- y[1:n1]
+  y2 <- y[(n1+1):(n1+n2)]
+  eta1 <- eta[1]
+  eta2 <- eta[2]
+  sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+    sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+}
+set.seed(84343124)
+n1 <- 5
+n2 <- 5
+n <- n1+n2
+y1 <- rpois(n1,5)
+y2 <- rpois(n2,5)
+objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+objfunc2dmarg <- function(W,theta) objfunc2d(c(W,theta))
+objfunc2dmarggr <- function(W,theta) {
+  fn <- function(W) objfunc2dmarg(W,theta)
+  numDeriv::grad(fn,W)
+}
+objfunc2dmarghe <- function(W,theta) {
+  fn <- function(W) objfunc2dmarg(W,theta)
+  numDeriv::hessian(fn,W)
+}
+
+funlist2dmarg <- list(
+  fn = objfunc2dmarg,
+  gr = objfunc2dmarggr,
+  he = objfunc2dmarghe
+)
+
+themarginallaplace <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 0))
+summary(themarginallaplace)
+
+
+
 cleanEx()
 nameEx("sample_marginal")
 ### * sample_marginal
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: sample_marginal
 ### Title: Exact independent samples from an approximate posterior
 ###   distribution
@@ -836,15 +826,12 @@ funlist2dmarg <- list(
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("sample_marginal", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("summary.aghq")
 ### * summary.aghq
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: summary.aghq
 ### Title: Summary statistics computed using AGHQ
 ### Aliases: summary.aghq
@@ -888,15 +875,12 @@ str(ss)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("summary.aghq", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("summary.laplace")
 ### * summary.laplace
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: summary.laplace
 ### Title: Summary method for Laplace Approximation objects
 ### Aliases: summary.laplace
@@ -937,15 +921,66 @@ summary(thelaplace)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("summary.laplace", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+cleanEx()
+nameEx("summary.marginallaplace")
+### * summary.marginallaplace
+
+flush(stderr()); flush(stdout())
+
+### Name: summary.marginallaplace
+### Title: Summary statistics for models using marginal Laplace
+###   approximations
+### Aliases: summary.marginallaplace
+
+### ** Examples
+
+logfteta2d <- function(eta,y) {
+  # eta is now (eta1,eta2)
+  # y is now (y1,y2)
+  n <- length(y)
+  n1 <- ceiling(n/2)
+  n2 <- floor(n/2)
+  y1 <- y[1:n1]
+  y2 <- y[(n1+1):(n1+n2)]
+  eta1 <- eta[1]
+  eta2 <- eta[2]
+  sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+    sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+}
+set.seed(84343124)
+n1 <- 5
+n2 <- 5
+n <- n1+n2
+y1 <- rpois(n1,5)
+y2 <- rpois(n2,5)
+objfunc2d <- function(x) logfteta2d(x,c(y1,y2))
+objfunc2dmarg <- function(W,theta) objfunc2d(c(W,theta))
+objfunc2dmarggr <- function(W,theta) {
+  fn <- function(W) objfunc2dmarg(W,theta)
+  numDeriv::grad(fn,W)
+}
+objfunc2dmarghe <- function(W,theta) {
+  fn <- function(W) objfunc2dmarg(W,theta)
+  numDeriv::hessian(fn,W)
+}
+
+funlist2dmarg <- list(
+  fn = objfunc2dmarg,
+  gr = objfunc2dmarggr,
+  he = objfunc2dmarghe
+)
+
+themarginallaplace <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 0))
+summary(themarginallaplace)
+
+
+
 cleanEx()
 nameEx("validate_control")
 ### * validate_control
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: validate_control
 ### Title: Validate a control list
 ### Aliases: validate_control
@@ -959,8 +994,6 @@ validate_control(default_control_tmb(),type = "tmb")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("validate_control", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 ### * <FOOTER>
 ###
 cleanEx()

@@ -1,13 +1,10 @@
-# aghq 0.3.0 
+# aghq 0.3.0
 
 ## New features
 
 - Added support for doing the multiple required Cholesky decompositions in parallel in `sample_marginal.marginallaplace`.
 
-- Switched from using `chol` to using `Matrix::Cholesky` with `perm = TRUE` inside `sample_marginal.marginallaplace`. This
-uses fill-reducing permutations (described in the `Matrix` package documentation) and users have reported immense speedup
-in certain applications, notably where the hessian of the Gaussian variables has some parts which are highly dense and other
-parts which are highly sparse.
+- Switched from using `chol` to using `Matrix::Cholesky` with `perm = TRUE` inside `sample_marginal.marginallaplace`.
 
 - Added spline-based interpolation to `interpolate_marginal_posterior` and all downstream functions. Now the calculation
 of marginals doesn't get less stable as more quadrature points are added. Added package `splines` to `Imports`
@@ -18,17 +15,22 @@ points is even moderate, I consider this a necessary `Import`.
 Default option of `auto` designed to always give stable marginal posterior interpolation
 regardless of the number of quadrature points.
 
-- Added an internal `validate_control` check to all functions which use a `control` argument, which makes sure the user inputs a control list with the correct names and value types.
-This helps prevent further cryptic downstream errors.
+- Added an internal `validate_control` check to all functions which use a `control` argument, which makes sure the user inputs a control list with the correct names and value types. This is supported by the existing control functions, and  helps prevent further cryptic downstream errors.
 
 - Added a `onlynormconst` option to `aghq` and related functions. Simply returns the numeric value of the log integral, avoiding all the extra stuff, at greater speed.
 
+- Added a new summary method for objects of class `marginallaplace`, that includes information on the random effects.
+
+- Preserve variable names in all summary output.
+
 ## Bug fixes
+
+- Added a `requireNamespace` condition to all functions from packages listed in `Suggests`.
 
 - `aghq::laplace_approximation()` had a typo and was returning the wrong value. This has been fixed and tests added for its accuracy based on an example with a known answer.
 
 - Fixed an issue in the optimization where the `trustOptim` package was not being checked
-for, and this was throwing a cryptic error. Now, it throws a less cryptic error.
+for, and this was throwing a cryptic error.
 
 - Changed default options for optimization in all functions to `optim(...method = 'BFGS')`, in case
 users do not have the `trust` or `trustOptim` packages installed.
@@ -40,6 +42,12 @@ users do not have the `trust` or `trustOptim` packages installed.
 ## Other
 
 - Re-added `numDeriv` as an Import, since it is used in core functionality.
+
+- Switched default optimization control arguments to use `base::optim`, to facilitate
+removal of `trustOptim` and `trust` as Import dependencies.
+
+- Switched default method for numerically differentiated Hessians to `'Richardson'`,
+for more accurate results.
 
 # aghq 0.2.0
 
