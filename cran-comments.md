@@ -21,8 +21,13 @@ There were no ERRORs or WARNINGs on any platform.
 
 ## Notes
 
-I have removed the offending URLs from the previous submission, and changed the license to the standard GPL-3 thereby removing that NOTE.
+Received notice that tests were failing on M1 Macs. I apologize; I did not realize
+that a testing service was available for this new hardware. I removed the offending
+tests (which were not necessary in the first place) and added the following bit to NEWS.md:
 
-The package was previously removed from CRAN because of a failed check pertaining to the non-conditional
-use of packages listed in `Suggests`. This has been fixed. I apologize for not correcting this
-before the stated deadline and thank the maintainers for considering this submission.
+> Removed several unit tests that were failing on M1 Macs. These tests werre actually
+testing that polynomial interpolation of marginal posteriors FAILs, so apparently
+this isn't failing on these new Macs, but that's better, not worse. Will re-test
+and potentially add back once I have local access to this hardware.
+
+I will add testing on the M1 Mac service to my workflow for all future CRAN submissions.
