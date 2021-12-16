@@ -30,6 +30,10 @@
 #' \code{mvQuad::createNIGrid(length(theta),'GHe',k,'product')}. **Note**: the \code{mvQuad}
 #' functions used within \code{aghq} operate on grids in memory, so your \code{basegrid}
 #' object will be changed after you run \code{aghq}.
+#' @param transformation Optional. Do the quadrature for parameter \code{theta}, but
+#' return summaries and plots for parameter \code{g(theta)}.
+#' \code{transformation} is either: a) an \code{aghqtrans} object returned by \code{aghq::make_transformation},
+#' or b) a list that will be passed to that function internally. See \code{?aghq::make_transformation} for details.
 #'
 #' @return An object of class \code{aghq} which is a list containing elements:
 #' \itemize{
@@ -93,9 +97,11 @@
 #'
 #' @export
 #'
-aghq <- function(ff,k,startingvalue,optresults = NULL,basegrid = NULL,control = default_control(),...) {
+aghq <- function(ff,k,startingvalue,transformation = default_transformation(),optresults = NULL,basegrid = NULL,control = default_control(),...) {
 
   validate_control(control)
+  validate_transformation(transformation)
+  transformation <- make_transformation(transformation)
 
   # If they provided a basegrid, get the k from that. If they also provided a k, compare them and issue a warning
   if (!is.null(basegrid)) {
@@ -127,7 +133,8 @@ aghq <- function(ff,k,startingvalue,optresults = NULL,basegrid = NULL,control = 
     normalized_posterior = normalized_posterior,
     marginals = marginals,
     optresults = optresults,
-    control = control
+    control = control,
+    transformation = transformation
   )
   class(out) <- "aghq"
   out
@@ -136,11 +143,13 @@ aghq <- function(ff,k,startingvalue,optresults = NULL,basegrid = NULL,control = 
 #' Summary statistics computed using AGHQ
 #'
 #' The \code{summary.aghq} method computes means, standard deviations, and
-#' quantiles and the associated print method
+#' quantiles of the transformed parameter.
+#' The associated print method
 #' prints these along with diagnostic and other information about
 #' the quadrature.
 #'
-#' @param object The return value from \code{aghq::aghq}.
+#' @param object The return value from \code{aghq::aghq}. Summaries are computed for
+#' \code{object$transformation$fromtheta(theta)}.
 #' @param ... not used.
 #'
 #' @return A list of class \code{aghqsummary}, which has a print method. Elements:
@@ -152,7 +161,7 @@ aghq <- function(ff,k,startingvalue,optresults = NULL,basegrid = NULL,control = 
 #' \item{quadpoints: }{the number of quadrature points used in each dimension}
 #' \item{dim: }{the dimension of the parameter space}
 #' \item{summarytable: }{a table containing the mean, median, mode, standard deviation
-#' and quantiles of each parameter, computed according to the posterior normalized
+#' and quantiles of each transformed parameter, computed according to the posterior normalized
 #' using AGHQ}
 #' }
 #'
@@ -202,9 +211,12 @@ summary.aghq <- function(object,...) {
   thetanames <- colnames(object$normalized_posterior$nodesandweights)[1:d]
 
   # Moments
-  themeans <- compute_moment(object$normalized_posterior,function(x) x)
+  # themeans <- compute_moment(object$normalized_posterior,function(x) x)
+  themeans <- compute_moment(object$normalized_posterior,object$transformation$fromtheta)
+
   thesds <- numeric(d)
-  for (j in 1:d) thesds[j] <- sqrt(compute_moment(object$normalized_posterior,function(x) (x - themeans[j])^2)[j])
+  # for (j in 1:d) thesds[j] <- sqrt(compute_moment(object$normalized_posterior,function(x) (x - themeans[j])^2)[j])
+  for (j in 1:d) thesds[j] <- sqrt(compute_moment(object$normalized_posterior,function(x) (object$transformation$fromtheta(x) - themeans[j])^2)[j])
   names(thesds) <- names(themeans) <- thetanames
 
   themoments <- cbind(themeans,thesds)
@@ -213,7 +225,9 @@ summary.aghq <- function(object,...) {
 
   # Quantiles
   thequants <- vector(mode = 'list',length = d)
-  for (j in 1:d) thequants[[j]] <- compute_quantiles(object$marginals[[j]],c(.025,.5,.975),interpolation = object$control$interpolation)
+  # for (j in 1:d) thequants[[j]] <- compute_quantiles(object$marginals[[j]],c(.025,.5,.975),interpolation = object$control$interpolation)
+  for (j in 1:d) thequants[[j]] <- compute_quantiles(object$marginals[[j]],q = c(.025,.5,.975),transformation = object$transformation,interpolation = object$control$interpolation)
+
   names(thequants) <- thetanames
   thequants <- t(as.data.frame(thequants))
   colnames(thequants)[2] <- 'median'
@@ -351,16 +365,17 @@ print.aghqsummary <- function(x,...) {
   # cat("...and its Cholesky is:\n")
   # print(as.matrix(x$cholesky))
   cat("\n")
-  cat("Here are some moments and quantiles for theta:\n\n")
+  cat("Here are some moments and quantiles for the transformed parameter:\n\n")
   print(x$summarytable)
   cat("\n")
 }
 
 #' Plot method for AGHQ objects
 #'
-#' Plot the marginal pdf and cdf from an \code{aghq} object.
+#' Plot the marginal pdf and cdfof the transformed parameter from an \code{aghq} object.
 #'
-#' @param x The return value of \code{aghq::aghq}.
+#' @param x The return value of \code{aghq::aghq}. Plots are created for the marginal
+#' pdf and cdf of \code{x$transformation$fromtheta(theta)}.
 #' @param ... not used.
 #'
 #' @return Silently plots.
@@ -407,15 +422,15 @@ plot.aghq <- function(x,...) {
   d <- length(x$marginals)
   # Compute pdf and cdf
   pdfandcdf <- vector(mode = 'list',length = d)
-  for (j in 1:d) pdfandcdf[[j]] <- compute_pdf_and_cdf(x$marginals[[j]],interpolation = x$control$interpolation)
+  for (j in 1:d) pdfandcdf[[j]] <- compute_pdf_and_cdf(x$marginals[[j]],interpolation = x$control$interpolation,transformation = x$transformation)
 
   for (j in 1:d) {
-    graphics::plot(pdfandcdf[[j]]$pdf ~ pdfandcdf[[j]]$theta,
+    graphics::plot(pdfandcdf[[j]]$pdf ~ pdfandcdf[[j]]$transparam,
          type = 'l',
          main = paste0("Marg. Post., theta",j),
          xlab = paste0("theta",j),
          ylab = "Density")
-    graphics::plot(pdfandcdf[[j]]$cdf ~ pdfandcdf[[j]]$theta,
+    graphics::plot(pdfandcdf[[j]]$cdf ~ pdfandcdf[[j]]$transparam,
          type = 'l',
          main = paste0("Marg. CDF, theta",j),
          xlab = paste0("theta",j),
@@ -701,6 +716,11 @@ print.laplacesummary <- function(x,...) {
 #' vectors to start the optimizations for each variable. If you're using this method
 #' then the log-joint posterior should be concave and these optimizations should not be
 #' sensitive to starting values.
+#' @param transformation Optional. Do the quadrature for parameter \code{theta}, but
+#' return summaries and plots for parameter \code{g(theta)}. This applies to the \code{theta}
+#' parameters only, not the \code{W} parameters.
+#' \code{transformation} is either: a) an \code{aghqtrans} object returned by \code{aghq::make_transformation},
+#' or b) a list that will be passed to that function internally. See \code{?aghq::make_transformation} for details.
 #' @param control A list with elements
 #' \itemize{
 #' \item{\code{method}: }{optimization method to use for the \code{theta} optimization:
@@ -767,9 +787,11 @@ print.laplacesummary <- function(x,...) {
 # themarginallaplace <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 0))
 #' @export
 #'
-marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = default_control_marglaplace(),...) {
+marginal_laplace <- function(ff,k,startingvalue,transformation = default_transformation(),optresults = NULL,control = default_control_marglaplace(),...) {
 
   validate_control(control,type = 'marglaplace')
+  validate_transformation(transformation)
+  transformation <- make_transformation(transformation)
 
   # Negate it if asked
   if (control$negate) {
@@ -973,7 +995,8 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
     marginals = marginals,
     optresults = outeropt,
     modesandhessians = modesandhessians,
-    control = control
+    control = control,
+    transformation = transformation
   )
   class(out) <- c("marginallaplace","aghq")
   out
@@ -1003,6 +1026,11 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 #' **negated** log-posterior and its derivatives. This is **opposite**
 #' to every other comparable function in the \code{aghq} package, and is done
 #' here to emphasize compatibility with \code{TMB}.
+#' @param transformation Optional. Do the quadrature for parameter \code{theta}, but
+#' return summaries and plots for parameter \code{g(theta)}. This applies to the \code{theta}
+#' parameters only, not the \code{W} parameters.
+#' \code{transformation} is either: a) an \code{aghqtrans} object returned by \code{aghq::make_transformation},
+#' or b) a list that will be passed to that function internally. See \code{?aghq::make_transformation} for details.
 #' @param control A list of control parameters. See \code{?default_control} for details. Valid options are:
 #' \itemize{
 #' \item{\code{method}: }{optimization method to use for the \code{theta} optimization:
@@ -1031,9 +1059,11 @@ marginal_laplace <- function(ff,k,startingvalue,optresults = NULL,control = defa
 #'
 #' @export
 #'
-marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid = NULL,control = default_control_tmb(),...) {
+marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_transformation(),optresults = NULL,basegrid = NULL,control = default_control_tmb(),...) {
 
   validate_control(control,type='tmb')
+  validate_transformation(transformation)
+  transformation <- make_transformation(transformation)
 
   # Get names from TMB function template
   thetanames <- NULL
@@ -1045,7 +1075,7 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid =
   }
   ## Do aghq ##
   # The aghq
-  quad <- aghq(ff = ff,k = k,startingvalue = startingvalue,optresults = optresults,basegrid = basegrid,control = control,...)
+  quad <- aghq(ff = ff,k = k,transformation = transformation,startingvalue = startingvalue,optresults = optresults,basegrid = basegrid,control = control,...)
   if (control$onlynormconst) return(quad) # NOTE: control was passed to aghq here so quad should itself just be a number
 
   ## Add on the info needed for marginal Laplace ##
@@ -1106,8 +1136,7 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,optresults = NULL,basegrid =
 #' to this effect. Default \code{30}.
 #' @param ... not used.
 #'
-#' @return A list containing an object of class \code{aghqsummary} (see \code{summary.aghq})
-#' plus the following objects:
+#' @return A list containing an object of class \code{aghqsummary} (see \code{summary.aghq}).
 #'
 #' @family quadrature
 #'

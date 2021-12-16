@@ -4,11 +4,16 @@
 
 - added an `S3` interface for parameter transformations, see `make_transformation`,
 `validate_transformation`, `default_transformation`, and any `aghq` package function with a `transformation`
-argument.
+argument. Providing `transformation` to `aghq` and related functions does not change the computation of
+the marginal likelihood/normalizing constant, but it does mean all downstream summary methods
+will return results for the transformed parameters.
 
 ## Bug fixes
 
 ## Other
+
+- changed default `interpolation` argument in `compute_quantiles` to `auto`, from `polynomial`. I guess this
+may be considered a bug fix.
 
 # aghq 0.3.1
 

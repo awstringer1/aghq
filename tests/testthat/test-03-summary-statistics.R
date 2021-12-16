@@ -84,7 +84,7 @@ test_that("Marginal posteriors computed correctly",{
 
   # PDF and CDF
   expect_is(thepdfandcdf,"data.frame")
-  expect_equal(colnames(thepdfandcdf),c("theta","pdf","cdf"))
+  expect_equal(colnames(thepdfandcdf),pdfandcdfnames)
   expect_true(all(thepdfandcdf$pdf > 0))
   expect_true(all(thepdfandcdf$cdf >= 0))
   expect_equal(thepdfandcdf$cdf[1],0)
@@ -93,7 +93,7 @@ test_that("Marginal posteriors computed correctly",{
 
   # PDF and CDF with transformation
   expect_is(pdfwithtrans,"data.frame")
-  expect_equal(colnames(pdfwithtrans),c("theta","pdf","cdf","transparam","pdf_transparam"))
+  expect_equal(colnames(pdfwithtrans),pdfandcdfnames)
   expect_true(all(pdfwithtrans$pdf > 0))
   expect_true(all(pdfwithtrans$pdf_transparam > 0))
   expect_true(all(pdfwithtrans$cdf >= 0))
@@ -102,7 +102,7 @@ test_that("Marginal posteriors computed correctly",{
 
   # 3d
   expect_is(thepdfandcdf3d_1,"data.frame")
-  expect_equal(colnames(thepdfandcdf3d_1),c("theta","pdf","cdf","transparam","pdf_transparam"))
+  expect_equal(colnames(thepdfandcdf3d_1),pdfandcdfnames)
   expect_true(all(thepdfandcdf3d_1$pdf > 0))
   expect_true(all(thepdfandcdf3d_1$pdf_transparam > 0))
   expect_true(all(thepdfandcdf3d_1$cdf >= 0))
@@ -110,7 +110,7 @@ test_that("Marginal posteriors computed correctly",{
   expect_equal(round(thepdfandcdf3d_1$cdf[1000],2),1)
 
   expect_is(thepdfandcdf3d_2,"data.frame")
-  expect_equal(colnames(thepdfandcdf3d_2),c("theta","pdf","cdf","transparam","pdf_transparam"))
+  expect_equal(colnames(thepdfandcdf3d_2),pdfandcdfnames)
   expect_true(all(thepdfandcdf3d_2$pdf > 0))
   expect_true(all(thepdfandcdf3d_2$pdf_transparam > 0))
   expect_true(all(thepdfandcdf3d_2$cdf >= 0))
@@ -118,7 +118,7 @@ test_that("Marginal posteriors computed correctly",{
   expect_equal(round(thepdfandcdf3d_2$cdf[1000],2),1)
 
   expect_is(thepdfandcdf3d_3,"data.frame")
-  expect_equal(colnames(thepdfandcdf3d_3),c("theta","pdf","cdf","transparam","pdf_transparam"))
+  expect_equal(colnames(thepdfandcdf3d_3),pdfandcdfnames)
   expect_true(all(thepdfandcdf3d_3$pdf > 0))
   expect_true(all(thepdfandcdf3d_3$pdf_transparam > 0))
   expect_true(all(thepdfandcdf3d_3$cdf >= 0))

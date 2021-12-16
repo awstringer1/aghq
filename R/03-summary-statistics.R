@@ -283,11 +283,10 @@ compute_moment.aghq <- function(obj,ff = function(x) 1,...) compute_moment(obj$n
 #' @param finegrid Optional, a grid of values on which to compute the CDF. The default makes
 #' use of the values in \code{margpost} but if the results are unsuitable, you may wish to
 #' modify this manually.
-#' @param transformation Optional. A list containing two functions, \code{fromtheta}
-#' and \code{totheta}, which accept and return numeric vectors, defining a parameter transformation for which you would
-#' also like the pdf calculated for. See examples. May also have an element \code{jacobian},
-#' a function which takes a numeric vector and computes the jacobian of the transformation; if
-#' not provided, this is done using \code{numDeriv::jacobian}.
+#' @param transformation Optional. Calculate pdf/cdf for a transformation of the parameter
+#' whose posterior was normalized using adaptive quadrature.
+#' \code{transformation} is either: a) an \code{aghqtrans} object returned by \code{aghq::make_transformation},
+#' or b) a list that will be passed to that function internally. See \code{?aghq::make_transformation} for details.
 #' @param interpolation Which method to use for interpolating the marginal posterior, \code{'polynomial'} (default)
 #' or \code{'spline'}? If \code{k > 3} then the polynomial may be unstable and you should use the spline, but the spline
 #' doesn't work *unless* \code{k > 3} so it's not the default. See \code{interpolate_marginal_posterior()}.
@@ -336,12 +335,14 @@ compute_moment.aghq <- function(obj,ff = function(x) 1,...) compute_moment(obj$n
 #'
 #' @export
 #'
-compute_pdf_and_cdf <- function(obj,...) UseMethod("compute_pdf_and_cdf")
+compute_pdf_and_cdf <- function(obj,transformation = default_transformation(),...) UseMethod("compute_pdf_and_cdf")
 #' @rdname compute_pdf_and_cdf
 #' @export
-compute_pdf_and_cdf.default <- function(obj,transformation = NULL,finegrid = NULL,interpolation = 'auto',...) {
+compute_pdf_and_cdf.default <- function(obj,transformation = default_transformation(),finegrid = NULL,interpolation = 'auto',...) {
 
-  if (!is.null(transformation)) transformation <- Map(match.fun,transformation)
+  # if (!is.null(transformation)) transformation <- Map(match.fun,transformation)
+  validate_transformation(transformation)
+  transformation <- make_transformation(transformation)
 
   margpostinterp <- interpolate_marginal_posterior(obj,interpolation)
 
@@ -360,31 +361,31 @@ compute_pdf_and_cdf.default <- function(obj,transformation = NULL,finegrid = NUL
     cdf = cumsum(exp(margpostinterp(finegrid)) * c(0,diff(finegrid)))
   )
 
-  if (!is.null(transformation)) {
-    if (is.null(transformation$jacobian)) {
-      transformation$jacobian <- function(theta) {
-        out <- numeric(length(theta))
-        for (i in 1:length(theta)) {
-          out[i] <- det(abs(numDeriv::jacobian(transformation$totheta,transformation$fromtheta(theta[i]))))
-        }
-        out
-      }
-    }
-    out$transparam <- transformation$fromtheta(out$theta)
-    out$pdf_transparam <- out$pdf * transformation$jacobian(out$theta)
-  }
+  # if (!is.null(transformation)) {
+  #   if (is.null(transformation$jacobian)) {
+  #     transformation$jacobian <- function(theta) {
+  #       out <- numeric(length(theta))
+  #       for (i in 1:length(theta)) {
+  #         out[i] <- det(abs(numDeriv::jacobian(transformation$totheta,transformation$fromtheta(theta[i]))))
+  #       }
+  #       out
+  #     }
+  #   }
+  out$transparam <- transformation$fromtheta(out$theta)
+  out$pdf_transparam <- out$pdf * transformation$jacobian(out$theta)
+  # }
   out
 }
 #' @rdname compute_pdf_and_cdf
 #' @export
-compute_pdf_and_cdf.list <- function(obj,...) {
+compute_pdf_and_cdf.list <- function(obj,transformation = default_transformation(),...) {
   out <- list()
-  for (i in 1:length(obj)) out[[i]] <- compute_pdf_and_cdf(obj[[i]],...)
+  for (i in 1:length(obj)) out[[i]] <- compute_pdf_and_cdf(obj[[i]],transformation = transformation,...)
   out
 }
 #' @rdname compute_pdf_and_cdf
 #' @export
-compute_pdf_and_cdf.aghq <- function(obj,...) compute_pdf_and_cdf(obj$marginals,...)
+compute_pdf_and_cdf.aghq <- function(obj,transformation = obj$transformation,...) compute_pdf_and_cdf(obj$marginals,transformation = transformation,...)
 
 #' Quantiles
 #'
@@ -393,12 +394,11 @@ compute_pdf_and_cdf.aghq <- function(obj,...) compute_pdf_and_cdf(obj$marginals,
 #'
 #' @inheritParams compute_pdf_and_cdf
 #' @param q Numeric vector of values in (0,1). The quantiles to compute.
-#' @param transformation Optional.
-#' A list containing function \code{fromtheta()} which accepts and returns numeric vectors,
-#' defining a parameter transformation for which you would like the quantiles of.
-#' See \code{?compute_pdf_and_cdf}. This transformation must be monotone and the function
-#' checks whether it's increasing or decreasing and returns the transformed quantiles,
-#' ordered appropriately.
+#' @param transformation Optional. Calculate marginal quantiles for a transformation of the parameter
+#' whose posterior was normalized using adaptive quadrature.
+#' \code{transformation} is either: a) an \code{aghqtrans} object returned by \code{aghq::make_transformation},
+#' or b) a list that will be passed to that function internally. See \code{?aghq::make_transformation} for details.
+#' Note that since \code{g} has to be monotone anyways, this just returns \code{sort(g(q))} instead of \code{q}.
 #'
 #' @return A named numeric vector containing the quantiles you asked for, for the
 #' variable whose marginal posterior you provided.
@@ -447,24 +447,29 @@ compute_pdf_and_cdf.aghq <- function(obj,...) compute_pdf_and_cdf(obj$marginals,
 #'
 #' @export
 #'
-compute_quantiles <- function(obj,...) UseMethod("compute_quantiles")
+compute_quantiles <- function(obj,q = c(.025,.975),transformation = default_transformation(),...) UseMethod("compute_quantiles")
 #' @rdname compute_quantiles
 #' @export
-compute_quantiles.default <- function(obj,q = c(.025,.975),transformation = NULL,interpolation = 'polynomial',...) {
+compute_quantiles.default <- function(obj,q = c(.025,.975),transformation = default_transformation(),interpolation = 'auto',...) {
+  # Compute the pdf and cdf WITHOUT the transformation
+  # It's better to just transform the quantiles.
   pdfandcdf <- compute_pdf_and_cdf(obj,interpolation = interpolation)
   out <- numeric(length(q))
   increasing <- TRUE
 
+  validate_transformation(transformation)
+  transformation <- make_transformation(transformation)
+
   for (i in 1:length(q)) out[i] <- pdfandcdf$theta[max(which(pdfandcdf$cdf < q[i]))]
 
-  if (!is.null(transformation)) {
-    if (is.null(transformation$fromtheta)) warning("transformation provided but transformation$fromtheta appears NULL.\n")
-    transformation <- Map(match.fun,transformation)
+  # if (!is.null(transformation)) {
+  #   if (is.null(transformation$fromtheta)) warning("transformation provided but transformation$fromtheta appears NULL.\n")
+  #   transformation <- Map(match.fun,transformation)
 
     # Have to check if it's increasing or decreasing so can reverse order if necessary
-    increasing <- transformation$fromtheta(min(out)) <= transformation$fromtheta(max(out))
-    for (i in 1:length(out)) out[i] <- transformation$fromtheta(out[i])
-  }
+  increasing <- transformation$fromtheta(min(out)) <= transformation$fromtheta(max(out))
+  for (i in 1:length(out)) out[i] <- transformation$fromtheta(out[i])
+  # }
 
   if (!increasing) out <- rev(out)
   names(out) <- paste0(as.character(100 * q),"%")
@@ -472,14 +477,14 @@ compute_quantiles.default <- function(obj,q = c(.025,.975),transformation = NULL
 }
 #' @rdname compute_quantiles
 #' @export
-compute_quantiles.list <- function(obj,q = c(.025,.975),transformation = NULL,...) {
+compute_quantiles.list <- function(obj,q = c(.025,.975),transformation = default_transformation(),...) {
   out <- list()
   for (i in 1:length(obj)) out[[i]] <- compute_quantiles(obj[[i]],q,transformation,...)
   out
 }
 #' @rdname compute_quantiles
 #' @export
-compute_quantiles.aghq <- function(obj,q = c(.025,.975),transformation = NULL,...) compute_quantiles(obj$marginals,q,transformation,...)
+compute_quantiles.aghq <- function(obj,q = c(.025,.975),transformation = obj$transformation,...) compute_quantiles(obj$marginals,q,transformation,...)
 
 #' Exact independent samples from an approximate posterior distribution
 #'
@@ -496,21 +501,15 @@ compute_quantiles.aghq <- function(obj,q = c(.025,.975),transformation = NULL,..
 #' case samples are returned for \code{transparam} if \code{transformation} is provided,
 #' and for \code{param} if \code{transformation = NULL}.
 #' @param M Numeric, integer saying how many samples to draw
-#' @param transformation Optional.
-#' A list containing function \code{fromtheta()} which accepts and returns numeric vectors,
-#' defining a parameter transformation for which you would like samples to be taken.
-#' See \code{?compute_pdf_and_cdf}. Note that unlike there, where this operation is
-#' a bit more complicated, here all is done is samples are taken on the original
-#' scale and then \code{transformation$fromtheta()} is called on them before returning.
+#' @param transformation Optional. Draw samples for a transformation of the parameter
+#' whose posterior was normalized using adaptive quadrature.
+#' \code{transformation} is either: a) an \code{aghqtrans} object returned by \code{aghq::make_transformation},
+#' or b) a list that will be passed to that function internally. See \code{?aghq::make_transformation} for details.
 #' @param interpolation Which method to use for interpolating the marginal posteriors
 #' (and hence to draw samples using the inverse CDF method), \code{'auto'} (choose for you), \code{'polynomial'}
 #' or \code{'spline'}? If \code{k > 3} then the polynomial may be unstable and you should use the spline, but the spline
 #' doesn't work *unless* \code{k > 3} so it's not the default. The default of \code{'auto'} figures this out for you.
 #' See \code{interpolate_marginal_posterior()}.
-#' @param numcores Integer, default \code{getOption('mc.cores')}. If greater than 1, the Cholesky decompositions of the Hessians are computed
-#' in parallel using \code{parallel::mcapply}, for the Gaussian approximation involved for objects of class \code{marginallaplace}. This step is slow
-#' so may be sped up by parallelization, if the matrices are sparse (and hence the operation is just slow, but not memory-intensive).
-#' Uses the \code{parallel} package so is not available on Windows.
 #' @param ... Used to pass additional arguments.
 #'
 #' @family sampling
@@ -550,6 +549,11 @@ compute_quantiles.aghq <- function(obj,q = c(.025,.975),transformation = NULL,..
 #' with the order of the "\code{W}" vector being determined by \code{TMB}. See the
 #' \code{names} of \code{ff$env$last.par}, for example (where \code{ff} is your
 #' template obtained from a call to \code{TMB::MakeADFun}.
+#'
+#' If \code{getOption('mc.cores',1L) > 1}, the Cholesky decompositions of the Hessians are computed
+#' in parallel using \code{parallel::mcapply}, for the Gaussian approximation involved for objects of class \code{marginallaplace}. This step is slow
+#' so may be sped up by parallelization, if the matrices are sparse (and hence the operation is just slow, but not memory-intensive).
+#' Uses the \code{parallel} package so is not available on Windows.
 #'
 #' @examples
 #' logfteta2d <- function(eta,y) {
@@ -594,24 +598,25 @@ compute_quantiles.aghq <- function(obj,q = c(.025,.975),transformation = NULL,..
 #'
 #' @export
 #'
-sample_marginal <- function(quad,...) UseMethod("sample_marginal")
+sample_marginal <- function(quad,M,transformation = default_transformation(),interpolation = 'auto',...) UseMethod("sample_marginal")
 #' @rdname sample_marginal
 #' @export
-sample_marginal.aghq <- function(quad,M,transformation = NULL,interpolation = 'auto',...) {
+sample_marginal.aghq <- function(quad,M,transformation = quad$transformation,interpolation = 'auto',...) {
   out <- list()
   if (is.null(quad$marginals)) return(out)
-  for (i in 1:length(quad$marginals)) out[[i]] <- unname(compute_quantiles(quad$marginals[[i]],stats::runif(M),interpolation = interpolation))
+  for (i in 1:length(quad$marginals)) out[[i]] <- unname(compute_quantiles(quad$marginals[[i]],stats::runif(M),interpolation = interpolation,transformation = transformation))
 
-  if (!is.null(transformation)) {
-    if (is.null(transformation$fromtheta)) warning("transformation provided but transformation$fromtheta appears NULL.\n")
-    transformation <- Map(match.fun,transformation)
-    for (i in 1:length(out)) out[[i]] <- transformation$fromtheta(out[[i]])
-  }
+  # if (!is.null(transformation)) {
+  #   if (is.null(transformation$fromtheta)) warning("transformation provided but transformation$fromtheta appears NULL.\n")
+  #   transformation <- Map(match.fun,transformation)
+  #   for (i in 1:length(out)) out[[i]] <- transformation$fromtheta(out[[i]])
+  # }
   out
 }
 #' @rdname sample_marginal
 #' @export
-sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpolation = 'auto',numcores = getOption('mc.cores',1L),...) {
+sample_marginal.marginallaplace <- function(quad,M,transformation = quad$transformation,interpolation = 'auto',...) {
+  numcores = getOption('mc.cores',1L)
   K <- as.numeric(quad$normalized_posterior$grid$level)[1]
   d <- dim(quad$modesandhessians$H[[1]])[1]
   simlist <- quad$modesandhessians
@@ -643,7 +648,6 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpo
   samps <- mapply(
     # function(.x,.y) as.numeric(solve(simlist$L[[as.numeric(.y)]],.x)) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
     function(.x,.y) as.numeric(Matrix::solve(simlist$L[[as.numeric(.y)]],Matrix::solve(simlist$L[[as.numeric(.y)]],.x,system="Lt"),system='Pt')) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
-
     Z,
     names(Z)
   )
@@ -683,29 +687,33 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpo
   out
 }
 
-#' Parameter Transformations
+#' Marginal Parameter Transformations
 #'
-#' These functions make it easier for the user to represent parameter transformations
+#' These functions make it easier for the user to represent marginal parameter transformations
 #' for which inferences are to be made. Suppose quadrature is done on the posterior for parameter \code{theta},
-#' but interest lies in parameter \code{lambda = g(theta)} for smooth, monotone, dimension-preserving
+#' but interest lies in parameter \code{lambda = g(theta)} for smooth, monotone, univariate
 #' \code{g}. This interface lets the user provide \code{g}, \code{g^-1}, and (optionally)
-#' the jacobian \code{dg/dtheta}, and \code{aghq} will do quadrature on the \code{theta} scale
-#' but report summaries on the \code{lambda} scale.
+#' the jacobian \code{dtheta/dlambda}, and \code{aghq} will do quadrature on the \code{theta} scale
+#' but report summaries on the \code{lambda} scale. See a note in the Details below about
+#' multidimensional parameters.
 #'
 #' @param ... Used to pass arguments to methods.
-#' @param totheta Function \code{g: R^p -> R^p} where \code{p = dim(theta)}. The parameter of
-#' inferential interest is \code{lambda = g(theta)} and the parameter whose posterior is being
-#' normalized via \code{aghq} is \code{theta}. Passed to \code{match.fun}.
-#' @param fromtheta Inverse function \code{g^-1(theta)}.
+#' @param totheta Function \code{g: R^p -> R^p}, where \code{p = dim(theta)}.
+#' Must take vector \code{theta_1...theta_p} and return vector \code{g_1(theta_1)...g_p(theta_p)}, i.e.
+#' only independent/marginal transformations are allowed (but these are the only ones
+#' of interest, see below). For \code{j=1...p}, the parameter of
+#' inferential interest is \code{lambda_j = g_j(theta_j)} and the parameter whose posterior is being
+#' normalized via \code{aghq} is \code{theta_j}.  Passed to \code{match.fun}.
+#' @param fromtheta Inverse function \code{g^-1(theta)}. Specifically, takes vector
+#' \code{g_1(theta_1)...g_p(theta_p)} and returns vector \code{theta_1...theta_p}.
 #' @param jacobian (optional) Function taking \code{theta} and returning the absolute value of the determinant of
-#' the Jacobian \code{dtheta/dg(theta)}. If not provided, a numerically differentiate Jacobian is used as
-#' follows: \code{det(abs(numDeriv::jacobian(totheta,fromtheta(theta))))}.
-#' Passed to \code{match.fun}.
+#' the Jacobian \code{dtheta/dg(theta)}. If not provided, a numerically differentiated Jacobian is used as
+#' follows: \code{numDeriv::jacobian(totheta,fromtheta(theta))}. Passed to \code{match.fun}.
 #' @param translist A list with elements \code{totheta}, \code{fromtheta}, and, optionally, \code{jacobian}.
 #' @param transobj An object of class \code{aghqtrans}. Just returns this object. This is for internal
 #' compatibility.
 #'
-#' @return n object of class \code{aghqtrans}, which is simply a list with elements \code{totheta},
+#' @return Object of class \code{aghqtrans}, which is simply a list with elements \code{totheta},
 #' \code{fromtheta}, and \code{jacobian}. Object is suitable for checking with \code{aghq::validate_transformation}
 #' and for inputting into any function in \code{aghq} which takes a \code{transformation} argument.
 #'
@@ -724,8 +732,16 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpo
 #'
 #' The \code{aghq} package provides an interface for computing
 #' posterior summaries of smooth, monotonic parameter transformations. If quadrature
-#' is done on parameter \code{theta} and \code{g(theta)} is a smooth, monotone function,
-#' then inferences are made for \code{lambda = g(theta)}.
+#' is done on parameter \code{theta} and \code{g(theta)} is a univariate, smooth, monotone function,
+#' then inferences are made for \code{lambda = g(theta)}. In the case that \code{theta} is
+#' \code{p}-dimensional, \code{p > 1}, the supplied function \code{g} is understood to
+#' take in \code{theta_1...theta_p} and return \code{g_1(theta_1)...g_p(theta_p)}. The
+#' jacobian is diagonal.
+#'
+#' To reiterate, all of this discussion applies only to *marginal* parameter transformations.
+#' For the full joint parameter, the only summary statistics you can even calculate at all
+#' (at present?) are moments, and you can already calculate the moment of any function \code{h(theta)}
+#' using \code{aghq::compute_moment}, so no additional interface is needed here.
 #'
 #' @family transformations
 #'

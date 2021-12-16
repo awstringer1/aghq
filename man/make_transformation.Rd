@@ -5,7 +5,7 @@
 \alias{make_transformation.aghqtrans}
 \alias{make_transformation.list}
 \alias{make_transformation.default}
-\title{Parameter Transformations}
+\title{Marginal Parameter Transformations}
 \usage{
 make_transformation(...)
 
@@ -23,29 +23,33 @@ compatibility.}
 
 \item{translist}{A list with elements \code{totheta}, \code{fromtheta}, and, optionally, \code{jacobian}.}
 
-\item{totheta}{Function \code{g: R^p -> R^p} where \code{p = dim(theta)}. The parameter of
-inferential interest is \code{lambda = g(theta)} and the parameter whose posterior is being
-normalized via \code{aghq} is \code{theta}. Passed to \code{match.fun}.}
+\item{totheta}{Function \code{g: R^p -> R^p}, where \code{p = dim(theta)}.
+Must take vector \code{theta_1...theta_p} and return vector \code{g_1(theta_1)...g_p(theta_p)}, i.e.
+only independent/marginal transformations are allowed (but these are the only ones
+of interest, see below). For \code{j=1...p}, the parameter of
+inferential interest is \code{lambda_j = g_j(theta_j)} and the parameter whose posterior is being
+normalized via \code{aghq} is \code{theta_j}.  Passed to \code{match.fun}.}
 
-\item{fromtheta}{Inverse function \code{g^-1(theta)}.}
+\item{fromtheta}{Inverse function \code{g^-1(theta)}. Specifically, takes vector
+\code{g_1(theta_1)...g_p(theta_p)} and returns vector \code{theta_1...theta_p}.}
 
 \item{jacobian}{(optional) Function taking \code{theta} and returning the absolute value of the determinant of
-the Jacobian \code{dtheta/dg(theta)}. If not provided, a numerically differentiate Jacobian is used as
-follows: \code{det(abs(numDeriv::jacobian(totheta,fromtheta(theta))))}.
-Passed to \code{match.fun}.}
+the Jacobian \code{dtheta/dg(theta)}. If not provided, a numerically differentiated Jacobian is used as
+follows: \code{numDeriv::jacobian(totheta,fromtheta(theta))}. Passed to \code{match.fun}.}
 }
 \value{
-n object of class \code{aghqtrans}, which is simply a list with elements \code{totheta},
+Object of class \code{aghqtrans}, which is simply a list with elements \code{totheta},
 \code{fromtheta}, and \code{jacobian}. Object is suitable for checking with \code{aghq::validate_transformation}
 and for inputting into any function in \code{aghq} which takes a \code{transformation} argument.
 }
 \description{
-These functions make it easier for the user to represent parameter transformations
+These functions make it easier for the user to represent marginal parameter transformations
 for which inferences are to be made. Suppose quadrature is done on the posterior for parameter \code{theta},
-but interest lies in parameter \code{lambda = g(theta)} for smooth, monotone, dimension-preserving
+but interest lies in parameter \code{lambda = g(theta)} for smooth, monotone, univariate
 \code{g}. This interface lets the user provide \code{g}, \code{g^-1}, and (optionally)
-the jacobian \code{dg/dtheta}, and \code{aghq} will do quadrature on the \code{theta} scale
-but report summaries on the \code{lambda} scale.
+the jacobian \code{dtheta/dlambda}, and \code{aghq} will do quadrature on the \code{theta} scale
+but report summaries on the \code{lambda} scale. See a note in the Details below about
+multidimensional parameters.
 }
 \details{
 Often, the scale on which quadrature is done is not the scale on which the user
@@ -63,8 +67,16 @@ When using quadrature, a little bit more work is needed.
 
 The \code{aghq} package provides an interface for computing
 posterior summaries of smooth, monotonic parameter transformations. If quadrature
-is done on parameter \code{theta} and \code{g(theta)} is a smooth, monotone function,
-then inferences are made for \code{lambda = g(theta)}.
+is done on parameter \code{theta} and \code{g(theta)} is a univariate, smooth, monotone function,
+then inferences are made for \code{lambda = g(theta)}. In the case that \code{theta} is
+\code{p}-dimensional, \code{p > 1}, the supplied function \code{g} is understood to
+take in \code{theta_1...theta_p} and return \code{g_1(theta_1)...g_p(theta_p)}. The
+jacobian is diagonal.
+
+To reiterate, all of this discussion applies only to \emph{marginal} parameter transformations.
+For the full joint parameter, the only summary statistics you can even calculate at all
+(at present?) are moments, and you can already calculate the moment of any function \code{h(theta)}
+using \code{aghq::compute_moment}, so no additional interface is needed here.
 }
 \examples{
 

@@ -20,8 +20,7 @@ to this effect. Default \code{30}.}
 \item{...}{not used.}
 }
 \value{
-A list containing an object of class \code{aghqsummary} (see \code{summary.aghq})
-plus the following objects:
+A list containing an object of class \code{aghqsummary} (see \code{summary.aghq}).
 }
 \description{
 The \code{summary.marginallaplace} calls \code{summary.aghq}, but also computes

@@ -6,16 +6,27 @@
 \alias{sample_marginal.marginallaplace}
 \title{Exact independent samples from an approximate posterior distribution}
 \usage{
-sample_marginal(quad, ...)
+sample_marginal(
+  quad,
+  M,
+  transformation = default_transformation(),
+  interpolation = "auto",
+  ...
+)
 
-\method{sample_marginal}{aghq}(quad, M, transformation = NULL, interpolation = "auto", ...)
+\method{sample_marginal}{aghq}(
+  quad,
+  M,
+  transformation = quad$transformation,
+  interpolation = "auto",
+  ...
+)
 
 \method{sample_marginal}{marginallaplace}(
   quad,
   M,
-  transformation = NULL,
+  transformation = quad$transformation,
   interpolation = "auto",
-  numcores = getOption("mc.cores", 1L),
   ...
 )
 }
@@ -28,16 +39,12 @@ Can also provide a \code{data.frame} returned by \code{aghq::compute_pdf_and_cdf
 case samples are returned for \code{transparam} if \code{transformation} is provided,
 and for \code{param} if \code{transformation = NULL}.}
 
-\item{...}{Used to pass additional arguments.}
-
 \item{M}{Numeric, integer saying how many samples to draw}
 
-\item{transformation}{Optional.
-A list containing function \code{fromtheta()} which accepts and returns numeric vectors,
-defining a parameter transformation for which you would like samples to be taken.
-See \code{?compute_pdf_and_cdf}. Note that unlike there, where this operation is
-a bit more complicated, here all is done is samples are taken on the original
-scale and then \code{transformation$fromtheta()} is called on them before returning.}
+\item{transformation}{Optional. Draw samples for a transformation of the parameter
+whose posterior was normalized using adaptive quadrature.
+\code{transformation} is either: a) an \code{aghqtrans} object returned by \code{aghq::make_transformation},
+or b) a list that will be passed to that function internally. See \code{?aghq::make_transformation} for details.}
 
 \item{interpolation}{Which method to use for interpolating the marginal posteriors
 (and hence to draw samples using the inverse CDF method), \code{'auto'} (choose for you), \code{'polynomial'}
@@ -45,10 +52,7 @@ or \code{'spline'}? If \code{k > 3} then the polynomial may be unstable and you 
 doesn't work \emph{unless} \code{k > 3} so it's not the default. The default of \code{'auto'} figures this out for you.
 See \code{interpolate_marginal_posterior()}.}
 
-\item{numcores}{Integer, default \code{getOption('mc.cores')}. If greater than 1, the Cholesky decompositions of the Hessians are computed
-in parallel using \code{parallel::mcapply}, for the Gaussian approximation involved for objects of class \code{marginallaplace}. This step is slow
-so may be sped up by parallelization, if the matrices are sparse (and hence the operation is just slow, but not memory-intensive).
-Uses the \code{parallel} package so is not available on Windows.}
+\item{...}{Used to pass additional arguments.}
 }
 \value{
 If run on a \code{marginallaplace} object, a list containing elements:
@@ -93,6 +97,11 @@ For the marginal Laplace approximations where the "inner" model is handled entir
 with the order of the "\code{W}" vector being determined by \code{TMB}. See the
 \code{names} of \code{ff$env$last.par}, for example (where \code{ff} is your
 template obtained from a call to \code{TMB::MakeADFun}.
+
+If \code{getOption('mc.cores',1L) > 1}, the Cholesky decompositions of the Hessians are computed
+in parallel using \code{parallel::mcapply}, for the Gaussian approximation involved for objects of class \code{marginallaplace}. This step is slow
+so may be sped up by parallelization, if the matrices are sparse (and hence the operation is just slow, but not memory-intensive).
+Uses the \code{parallel} package so is not available on Windows.
 }
 \examples{
 logfteta2d <- function(eta,y) {

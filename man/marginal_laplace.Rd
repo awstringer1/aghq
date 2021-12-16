@@ -8,6 +8,7 @@ marginal_laplace(
   ff,
   k,
   startingvalue,
+  transformation = default_transformation(),
   optresults = NULL,
   control = default_control_marglaplace(),
   ...
@@ -33,6 +34,12 @@ approximation.}
 vectors to start the optimizations for each variable. If you're using this method
 then the log-joint posterior should be concave and these optimizations should not be
 sensitive to starting values.}
+
+\item{transformation}{Optional. Do the quadrature for parameter \code{theta}, but
+return summaries and plots for parameter \code{g(theta)}. This applies to the \code{theta}
+parameters only, not the \code{W} parameters.
+\code{transformation} is either: a) an \code{aghqtrans} object returned by \code{aghq::make_transformation},
+or b) a list that will be passed to that function internally. See \code{?aghq::make_transformation} for details.}
 
 \item{optresults}{Optional. A list of the results of the optimization of the log
 posterior, formatted according to the output of \code{aghq::optimize_theta}. The

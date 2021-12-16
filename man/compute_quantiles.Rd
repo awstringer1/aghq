@@ -7,35 +7,49 @@
 \alias{compute_quantiles.aghq}
 \title{Quantiles}
 \usage{
-compute_quantiles(obj, ...)
+compute_quantiles(
+  obj,
+  q = c(0.025, 0.975),
+  transformation = default_transformation(),
+  ...
+)
 
 \method{compute_quantiles}{default}(
   obj,
   q = c(0.025, 0.975),
-  transformation = NULL,
-  interpolation = "polynomial",
+  transformation = default_transformation(),
+  interpolation = "auto",
   ...
 )
 
-\method{compute_quantiles}{list}(obj, q = c(0.025, 0.975), transformation = NULL, ...)
+\method{compute_quantiles}{list}(
+  obj,
+  q = c(0.025, 0.975),
+  transformation = default_transformation(),
+  ...
+)
 
-\method{compute_quantiles}{aghq}(obj, q = c(0.025, 0.975), transformation = NULL, ...)
+\method{compute_quantiles}{aghq}(
+  obj,
+  q = c(0.025, 0.975),
+  transformation = obj$transformation,
+  ...
+)
 }
 \arguments{
 \item{obj}{Either the output of \code{aghq::aghq()}, its list of marginal distributions
 (element \code{marginals}), or an individual \code{data.frame} containing one of
 these marginal distributions as output by \code{aghq::marginal_posterior()}.}
 
-\item{...}{Used to pass additional arguments.}
-
 \item{q}{Numeric vector of values in (0,1). The quantiles to compute.}
 
-\item{transformation}{Optional.
-A list containing function \code{fromtheta()} which accepts and returns numeric vectors,
-defining a parameter transformation for which you would like the quantiles of.
-See \code{?compute_pdf_and_cdf}. This transformation must be monotone and the function
-checks whether it's increasing or decreasing and returns the transformed quantiles,
-ordered appropriately.}
+\item{transformation}{Optional. Calculate marginal quantiles for a transformation of the parameter
+whose posterior was normalized using adaptive quadrature.
+\code{transformation} is either: a) an \code{aghqtrans} object returned by \code{aghq::make_transformation},
+or b) a list that will be passed to that function internally. See \code{?aghq::make_transformation} for details.
+Note that since \code{g} has to be monotone anyways, this just returns \code{sort(g(q))} instead of \code{q}.}
+
+\item{...}{Used to pass additional arguments.}
 
 \item{interpolation}{Which method to use for interpolating the marginal posterior, \code{'polynomial'} (default)
 or \code{'spline'}? If \code{k > 3} then the polynomial may be unstable and you should use the spline, but the spline

@@ -7,7 +7,8 @@
 \method{plot}{aghq}(x, ...)
 }
 \arguments{
-\item{x}{The return value of \code{aghq::aghq}.}
+\item{x}{The return value of \code{aghq::aghq}. Plots are created for the marginal
+pdf and cdf of \code{x$transformation$fromtheta(theta)}.}
 
 \item{...}{not used.}
 }
@@ -15,7 +16,7 @@
 Silently plots.
 }
 \description{
-Plot the marginal pdf and cdf from an \code{aghq} object.
+Plot the marginal pdf and cdfof the transformed parameter from an \code{aghq} object.
 }
 \examples{
 

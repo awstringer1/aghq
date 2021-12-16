@@ -1,7 +1,7 @@
 context("Quadrature")
 
-quadnames <- c("normalized_posterior","marginals","optresults","control")
-quadnamesmarg <- c("normalized_posterior","marginals","optresults","modesandhessians","control")
+quadnames <- c("normalized_posterior","marginals","optresults","control","transformation")
+quadnamesmarg <- c("normalized_posterior","marginals","optresults","modesandhessians","control","transformation")
 
 
 test_that("Quadrature works",{

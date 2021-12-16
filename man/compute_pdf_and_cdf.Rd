@@ -7,32 +7,31 @@
 \alias{compute_pdf_and_cdf.aghq}
 \title{Density and Cumulative Distribution Function}
 \usage{
-compute_pdf_and_cdf(obj, ...)
+compute_pdf_and_cdf(obj, transformation = default_transformation(), ...)
 
 \method{compute_pdf_and_cdf}{default}(
   obj,
-  transformation = NULL,
+  transformation = default_transformation(),
   finegrid = NULL,
   interpolation = "auto",
   ...
 )
 
-\method{compute_pdf_and_cdf}{list}(obj, ...)
+\method{compute_pdf_and_cdf}{list}(obj, transformation = default_transformation(), ...)
 
-\method{compute_pdf_and_cdf}{aghq}(obj, ...)
+\method{compute_pdf_and_cdf}{aghq}(obj, transformation = obj$transformation, ...)
 }
 \arguments{
 \item{obj}{Either the output of \code{aghq::aghq()}, its list of marginal distributions
 (element \code{marginals}), or an individual \code{data.frame} containing one of
 these marginal distributions as output by \code{aghq::marginal_posterior()}.}
 
-\item{...}{Used to pass additional arguments.}
+\item{transformation}{Optional. Calculate pdf/cdf for a transformation of the parameter
+whose posterior was normalized using adaptive quadrature.
+\code{transformation} is either: a) an \code{aghqtrans} object returned by \code{aghq::make_transformation},
+or b) a list that will be passed to that function internally. See \code{?aghq::make_transformation} for details.}
 
-\item{transformation}{Optional. A list containing two functions, \code{fromtheta}
-and \code{totheta}, which accept and return numeric vectors, defining a parameter transformation for which you would
-also like the pdf calculated for. See examples. May also have an element \code{jacobian},
-a function which takes a numeric vector and computes the jacobian of the transformation; if
-not provided, this is done using \code{numDeriv::jacobian}.}
+\item{...}{Used to pass additional arguments.}
 
 \item{finegrid}{Optional, a grid of values on which to compute the CDF. The default makes
 use of the values in \code{margpost} but if the results are unsuitable, you may wish to

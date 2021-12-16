@@ -7,7 +7,8 @@
 \method{summary}{aghq}(object, ...)
 }
 \arguments{
-\item{object}{The return value from \code{aghq::aghq}.}
+\item{object}{The return value from \code{aghq::aghq}. Summaries are computed for
+\code{object$transformation$fromtheta(theta)}.}
 
 \item{...}{not used.}
 }
@@ -21,13 +22,14 @@ A list of class \code{aghqsummary}, which has a print method. Elements:
 \item{quadpoints: }{the number of quadrature points used in each dimension}
 \item{dim: }{the dimension of the parameter space}
 \item{summarytable: }{a table containing the mean, median, mode, standard deviation
-and quantiles of each parameter, computed according to the posterior normalized
+and quantiles of each transformed parameter, computed according to the posterior normalized
 using AGHQ}
 }
 }
 \description{
 The \code{summary.aghq} method computes means, standard deviations, and
-quantiles and the associated print method
+quantiles of the transformed parameter.
+The associated print method
 prints these along with diagnostic and other information about
 the quadrature.
 }
