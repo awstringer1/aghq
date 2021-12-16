@@ -170,5 +170,31 @@ test_that("Marginal posteriors computed correctly",{
   expect_true(all(themargsamps$samps == themargsamps_parallel$samps))
   expect_true(all(themargsamps$theta == themargsamps_parallel$theta))
   expect_true(all(themargsamps$thetasamples[[1]] == themargsamps_parallel$thetasamples[[1]]))
+
+  # Transformations
+  expect_equal(names(trans2),transnames)
+  expect_equal(names(trans3),transnames)
+  expect_equal(names(trans4),transnames)
+  expect_is(trans2,"aghqtrans")
+  expect_is(trans3,"aghqtrans")
+  expect_is(trans4,"aghqtrans")
+
+  expect_equal(trans1$totheta(tt),trans2$totheta(tt))
+  expect_equal(trans2$totheta(tt),trans3$totheta(tt))
+  expect_equal(trans3$totheta(tt),trans4$totheta(tt))
+  expect_equal(trans1$fromtheta(tt),trans2$fromtheta(tt))
+  expect_equal(trans2$fromtheta(tt),trans3$fromtheta(tt))
+  expect_equal(trans3$fromtheta(tt),trans4$fromtheta(tt))
+  expect_equal(trans2$jacobian(tt),trans3$jacobian(tt))
+  expect_equal(trans3$jacobian(tt),trans4$jacobian(tt))
+
+  expect_true(validate_transformation(default_transformation()))
+  expect_true(validate_transformation(trans1))
+  expect_true(validate_transformation(trans2))
+  expect_true(validate_transformation(trans3))
+  expect_true(validate_transformation(trans4))
+  expect_error(validate_transformation(list(foo = 'bar')))
+  expect_error(validate_transformation(t3,checkinverse = checkvals))
+
 })
 

@@ -1,3 +1,15 @@
+# aghq 0.3.2
+
+## New features
+
+- added an `S3` interface for parameter transformations, see `make_transformation`,
+`validate_transformation`, `default_transformation`, and any `aghq` package function with a `transformation`
+argument.
+
+## Bug fixes
+
+## Other
+
 # aghq 0.3.1
 
 ## New features

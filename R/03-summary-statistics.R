@@ -682,3 +682,180 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = NULL,interpo
   out$thetasamples <- sample_marginal(quad,M,transformation,interpolation,...)
   out
 }
+
+#' Parameter Transformations
+#'
+#' These functions make it easier for the user to represent parameter transformations
+#' for which inferences are to be made. Suppose quadrature is done on the posterior for parameter \code{theta},
+#' but interest lies in parameter \code{lambda = g(theta)} for smooth, monotone, dimension-preserving
+#' \code{g}. This interface lets the user provide \code{g}, \code{g^-1}, and (optionally)
+#' the jacobian \code{dg/dtheta}, and \code{aghq} will do quadrature on the \code{theta} scale
+#' but report summaries on the \code{lambda} scale.
+#'
+#' @param ... Used to pass arguments to methods.
+#' @param totheta Function \code{g: R^p -> R^p} where \code{p = dim(theta)}. The parameter of
+#' inferential interest is \code{lambda = g(theta)} and the parameter whose posterior is being
+#' normalized via \code{aghq} is \code{theta}. Passed to \code{match.fun}.
+#' @param fromtheta Inverse function \code{g^-1(theta)}.
+#' @param jacobian (optional) Function taking \code{theta} and returning the absolute value of the determinant of
+#' the Jacobian \code{dtheta/dg(theta)}. If not provided, a numerically differentiate Jacobian is used as
+#' follows: \code{det(abs(numDeriv::jacobian(totheta,fromtheta(theta))))}.
+#' Passed to \code{match.fun}.
+#' @param translist A list with elements \code{totheta}, \code{fromtheta}, and, optionally, \code{jacobian}.
+#' @param transobj An object of class \code{aghqtrans}. Just returns this object. This is for internal
+#' compatibility.
+#'
+#' @return n object of class \code{aghqtrans}, which is simply a list with elements \code{totheta},
+#' \code{fromtheta}, and \code{jacobian}. Object is suitable for checking with \code{aghq::validate_transformation}
+#' and for inputting into any function in \code{aghq} which takes a \code{transformation} argument.
+#'
+#' @details Often, the scale on which quadrature is done is not the scale on which the user
+#' wishes to make inferences. For example, when a parameter \code{lambda>0} is
+#' of interest, the posterior for \code{theta = log(lambda)} may be better approximated
+#' by a log-quadratic than that for \code{lambda}, so running \code{aghq} on the
+#' likelihood and prior for \code{theta} may lead to faster and more stable optimization
+#' as well as more accurate estimates. But, interest is still in the original parameter
+#' \code{lambda = exp(theta)}.
+#'
+#' These considerations are by no means unique to the use of quadrature-based approximate
+#' Bayesian inferences. However, when using (say) \code{MCMC}, inferences for summaries
+#' of transformations of the parameter are just as easy as for the un-transformed parameter.
+#' When using quadrature, a little bit more work is needed.
+#'
+#' The \code{aghq} package provides an interface for computing
+#' posterior summaries of smooth, monotonic parameter transformations. If quadrature
+#' is done on parameter \code{theta} and \code{g(theta)} is a smooth, monotone function,
+#' then inferences are made for \code{lambda = g(theta)}.
+#'
+#' @family transformations
+#'
+#' @examples
+#'
+#' make_transformation('log','exp')
+#' make_transformation(log,exp)
+#'
+#' @export
+make_transformation <- function(...) UseMethod('make_transformation')
+#' @rdname make_transformation
+#' @export
+make_transformation.aghqtrans <- function(transobj,...) transobj
+#' @rdname make_transformation
+#' @export
+make_transformation.list <- function(translist,...) make_transformation.default(translist$totheta,translist$fromtheta,translist$jacobian,...)
+#' @rdname make_transformation
+#' @export
+make_transformation.default <- function(totheta,fromtheta,jacobian = NULL,...) {
+  totheta <- match.fun(totheta)
+  fromtheta <- match.fun(fromtheta)
+
+  trans <- list(totheta=totheta,fromtheta=fromtheta)
+  if (is.null(jacobian)) {
+    trans$jacobian <- function(theta) {
+      out <- numeric(length(theta))
+      for (i in 1:length(theta)) {
+        out[i] <- det(abs(numDeriv::jacobian(totheta,fromtheta(theta[i]))))
+      }
+      out
+    }
+  } else {
+    trans$jacobian <- match.fun(jacobian)
+  }
+  class(trans) <- 'aghqtrans'
+  trans
+}
+
+#' Validate a transformation object
+#'
+#' Routine for checking whether a given transformation is valid.
+#'
+#' @param ... Used to pass arguments to methods.
+#' @param trans A transformation object of class \code{aghqtrans} returned by \code{make_transformation}.
+#' @param translist A list. Will be checked, passed to \code{aghqtrans}, and then checked again.
+#' @param checkinverse Default \code{FALSE}, do not check that \code{totheta(fromtheta(theta)) = theta}. Otherwise,
+#' a vector of values for which to perform that check. No default values are provided, since \code{validate_transformation}
+#' has no way of determining the domain and range of \code{totheta} and \code{fromtheta}. This argument is
+#' used internally in \code{aghq} package functions, with cleverly chosen check values.
+#'
+#' @details This function checks that:
+#' \itemize{
+#' \item{The supplied object contains elements \code{totheta}, \code{fromtheta}, and \code{jacobian}, and that they are all functions,}
+#' \item{If \code{checkinverse} is a vector of numbers, then it checks that \code{totheta(fromtheta(checkinverse)) == checkinverse}.}
+#' }
+#' In addition, if a \code{list} is provided, the function first checks that it contains the right elements,
+#' then passes it to \code{make_transformation}, then checks that.
+#'
+#' This function throws an informative error messages when checks don't pass or themselves throw errors.
+#'
+#' @return \code{TRUE} if the function runs to completion without throwing an error.
+#'
+#' @family transformations
+#'
+#' @examples
+#'
+#' t <- make_transformation(log,exp)
+#' validate_transformation(t)
+#' t2 <- list(totheta = log,fromtheta = exp)
+#' validate_transformation(t2)
+#' \dontrun{
+#' t3 <- make_transformation(log,log)
+#' checkvals <- exp(exp(rnorm(10)))
+#' # Should throw an informative error because log isn't the inverse of log.
+#' validate_transformation(t3,checkinverse = checkvals)
+#' }
+#' @export
+validate_transformation <- function(...) UseMethod('validate_transformation')
+#' @rdname validate_transformation
+#' @export
+validate_transformation.aghqtrans <- function(trans,checkinverse = FALSE,...) {
+  # Check names
+  valid_names <- c("totheta","fromtheta","jacobian")
+  if (!all(names(trans) == valid_names)) {
+    stop(paste0("Transformation object should have names: ",valid_names,". The provided object has names: ",names(trans),"."))
+  }
+  # Check functions
+  for (fn in names(trans)) {
+    if (!is.function(trans[[fn]])) stop("Transformation object should be a list of functions, but element ",fn," inherits from class ",class(fn),".")
+  }
+  # Check inverse
+  if (checkinverse[1]) {
+    # Compute the values and check they are all numeric
+    fromthetavals <- trans$fromtheta(checkinverse)
+    if (any(is.infinite(fromthetavals))) stop("trans$fromtheta(checkinverse) produced infinite values. Check the domain and range of totheta and fromtheta.")
+    if (any(is.na(fromthetavals))) stop("trans$fromtheta(checkinverse) produced NA values. Check the domain and range of totheta and fromtheta.")
+    if (any(is.nan(fromthetavals))) stop("trans$fromtheta(checkinverse) produced NaN values. Check the domain and range of totheta and fromtheta.")
+    tothetavals <- trans$totheta(fromthetavals)
+    if (any(is.infinite(tothetavals))) stop("trans$totheta(trans$fromtheta(checkinverse)) produced infinite values. Check the domain and range of totheta and fromtheta.")
+    if (any(is.na(tothetavals))) stop("trans$totheta(trans$fromtheta(checkinverse)) produced NA values. Check the domain and range of totheta and fromtheta.")
+    if (any(is.nan(tothetavals))) stop("trans$totheta(trans$fromtheta(checkinverse)) produced NaN values. Check the domain and range of totheta and fromtheta.")
+    if (!all(tothetavals == checkinverse)) stop("Elements totheta and fromtheta do not appear to be each others' inverse functions. Please check this.")
+  }
+  TRUE
+}
+#' @rdname validate_transformation
+#' @export
+validate_transformation.list <- function(translist,checkinverse = FALSE,...) {
+  # First check it has the required elements, then create a transformation argument
+  # and check that
+  valid_names <- c("totheta","fromtheta") # Don't need it to have a jacobian
+  if (all(valid_names %in% names(translist))) {
+    return(validate_transformation(trans = make_transformation(translist)))
+  }
+  stop(paste0("Transformation object should have names: ",valid_names,". The provided object has names: ",names(translist),"."))
+}
+#' @rdname validate_transformation
+#' @export
+validate_transformation.default <- function(...) FALSE
+
+#' Default transformation
+#'
+#' Default (identity) transformation object. Default argument in package functions
+#' which accept transformations, and useful for user inspection.
+#'
+#' @family transformations
+#'
+#' @examples
+#'
+#' default_transformation()
+#'
+#' @export
+default_transformation <- function() make_transformation(totheta = force,fromtheta = force)

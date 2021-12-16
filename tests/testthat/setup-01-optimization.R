@@ -50,6 +50,9 @@ pdfwithtrans <- compute_pdf_and_cdf(
 
 
 
+
+
+
 ## A 2d example ##
 logfteta2d <- function(eta,y) {
   # eta is now (eta1,eta2)
@@ -471,5 +474,21 @@ mlsumm1 <- summary(themarginallaplace)
 mlsumm2 <- summary(themarginallaplace3d_1)
 mlsumm3 <- summary(themarginallaplace,M=100)
 mlsumm4 <- summary(themarginallaplace3d_1,max_print=1)
+
+## Transformations ##
+transnames <- c("totheta","fromtheta","jacobian")
+tt <- exp(rnorm(10))
+trans1 <- list(totheta = log,fromtheta = exp)
+trans2 <- make_transformation(log,exp)
+trans3 <- make_transformation("log","exp")
+trans4 <- make_transformation(trans1)
+
+t3 <- make_transformation(log,log)
+checkvals <- exp(exp(rnorm(10)))
+
+# thepdfandcdf_trans1 <- compute_pdf_and_cdf(margpost_3d_1,transformation = trans1)
+# thepdfandcdf_trans2 <- compute_pdf_and_cdf(margpost_3d_1,transformation = trans2)
+# thepdfandcdf_trans3 <- compute_pdf_and_cdf(margpost_3d_1,transformation = trans3)
+
 
 
