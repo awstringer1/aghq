@@ -232,8 +232,11 @@ summary.aghq <- function(object,...) {
   thequants <- t(as.data.frame(thequants))
   colnames(thequants)[2] <- 'median'
 
-  thesummary <- cbind(themoments,thequants,data.frame(mode = object$optresults$mode))
-  thesummary <- thesummary[ ,c('mean','median','mode','sd','2.5%','97.5%')]
+  # thesummary <- cbind(themoments,thequants,data.frame(mode = object$optresults$mode))
+  thesummary <- cbind(themoments,thequants)
+
+  # thesummary <- thesummary[ ,c('mean','median','mode','sd','2.5%','97.5%')]
+  thesummary <- thesummary[ ,c('mean','median','sd','2.5%','97.5%')]
 
 
   out <- list()
