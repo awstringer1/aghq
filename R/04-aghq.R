@@ -236,7 +236,7 @@ summary.aghq <- function(object,...) {
   thesummary <- cbind(themoments,thequants)
 
   # thesummary <- thesummary[ ,c('mean','median','mode','sd','2.5%','97.5%')]
-  thesummary <- thesummary[ ,c('mean','median','sd','2.5%','97.5%')]
+  thesummary <- thesummary[ ,c('mean','sd','2.5%','median','97.5%')]
 
 
   out <- list()
