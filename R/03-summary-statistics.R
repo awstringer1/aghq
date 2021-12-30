@@ -667,8 +667,12 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = quad$transfo
   samps <- Reduce(cbind,samps)
   samps <- samps[ ,ord]
 
+  # BUG FIX: these lines were ad-hoc, and didn't return the correct columns
   # theta <- simlist[k, paste0("theta", seq(1, length(grep("theta",colnames(simlist)))))]
-  theta <- simlist[k, 1:(ncol(simlist)-5)]
+  # theta <- simlist[k, 1:(ncol(simlist)-5)]
+  d <- length(quad$optresults$mode)
+  thetanames <- colnames(quad$normalized_posterior$nodesandweights)[1:d]
+  theta <- simlist[k,thetanames]
   # In one dimension, R's indexing is not type consistent
   if (!is.matrix(samps)) {
     samps <- rbind(samps)

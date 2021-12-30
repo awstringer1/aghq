@@ -10,6 +10,10 @@ will return results for the transformed parameters.
 
 ## Bug fixes
 
+- `sample_marginal.marginallaplace` was using numeric indexing to pull "theta" parameters, and this
+was not being done correctly. Switched to using named parameters, because this feature was previously
+added to the summary methods so it was easy to add here.
+
 ## Other
 
 - changed default `interpolation` argument in `compute_quantiles` to `auto`, from `polynomial`. I guess this
