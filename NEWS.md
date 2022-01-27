@@ -14,6 +14,8 @@ will return results for the transformed parameters.
 was not being done correctly. Switched to using named parameters, because this feature was previously
 added to the summary methods so it was easy to add here.
 
+- added `SIMPLIFY = FALSE` to `mapply` in `sample_marginal` to fix a problem when the output was only length 1.
+
 ## Other
 
 - changed default `interpolation` argument in `compute_quantiles` to `auto`, from `polynomial`. I guess this

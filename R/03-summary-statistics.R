@@ -649,7 +649,8 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = quad$transfo
     # function(.x,.y) as.numeric(solve(simlist$L[[as.numeric(.y)]],.x)) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
     function(.x,.y) as.numeric(Matrix::solve(simlist$L[[as.numeric(.y)]],Matrix::solve(simlist$L[[as.numeric(.y)]],.x,system="Lt"),system='Pt')) + do.call(cbind,rep(list(simlist$mode[[as.numeric(.y)]]),ncol(.x))),
     Z,
-    names(Z)
+    names(Z),
+    SIMPLIFY = FALSE
   )
 
   # Order them properly
