@@ -73,6 +73,7 @@ str(ss)
 Other quadrature: 
 \code{\link{aghq}()},
 \code{\link{get_log_normconst}()},
+\code{\link{get_nodesandweights}()},
 \code{\link{laplace_approximation}()},
 \code{\link{marginal_laplace_tmb}()},
 \code{\link{marginal_laplace}()},

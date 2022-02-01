@@ -172,7 +172,8 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
   else {
     stop(paste0("Unknown optimization method: ",method))
   }
-  # tmp
+  # Remove duplicate names in out$mode
+  if (!is.null(names(out$mode))) names(out$mode) <- make.unique(names(out$mode),sep='')
 
   out
 }

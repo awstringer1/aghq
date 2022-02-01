@@ -90,7 +90,6 @@ with(thepdfandcdf,{
 }
 \seealso{
 Other summaries: 
-\code{\link{compute_moment}()},
 \code{\link{compute_quantiles}()},
 \code{\link{interpolate_marginal_posterior}()},
 \code{\link{marginal_posterior}()}

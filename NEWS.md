@@ -8,11 +8,20 @@ argument. Providing `transformation` to `aghq` and related functions does not ch
 the marginal likelihood/normalizing constant, but it does mean all downstream summary methods
 will return results for the transformed parameters.
 
+- added an `S3` interface for computing moments of positive functions, see `make_moment_function`,
+`validate_moment`, and the updated `compute_moment`.
+
+
+
 ## Bug fixes
 
 - `sample_marginal.marginallaplace` was using numeric indexing to pull "theta" parameters, and this
 was not being done correctly. Switched to using named parameters, because this feature was previously
 added to the summary methods so it was easy to add here.
+
+- Added a call to `make.unique` in `marginal_laplace_tmb`. `TMB` uses non-unique names for its `par`
+vectors when parameters are supplied to the template as vectors rather than scalars. This was causing errors in the
+named indexing.
 
 - added `SIMPLIFY = FALSE` to `mapply` in `sample_marginal` to fix a problem when the output was only length 1.
 

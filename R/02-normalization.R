@@ -168,3 +168,43 @@ get_log_normconst.laplace <- function(obj,...) obj$lognormconst
 #' @export
 get_log_normconst.marginallaplace <- function(obj,...) get_log_normconst(obj$normalized_posterior)
 
+#' Obtain the nodes and weights table from a fitted quadrature object
+#'
+#' Quick helper S3 method to retrieve the quadrature nodes and weights from an object
+#' created using the aghq package. Methods for a list (returned by \code{aghq::normalize_posterior})
+#' and for objects of class \code{aghq}, \code{laplace}, and \code{marginallaplace}.
+#'
+#' @param obj A list returned by \code{aghq::normalize_posterior} or an object of class \code{aghq}, \code{laplace}, or \code{marginallaplace}.
+#' @param ... Not used
+#'
+#' @return A number representing the natural logarithm of the approximated normalizing constant.
+#'
+#' @family quadrature
+#'
+#' @export
+#'
+get_nodesandweights <- function(obj,...) UseMethod("get_nodesandweights")
+#' @rdname get_log_normconst
+#' @export
+get_nodesandweights.default <- function(obj,...) obj$nodesandweights
+#' @rdname get_log_normconst
+#' @export
+get_nodesandweights.data.frame <- function(obj,...) obj
+#' @rdname get_log_normconst
+#' @export
+get_nodesandweights.aghq <- function(obj,...) get_nodesandweights(obj$normalized_posterior)
+#' @rdname get_log_normconst
+#' @export
+get_nodesandweights.laplace <- function(obj,...) {
+  # This is never actually created, so create it here
+  out <- as.data.frame(rbind(c(obj$optresults$mode,
+                               exp(-as.numeric(.5 * determinant(obj$optresults$hessian,logarithm = TRUE)$modulus) + .5*dim(obj$optresults$hessian)[1]*log(2*pi)),
+                               obj$optresults$ff$fn(obj$optresults$mode),
+                               obj$optresults$ff$fn(obj$optresults$mode) - obj$lognormconst)))
+  names(out) <- c(paste0('theta',1:length(obj$optresults$mode)),'weights','logpost','logpost_normalized')
+  out
+}
+#' @rdname get_log_normconst
+#' @export
+get_nodesandweights.marginallaplace <- function(obj,...) get_nodesandweights(obj$normalized_posterior)
+

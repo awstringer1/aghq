@@ -28,7 +28,6 @@ and for computing quantiles.
 }
 \seealso{
 Other summaries: 
-\code{\link{compute_moment}()},
 \code{\link{compute_pdf_and_cdf}()},
 \code{\link{compute_quantiles}()},
 \code{\link{marginal_posterior}()}

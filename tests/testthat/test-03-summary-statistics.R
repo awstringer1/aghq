@@ -196,5 +196,29 @@ test_that("Marginal posteriors computed correctly",{
   expect_error(validate_transformation(list(foo = 'bar')))
   expect_error(validate_transformation(t3,checkinverse = checkvals))
 
+  # Moments
+  expect_equal(names(mom1),momnames)
+  expect_equal(names(mom2),momnames)
+  expect_equal(names(mom3),momnames)
+  expect_is(mom1,'aghqmoment')
+  expect_is(mom2,'aghqmoment')
+  expect_is(mom3,'aghqmoment')
+  expect_true(validate_moment(mom1))
+  expect_true(validate_moment(mom2))
+  expect_true(validate_moment(mom3))
+  expect_true(validate_moment(exp))
+  expect_true(validate_moment('exp'))
+  expect_true(validate_moment(list(fn=function(x) x,gr=function(x) 1,he = function(x) 0)))
+
+
+
+  expect_error(make_moment_function(mombad1))
+  expect_error(make_moment_function(mombad2))
+  expect_error(validate_moment(mombad1))
+  expect_error(validate_moment(mombad2))
+  expect_error(validate_moment(mombad3,checkpositive = c(-1,0,1)))
+
+
+
 })
 

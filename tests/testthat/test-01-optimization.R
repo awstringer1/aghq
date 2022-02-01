@@ -90,5 +90,8 @@ test_that("optimizations works", {
   expect_equal(with(aghq_controlworks3$optresults,ff$fn(mode)),-1*funlist3dneg$fn(opt_controlworks3$mode))
 
 
+  # Setting of names
+
+
 
 })

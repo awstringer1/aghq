@@ -23,15 +23,15 @@ compatibility.}
 
 \item{translist}{A list with elements \code{totheta}, \code{fromtheta}, and, optionally, \code{jacobian}.}
 
-\item{totheta}{Function \code{g: R^p -> R^p}, where \code{p = dim(theta)}.
+\item{totheta}{Inverse function \code{g^-1(theta)}. Specifically, takes vector
+\code{g_1(theta_1)...g_p(theta_p)} and returns vector \code{theta_1...theta_p}.}
+
+\item{fromtheta}{Function \code{g: R^p -> R^p}, where \code{p = dim(theta)}.
 Must take vector \code{theta_1...theta_p} and return vector \code{g_1(theta_1)...g_p(theta_p)}, i.e.
 only independent/marginal transformations are allowed (but these are the only ones
 of interest, see below). For \code{j=1...p}, the parameter of
 inferential interest is \code{lambda_j = g_j(theta_j)} and the parameter whose posterior is being
 normalized via \code{aghq} is \code{theta_j}.  Passed to \code{match.fun}.}
-
-\item{fromtheta}{Inverse function \code{g^-1(theta)}. Specifically, takes vector
-\code{g_1(theta_1)...g_p(theta_p)} and returns vector \code{theta_1...theta_p}.}
 
 \item{jacobian}{(optional) Function taking \code{theta} and returning the absolute value of the determinant of
 the Jacobian \code{dtheta/dg(theta)}. If not provided, a numerically differentiated Jacobian is used as

@@ -104,7 +104,6 @@ qgamma(.975,1+sum(y1),1+n1)
 }
 \seealso{
 Other summaries: 
-\code{\link{compute_moment}()},
 \code{\link{compute_pdf_and_cdf}()},
 \code{\link{interpolate_marginal_posterior}()},
 \code{\link{marginal_posterior}()}

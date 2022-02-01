@@ -184,8 +184,13 @@ interpolate_marginal_posterior <- function(margpost,method = c('auto','polynomia
 #'
 #' Compute the moment of any function ff using AGHQ.
 #'
-#' @param obj Object of class \code{aghq} output by \code{aghq::aghq()}, or its \code{normalized_posterior} element. See \code{?aghq}.
-#' @param ff Any R function which takes in a numeric vector and returns a numeric vector.
+#' @param obj Object of class \code{aghq} output by \code{aghq::aghq()}. See \code{?aghq}.
+#' @param ff Any R function which takes in a numeric vector and returns a numeric vector. Exactly one of \code{ff} or \code{gg} must be provided. If both are provided, \code{aghq::compute_moment()} will use \code{gg},
+#' without warning.
+#' @param gg The output of, or an object which may be input to \code{aghq::make_moment_function()}. See documentation of that function. Exactly one of \code{ff} or \code{gg} must be provided. If both are provided, \code{aghq::compute_moment()} will use \code{gg},
+#' without warning.
+#' @param method Method for computing the quadrature points used to approximate moment. One of \code{'reuse'} (default) or \code{'correct'}. See details. The default SHOULD be \code{'correct'}; it is currently
+#' set to \code{'reuse'} to maintain compatibility of results with previous versions. This will be switched in a future major release.
 #' @param ... Used to pass additional argument \code{ff}.
 #'
 #' @return A numeric vector containing the moment(s) of ff with respect to the joint
@@ -236,7 +241,7 @@ interpolate_marginal_posterior <- function(margpost,method = c('auto','polynomia
 #' # Compute the standard deviation of lambda1
 #' lambda1sd <- sqrt(compute_moment(norm_sparse_2d_7,ff = function(x) (exp(x) - lambdameans[1])^2))[1]
 #' # ...and so on.
-#' @family summaries
+#' @family summaries moments
 #' @export
 #'
 compute_moment <- function(obj,...) {
@@ -245,12 +250,13 @@ compute_moment <- function(obj,...) {
 #' @rdname compute_moment
 #' @method compute_moment default
 #' @export
-compute_moment.default <- function(obj,ff = function(x) 1,...) {
-  nodesandweights <- obj$nodesandweights
+compute_moment.default <- function(obj,ff = function(x) 1,gg = NULL,method = "reuse",...) {
+  # nodesandweights <- obj$nodesandweights
+  nodesandweights <- get_nodesandweights(obj)
+
 
   # whereistheta <- grep('theta',colnames(nodesandweights))
   whereistheta <- 1:(ncol(nodesandweights)-3)
-
 
   lengthof_f <- length(ff(nodesandweights[1,whereistheta]))
 
@@ -266,7 +272,9 @@ compute_moment.default <- function(obj,ff = function(x) 1,...) {
 #' @rdname compute_moment
 #' @method compute_moment aghq
 #' @export
-compute_moment.aghq <- function(obj,ff = function(x) 1,...) compute_moment(obj$normalized_posterior,ff)
+compute_moment.aghq <- function(obj,ff = function(x) 1,gg = NULL,method = "reuse",...) compute_moment(obj$normalized_posterior,ff)
+# compute_moment.aghq <- function(obj,ff = function(x) 1,...) compute_moment(obj,ff,...)
+
 
 #' Density and Cumulative Distribution Function
 #'
@@ -703,13 +711,13 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = quad$transfo
 #' multidimensional parameters.
 #'
 #' @param ... Used to pass arguments to methods.
-#' @param totheta Function \code{g: R^p -> R^p}, where \code{p = dim(theta)}.
+#' @param fromtheta Function \code{g: R^p -> R^p}, where \code{p = dim(theta)}.
 #' Must take vector \code{theta_1...theta_p} and return vector \code{g_1(theta_1)...g_p(theta_p)}, i.e.
 #' only independent/marginal transformations are allowed (but these are the only ones
 #' of interest, see below). For \code{j=1...p}, the parameter of
 #' inferential interest is \code{lambda_j = g_j(theta_j)} and the parameter whose posterior is being
 #' normalized via \code{aghq} is \code{theta_j}.  Passed to \code{match.fun}.
-#' @param fromtheta Inverse function \code{g^-1(theta)}. Specifically, takes vector
+#' @param totheta Inverse function \code{g^-1(theta)}. Specifically, takes vector
 #' \code{g_1(theta_1)...g_p(theta_p)} and returns vector \code{theta_1...theta_p}.
 #' @param jacobian (optional) Function taking \code{theta} and returning the absolute value of the determinant of
 #' the Jacobian \code{dtheta/dg(theta)}. If not provided, a numerically differentiated Jacobian is used as
@@ -838,7 +846,7 @@ validate_transformation.aghqtrans <- function(trans,checkinverse = FALSE,...) {
     if (!is.function(trans[[fn]])) stop("Transformation object should be a list of functions, but element ",fn," inherits from class ",class(fn),".")
   }
   # Check inverse
-  if (checkinverse[1]) {
+  if (checkinverse[1] | (!is.logical(checkinverse[1]) & checkinverse[1]==0)) {
     # Compute the values and check they are all numeric
     fromthetavals <- trans$fromtheta(checkinverse)
     if (any(is.infinite(fromthetavals))) stop("trans$fromtheta(checkinverse) produced infinite values. Check the domain and range of totheta and fromtheta.")
@@ -880,3 +888,188 @@ validate_transformation.default <- function(...) FALSE
 #'
 #' @export
 default_transformation <- function() make_transformation(totheta = force,fromtheta = force)
+
+
+#' Moments of Positive Functions
+#'
+#' Given an object \code{quad} of class \code{aghq} returned by \code{aghq::aghq()}, \code{aghq::compute_moment()}
+#' will compute the moment of a positive function \code{g(theta)} of parameter \code{theta}. The present function,
+#' \code{aghq::make_moment_function()}, assists the user in constructing the appropriate input to \code{aghq::compute_moment()}.
+#'
+#' @param ... Used to pass arguments to methods.
+#' @param gg Function `R^p -> R^+` of which the moment is to be computed along with its two derivatives.
+#' Provided either as a \code{function}, a \code{list}, an \code{aghqtrans} object, or an \code{aghqmoment} object. See details.
+#'
+#' @return Object of class \code{aghqmoment}, which is a list with elements \code{fn},
+#' \code{gr}, and \code{he}, exactly like the input to \code{aghq::aghq()} and related functions. Here \code{gg$fn} is
+#' \code{log(gg(theta))}, \code{gg$gr} is its gradient, and \code{gg$he} its Hessian.
+#' Object is suitable for checking with \code{aghq::validate_moment()}
+#' and for inputting into \code{aghq::compute_moment()}.
+#'
+#' @details The approximation of moments of positive functions implemented in \code{aghq::compute_moment()}
+#' achieves the same asymptotic rate of convergence as the marginal likelihood. This involves computing a new mode and
+#' Hessian depending on the original posterior mode and Hessian, and `g`. These computations are handled by \code{aghq::compute_moment()},
+#' re-using information from the original quadrature when feasible.
+#'
+#' Computation of moments is defined only for scalar-valued functions, with a vector moment just defined as a vector of moments. Consequently,
+#' the user may input to \code{aghq:compute_moment()} a function \code{g: R^p -> R^q+} for any \code{q}, and that function will return the corresponding
+#' vector of moments. This is handled within \code{aghq::compute_moment()}. The \code{aghq::make_moment_function()} interface accepts \code{gg: R^p -> R^+}, i.e.
+#' a multivariable, scalar-valued positive function. This is mostly to keep first and second derivatives as 1d and 2d arrays (i.e. the gradient and the Hessian);
+#' I deemed it too confusing for the user and the code-base to work with Jacobians and 2nd derivative tensors (if you're confused just reading this, there you go!).
+#' But, see \code{aghq::compute_moment()} for how to handle the very common case where the *same* trasnformation is desired of all parameter coordinates; for example
+#' when all parameters are on the log-scale and you want to compute \code{E(exp(theta))} for *vector* \code{theta}.
+#'
+#' If \code{gg} is a \code{function} or a \code{character} (like \code{'exp'}) it is first passed to \code{match.fun}, and then the output
+#' object is constructed using \code{numDeriv::grad()} and \code{numDeriv::hessian()}. If \code{gg} is a \code{list} then it is assumed to
+#' have elements \code{fn}, \code{gr}, and \code{he} of the correct form, and these elements are extracted and then passed back to \code{make_moment_function()}.
+#' If \code{gg} is an object of class \code{aghqtrans} returned by \code{aghq::make_transformation()}, then \code{gg$fromtheta}
+#' is passed back to \code{make_moment_function()}. If \code{gg} is an object of class \code{aghqtrans} then it is just returned.
+#'
+#' @family moments
+#'
+#' @examples
+#'
+#' mom1 <- make_moment_function(exp)
+#' mom2 <- make_moment_function('exp')
+#' mom3 <- make_moment_function(list(fn=function(x) x,gr=function(x) 1,he = function(x) 0))
+#'
+#' @export
+make_moment_function <- function(...) UseMethod('make_moment_function')
+#' @rdname make_moment_function
+#' @export
+make_moment_function.aghqmoment <- function(gg,...) gg
+#' @rdname make_moment_function
+#' @export
+make_moment_function.aghqtrans <- function(gg,...) make_moment_function.default(gg$from_theta,...)
+#' @rdname make_moment_function
+#' @export
+make_moment_function.function <- function(gg,...) {
+  gg <- match.fun(gg)
+  fn <- function(theta) log(gg(theta))
+  gr <- function(theta) numDeriv::grad(fn,theta)
+  he <- function(theta) numDeriv::hessian(fn,theta)
+  make_moment_function.list(list(fn=fn,gr=gr,he=he),...)
+}
+#' @rdname make_moment_function
+#' @export
+make_moment_function.character <- function(gg,...) {
+  gg <- match.fun(gg)
+  make_moment_function.function(gg,...)
+}
+#' @rdname make_moment_function
+#' @export
+make_moment_function.list <- function(gg,...) {
+  # Check it has the correct form before passing to default method
+  nms <- c("fn","gr","he")
+  if (!all(nms%in%names(gg)))
+    stop(paste0("make_moment_function requires a list including elements: ",nms,".\nThe provided list has names: ",names(gg),".\nIt does not have elements: ",setdiff(names(gg),nms),".\n"))
+  if (!all(Reduce(c,lapply(gg[nms],inherits,what='function')))) {
+    classes <- lapply(gg[nms],class)
+    names(classes) <- nms
+    stop(paste0("make_moment_function requires a list of functions. The elements of your list are: ",classes,".\n"))
+  }
+  make_moment_function.default(gg,...)
+}
+#' @rdname make_moment_function
+#' @export
+make_moment_function.default <- function(gg,...) {
+  # Nothing left to do!
+  class(gg) <- "aghqmoment"
+  gg
+}
+
+#' Validate a moment function object
+#'
+#' Routine for checking whether a given moment function object is valid.
+#'
+#' @param ... Used to pass arguments to methods.
+#' @param moment An object to check if it is a valid moment function or not. Can be an object of class \code{aghqmoment} returned by \code{aghq::make_moment_function()},
+#' or any object that can be passed to \code{aghq::make_moment_function()}.
+#' @param checkpositive Default \code{FALSE}, do not check that \code{gg$fn(theta) > 0}. Otherwise,
+#' a vector of values for which to perform that check. No default values are provided, since \code{validate_moment}
+#' has no way of determining the domain and range of \code{gg$fn}. This argument is
+#' used internally in \code{aghq} package functions, with cleverly chosen check values.
+#'
+#' @details This function checks that:
+#' \itemize{
+#' \item{The supplied object contains elements \code{fn}, \code{gr}, and \code{he}, and that they are all functions,}
+#' \item{If \code{checkpositive} is a vector of numbers, then it checks that \code{gg$fn(checkpositive)} is not \code{-Inf}, \code{NA}, or \code{NaN}. (It actually uses \code{is.infinite} for the first.)}
+#' }
+#' In addition, if a \code{list} is provided, the function first checks that it contains the right elements,
+#' then passes it to \code{make_moment_function}, then checks that. If a \code{function} or a \code{character} is provided,
+#' it checks that \code{match.fun} works, and returns any errors or warnings from doing so in a clear way.
+#'
+#' This function throws an informative error messages when checks don't pass or themselves throw errors.
+#'
+#' @return \code{TRUE} if the function runs to completion without throwing an error.
+#'
+#' @family moments
+#'
+#' @examples
+#'
+#' mom1 <- make_moment_function(exp)
+#' mom2 <- make_moment_function('exp')
+#' mom3 <- make_moment_function(list(fn=function(x) x,gr=function(x) 1,he = function(x) 0))
+#' validate_moment(mom1)
+#' validate_moment(mom2)
+#' validate_moment(mom3)
+#' \dontrun{
+#' mombad1 <- list(exp,exp,exp) # No names
+#' mombad2 <- list('exp','exp','exp') # List of not functions
+#' mombad3 <- make_moment_function(function(x) -exp(x)) # Not positive
+#' validate_moment(mombad1)
+#' validate_moment(mombad2)
+#' validate_moment(mombad3)
+#' }
+#' @export
+validate_moment <- function(...) UseMethod('validate_moment')
+#' @rdname validate_moment
+#' @export
+validate_moment.aghqmoment <- function(moment,checkpositive = FALSE,...) {
+  # Check names
+  valid_names <- c("fn","gr","he")
+  if (!all(names(moment) == valid_names)) {
+    stop(paste0("Moment object should have names: ",valid_names,". The provided object has names: ",names(moment),"."))
+  }
+  # Check functions
+  for (fn in names(moment)) {
+    if (!is.function(moment[[fn]])) stop("Moment object should be a list of functions, but element ",fn," inherits from class ",class(fn),".")
+  }
+  # Check positive
+  if (checkpositive[1] | (!is.logical(checkpositive[1]) & checkpositive[1]==0)) {
+    # Compute the values and check they are all numeric
+    suppressWarnings(momentvals <- moment$fn(checkpositive))
+    if (any(is.infinite(momentvals))) stop("moment$fn(checkpositive) produced infinite values. Check that the function used to create your moment object returns only positive values.")
+    if (any(is.na(momentvals))) stop("moment$fn(checkpositive) produced NA values. Check that the function used to create your moment object returns only positive values.")
+    if (any(is.nan(momentvals))) stop("moment$fn(checkpositive) produced NaN values. Check that the function used to create your moment object returns only positive values.")
+  }
+  TRUE
+}
+#' @rdname validate_moment
+#' @export
+validate_moment.list <- function(moment,checkpositive = FALSE,...) {
+  # First check it has the required elements, then create a moment object
+  # and check that
+  valid_names <- c("fn","gr","he")
+  if (all(valid_names %in% names(moment))) {
+    return(validate_moment(make_moment_function(moment)))
+  }
+  stop(paste0("Moment object should have names: ",valid_names,". The provided object has names: ",names(moment),"."))
+}
+#' @rdname validate_moment
+#' @export
+validate_moment.function <- function(moment,checkpositive = FALSE,...) {
+  e <- tryCatch(match.fun(moment),warning = function(w) w,error = function(e) e)
+  if (inherits(e,'condition')) stop(paste0("Tried calling match.fun on your moment function, and returned the following condition: ",e,".\n"))
+  validate_moment(make_moment_function(moment))
+}
+#' @rdname validate_moment
+#' @export
+validate_moment.character <- function(moment,checkpositive = FALSE,...) {
+  e <- tryCatch(match.fun(moment),warning = function(w) w,error = function(e) e)
+  if (inherits(e,'condition')) stop(paste0("Tried calling match.fun on your moment function, and returned the following condition: ",e,".\n"))
+  validate_moment(make_moment_function(moment))
+}
+#' @rdname validate_moment
+#' @export
+validate_moment.default <- function(...) FALSE

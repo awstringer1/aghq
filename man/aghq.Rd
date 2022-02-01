@@ -147,6 +147,7 @@ thequadrature <- aghq(funlist2d,3,c(0,0))
 \seealso{
 Other quadrature: 
 \code{\link{get_log_normconst}()},
+\code{\link{get_nodesandweights}()},
 \code{\link{laplace_approximation}()},
 \code{\link{marginal_laplace_tmb}()},
 \code{\link{marginal_laplace}()},

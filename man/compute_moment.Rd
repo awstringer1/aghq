@@ -8,16 +8,23 @@
 \usage{
 compute_moment(obj, ...)
 
-\method{compute_moment}{default}(obj, ff = function(x) 1, ...)
+\method{compute_moment}{default}(obj, ff = function(x) 1, gg = NULL, method = "reuse", ...)
 
-\method{compute_moment}{aghq}(obj, ff = function(x) 1, ...)
+\method{compute_moment}{aghq}(obj, ff = function(x) 1, gg = NULL, method = "reuse", ...)
 }
 \arguments{
-\item{obj}{Object of class \code{aghq} output by \code{aghq::aghq()}, or its \code{normalized_posterior} element. See \code{?aghq}.}
+\item{obj}{Object of class \code{aghq} output by \code{aghq::aghq()}. See \code{?aghq}.}
 
 \item{...}{Used to pass additional argument \code{ff}.}
 
-\item{ff}{Any R function which takes in a numeric vector and returns a numeric vector.}
+\item{ff}{Any R function which takes in a numeric vector and returns a numeric vector. Exactly one of \code{ff} or \code{gg} must be provided. If both are provided, \code{aghq::compute_moment()} will use \code{gg},
+without warning.}
+
+\item{gg}{The output of, or an object which may be input to \code{aghq::make_moment_function()}. See documentation of that function. Exactly one of \code{ff} or \code{gg} must be provided. If both are provided, \code{aghq::compute_moment()} will use \code{gg},
+without warning.}
+
+\item{method}{Method for computing the quadrature points used to approximate moment. One of \code{'reuse'} (default) or \code{'correct'}. See details. The default SHOULD be \code{'correct'}; it is currently
+set to \code{'reuse'} to maintain compatibility of results with previous versions. This will be switched in a future major release.}
 }
 \value{
 A numeric vector containing the moment(s) of ff with respect to the joint
@@ -70,11 +77,4 @@ lambdameans
 lambda1sd <- sqrt(compute_moment(norm_sparse_2d_7,ff = function(x) (exp(x) - lambdameans[1])^2))[1]
 # ...and so on.
 }
-\seealso{
-Other summaries: 
-\code{\link{compute_pdf_and_cdf}()},
-\code{\link{compute_quantiles}()},
-\code{\link{interpolate_marginal_posterior}()},
-\code{\link{marginal_posterior}()}
-}
-\concept{summaries}
+\concept{summaries moments}

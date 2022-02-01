@@ -78,7 +78,6 @@ marginal_posterior(opt_sparsetrust_2d,7,2)
 }
 \seealso{
 Other summaries: 
-\code{\link{compute_moment}()},
 \code{\link{compute_pdf_and_cdf}()},
 \code{\link{compute_quantiles}()},
 \code{\link{interpolate_marginal_posterior}()}

@@ -492,4 +492,26 @@ checkvals <- exp(exp(rnorm(10)))
 # thepdfandcdf_trans3 <- compute_pdf_and_cdf(margpost_3d_1,transformation = trans3)
 
 
+## Moments ##
+momnames <- c("fn","gr","he")
+mom1 <- make_moment_function(exp)
+mom2 <- make_moment_function('exp')
+mom3 <- make_moment_function(list(fn=function(x) x,gr=function(x) 1,he = function(x) 0))
+mombad1 <- list(exp,exp,exp) # No names
+mombad2 <- list('exp','exp','exp') # List of not functions
+mombad3 <- make_moment_function(function(x) -exp(x)) # Not positive- but wouldn't expect to fail construction, only validation.
+
+
+## Duplicated names ##
+objfuncnames <- function(x) logfteta(x,y)
+funlist <- list(
+  fn = function(x) setNames(objfunc(x),"a"),
+  gr = function(x) numDeriv::grad(objfunc,x),
+  he = function(x) numDeriv::hessian(objfunc,x)
+)
+
+opt_sparsetrust <- optimize_theta(funlist,1.5,control = default_control(method = "sparse_trust"))
+
+
+
 

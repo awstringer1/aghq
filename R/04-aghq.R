@@ -1070,7 +1070,7 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_tra
 
   # Get names from TMB function template
   thetanames <- NULL
-  if (exists('par',ff)) thetanames <- names(ff$par)
+  if (exists('par',ff)) thetanames <- make.unique(names(ff$par),sep='')
 
   # Hessian
   if (control$numhessian) {
