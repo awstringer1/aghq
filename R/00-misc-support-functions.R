@@ -286,4 +286,14 @@ logdiffexp <- function(a,b) {
   b + log(expm1(a-b))
 }
 
+# Splice a vector
+splice <- function(v,t,j) {
+  # Insert t into v such that if vnew = splice(v,t,j) then vnew[j] == t
+  if (j == 1) return(c(t,v))
+  n <- length(v)
+  if (j == (n+1)) return(c(v,t))
+  if (j<=0) stop("j must be >0")
+  if (j>(n+1)) stop("j must be <= n+1")
+  c(v[1:(j-1)],t,v[j:n])
+}
 

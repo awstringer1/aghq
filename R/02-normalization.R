@@ -225,3 +225,19 @@ get_nodesandweights.marginallaplace <- function(obj,...) get_nodesandweights(obj
 #' @export
 #'
 get_numquadpoints <- function(obj,...) as.numeric(obj$normalized_posterior$grid$level)[1]
+
+#' Obtain the parameter dimension from an aghq object
+#'
+#' Quick helper S3 method to retrieve the parameter dimension from an aghq object.
+#'
+#' @param obj Object of class \code{aghq} returned by \code{aghq::aghq}.
+#' @param ... Not used
+#'
+#' @return A numeric vector of length 1 containing \code{p}, the parameter dimension.
+#'
+#' @family quadrature
+#'
+#' @export
+#'
+get_param_dim <- function(obj,...) length(obj$optresults$mode)
+

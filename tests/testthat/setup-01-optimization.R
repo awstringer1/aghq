@@ -313,9 +313,18 @@ aghqexpmean3d_correct2_1 <- compute_moment(momquad3,gg = make_moment_function(fu
 aghqexpmean3d_correct2_2 <- compute_moment(momquad3,gg = make_moment_function(function(x) x[2]),method='correct')
 aghqexpmean3d_correct2_3 <- compute_moment(momquad3,gg = make_moment_function(function(x) x[3]),method='correct')
 
+margquad <- aghq(funlist,3,0)
+margquad2 <- aghq(funlist2d,3,c(0,0))
+margquad2_k7 <- aghq(funlist2d,7,c(0,0))
+margquad3 <- aghq(funlist3d,3,c(0,0,0))
 
-
-
+margpost_1d_1_correct <- marginal_posterior(margquad,1,method='correct')
+margpost_2d_1_correct <- marginal_posterior(margquad2,1,method='correct')
+margpost_2d_2_correct <- marginal_posterior(margquad2,2,method='correct')
+margpost_2d_2_k7_correct <- marginal_posterior(margquad2_k7,2,method='correct')
+margpost_3d_1_correct <- marginal_posterior(margquad3,1,method='correct')
+margpost_3d_2_correct <- marginal_posterior(margquad3,2,method='correct')
+margpost_3d_3_correct <- marginal_posterior(margquad3,3,method='correct')
 
 # Interpolation
 margpostinterp3d_1 <- interpolate_marginal_posterior(margpost_3d_1)

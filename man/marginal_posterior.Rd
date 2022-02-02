@@ -2,24 +2,40 @@
 % Please edit documentation in R/03-summary-statistics.R
 \name{marginal_posterior}
 \alias{marginal_posterior}
+\alias{marginal_posterior.aghq}
+\alias{marginal_posterior.list}
 \title{Marginal Posteriors}
 \usage{
-marginal_posterior(
+marginal_posterior(...)
+
+\method{marginal_posterior}{aghq}(quad, j, method = c("auto", "reuse", "correct"), ...)
+
+\method{marginal_posterior}{list}(
   optresults,
   k,
   j,
   basegrid = NULL,
-  ndConstruction = "product"
+  ndConstruction = "product",
+  ...
 )
 }
 \arguments{
+\item{...}{Additional arguments to be passed to \code{optresults$ff}, see \code{?optimize_theta}.}
+
+\item{quad}{Object returned by \code{aghq::aghq}.}
+
+\item{j}{Integer between 1 and the dimension of the parameter space. Which
+index of the parameter vector to compute the marginal posterior for.}
+
+\item{method}{Method for computing the quadrature points used to approximate moment.
+One of 'reuse' (default) or 'correct'. See details.
+The default SHOULD be 'correct'; it is currently set to 'reuse' to maintain compatibility of
+results with previous versions. This will be switched in a future major release.}
+
 \item{optresults}{The results of calling \code{aghq::optimize_theta()}: see return value of that function.}
 
 \item{k}{Integer, the number of quadrature points to use. I suggest at least 3. k = 1 corresponds to a Laplace
 approximation.}
-
-\item{j}{Integer between 1 and the dimension of the parameter space. Which
-index of the parameter vector to compute the marginal posterior for.}
 
 \item{basegrid}{Optional. Provide an object of class \code{NIGrid} from the \code{mvQuad}
 package, representing the base quadrature rule that will be adapted. This is only

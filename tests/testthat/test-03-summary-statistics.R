@@ -36,6 +36,41 @@ test_that("Marginal posteriors computed correctly",{
   expect_equal(sum(exp(margpost_3d_2$logmargpost) * margpost_3d_2$w),1)
   expect_equal(sum(exp(margpost_3d_3$logmargpost) * margpost_3d_3$w),1)
 
+  # New marginal posteriors
+  expect_is(margpost_1d_1_correct,"data.frame")
+  expect_is(margpost_2d_1_correct,"data.frame")
+  expect_is(margpost_2d_2_correct,"data.frame")
+  expect_is(margpost_3d_1_correct,"data.frame")
+  expect_is(margpost_3d_2_correct,"data.frame")
+  expect_is(margpost_3d_3_correct,"data.frame")
+
+
+  expect_equal(colnames(margpost_1d_1_correct),c("theta1","logmargpost"))
+  expect_equal(colnames(margpost_2d_1_correct),c("theta1","logmargpost"))
+  expect_equal(colnames(margpost_2d_2_correct),c("theta2","logmargpost"))
+  expect_equal(colnames(margpost_3d_1_correct),c("theta1","logmargpost"))
+  expect_equal(colnames(margpost_3d_2_correct),c("theta2","logmargpost"))
+  expect_equal(colnames(margpost_3d_3_correct),c("theta3","logmargpost"))
+
+
+  expect_equal(nrow(margpost_1d_1_correct),3)
+  expect_equal(nrow(margpost_2d_1_correct),3)
+  expect_equal(nrow(margpost_2d_2_correct),3)
+  expect_equal(nrow(margpost_2d_2_k7_correct),7)
+  expect_equal(nrow(margpost_3d_1_correct),3)
+  expect_equal(nrow(margpost_3d_2_correct),3)
+  expect_equal(nrow(margpost_3d_2_correct),3)
+
+
+  # Integration # TODO: do this differently
+  # expect_equal(sum(exp(margpost_1d_1_correct$logmargpost) * margpost_1d_1_correct$w),1)
+  # expect_equal(sum(exp(margpost_2d_1_correct$logmargpost) * margpost_2d_1_correct$w),1)
+  # expect_equal(sum(exp(margpost_2d_2_correct$logmargpost) * margpost_2d_2_correct$w),1)
+  # expect_equal(sum(exp(margpost_2d_2_k7_correct$logmargpost) * margpost_2d_2_k7_correct$w),1)
+  # expect_equal(sum(exp(margpost_3d_1_correct$logmargpost) * margpost_3d_1_correct$w),1)
+  # expect_equal(sum(exp(margpost_3d_2_correct$logmargpost) * margpost_3d_2_correct$w),1)
+  # expect_equal(sum(exp(margpost_3d_3_correct$logmargpost) * margpost_3d_3_correct$w),1)
+
   # Moments
   expect_equal(aghqnormconst1d,1)
   expect_equal(aghqnormconst2d,1)

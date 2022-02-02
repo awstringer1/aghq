@@ -13,6 +13,11 @@
 #' @inheritParams normalize_logpost
 #' @param j Integer between 1 and the dimension of the parameter space. Which
 #' index of the parameter vector to compute the marginal posterior for.
+#' @param quad Object returned by \code{aghq::aghq}.
+#' @param method Method for computing the quadrature points used to approximate moment.
+#' One of 'reuse' (default) or 'correct'. See details.
+#' The default SHOULD be 'correct'; it is currently set to 'reuse' to maintain compatibility of
+#' results with previous versions. This will be switched in a future major release.
 #'
 #' @return a data.frame containing the normalized log marginal posterior
 #' for theta_j evaluated at the original quadrature points. Has columns
@@ -58,7 +63,58 @@
 #'
 #' @export
 #'
-marginal_posterior <- function(optresults,k,j,basegrid = NULL,ndConstruction = 'product') {
+marginal_posterior <- function(...) UseMethod("marginal_posterior")
+#' @rdname marginal_posterior
+#' @export
+marginal_posterior.aghq <- function(quad,j,qq=NULL,method = c('auto','reuse','correct'),...) {
+  method <- method[1]
+  if (method=='auto') method <- 'reuse'
+  if (method=='reuse') return(marginal_posterior.list(quad$optresults,get_numquadpoints(quad),j,...))
+
+  # marginal_posterior.list(quad$optresults,get_numquadpoints(quad),j,...)
+  S <- get_param_dim(quad)
+  idxorder <- c(j,(1:S)[-j])
+  thetaminusj <- (1:S)[-j]
+  if (is.null(qq)) {
+    # If q not provided, choose some clever q's and then re-call the function at those q's
+    # Choose evaluation points
+    mm <- quad$optresults$mode[idxorder]
+    HH <- quad$optresults$hessian[idxorder,idxorder]
+    LL <- t(solve(chol(HH)))
+    gg <- mvQuad::createNIGrid(S,'GHe',get_numquadpoints(quad))
+    nn <- as.matrix(mvQuad::getNodes(gg))
+    qqq <- unique(sweep(LL%*%t(nn),1,mm,'+')[1, ])
+
+    out <- vector(mode='list',length=length(qqq))
+    for (i in 1:length(qqq)) {
+      # Call marginal_posterior at each qq[j]
+      out[[i]] <- marginal_posterior.aghq(quad = quad,j = j,qq = qqq[i],method = 'correct',...)
+    }
+    out <- Reduce(rbind,out)
+  } else {
+    # Get the name
+    cname <- colnames(get_nodesandweights(quad))[j]
+    if (S==1) {
+      out <- data.frame(qq,quad$optresults$ff$fn(qq) - get_log_normconst(quad))
+      colnames(out) <- c(cname,'logmargpost')
+      return(out)
+    }
+    # Get the value
+    fn <- function(theta) quad$optresults$ff$fn(splice(theta,qq,j))
+    gr <- function(theta) quad$optresults$ff$gr(splice(theta,qq,j))[-j]
+    he <- function(theta) quad$optresults$ff$he(splice(theta,qq,j))[-j,-j]
+    ffm <- list(fn=fn,gr=gr,he=he)
+    newcontrol <- quad$control
+    newcontrol$onlynormconst <- TRUE
+    lognumerator <- get_log_normconst(aghq(ffm,get_numquadpoints(quad),quad$optresults$mode[-j],control = newcontrol))
+    out <- data.frame(qq,lognumerator-get_log_normconst(quad))
+    colnames(out) <- c(cname,'logmargpost')
+  }
+  out
+}
+#' @rdname marginal_posterior
+#' @export
+marginal_posterior.list <- function(optresults,k,j,basegrid = NULL,ndConstruction = 'product',...) {
 
   # If using sparse grids, marginals are currently not supported
   dummyout <- data.frame(theta1 = 0,logmargpost = 0,w = 0)
