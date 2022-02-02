@@ -19,7 +19,7 @@ validate_moment(...)
 
 \method{validate_moment}{character}(moment, checkpositive = FALSE, ...)
 
-\method{validate_moment}{default}(...)
+\method{validate_moment}{default}(moment, ...)
 }
 \arguments{
 \item{...}{Used to pass arguments to methods.}

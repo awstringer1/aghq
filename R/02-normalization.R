@@ -189,6 +189,9 @@ get_nodesandweights <- function(obj,...) UseMethod("get_nodesandweights")
 get_nodesandweights.default <- function(obj,...) obj$nodesandweights
 #' @rdname get_log_normconst
 #' @export
+get_nodesandweights.list <- function(obj,...) obj$nodesandweights
+#' @rdname get_log_normconst
+#' @export
 get_nodesandweights.data.frame <- function(obj,...) obj
 #' @rdname get_log_normconst
 #' @export
@@ -208,3 +211,17 @@ get_nodesandweights.laplace <- function(obj,...) {
 #' @export
 get_nodesandweights.marginallaplace <- function(obj,...) get_nodesandweights(obj$normalized_posterior)
 
+#' Obtain the number of quadrature nodes used from an aghq object
+#'
+#' Quick helper S3 method to retrieve the number of quadrature points used when creating an aghq object.
+#'
+#' @param obj Object of class \code{aghq} returned by \code{aghq::aghq}.
+#' @param ... Not used
+#'
+#' @return A numeric vector of length 1 containing \code{k}, the number of quadrature points used.
+#'
+#' @family quadrature
+#'
+#' @export
+#'
+get_numquadpoints <- function(obj,...) as.numeric(obj$normalized_posterior$grid$level)[1]

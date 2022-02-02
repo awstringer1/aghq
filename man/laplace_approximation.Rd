@@ -108,6 +108,7 @@ Other quadrature:
 \code{\link{aghq}()},
 \code{\link{get_log_normconst}()},
 \code{\link{get_nodesandweights}()},
+\code{\link{get_numquadpoints}()},
 \code{\link{marginal_laplace_tmb}()},
 \code{\link{marginal_laplace}()},
 \code{\link{normalize_logpost}()},

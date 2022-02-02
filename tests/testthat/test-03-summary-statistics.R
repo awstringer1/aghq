@@ -69,6 +69,49 @@ test_that("Marginal posteriors computed correctly",{
   expect_lt(abs(aghqmean2d - truemean2d)[1],.1)
   expect_lt(abs(aghqmean2d - truemean2d)[2],.1)
 
+  # Updated interface for moments
+  expect_equal(compute_moment(thequadrature),1)
+  expect_equal(compute_moment(thequadrature,method='correct'),1)
+  expect_equal(compute_moment(thequadrature,ff = function(theta) rep(1,2)),rep(1,2))
+  expect_equal(compute_moment(thequadrature,ff = function(theta) rep(1,10)),rep(1,10))
+  expect_equal(compute_moment(thequadrature,ff = function(theta) 1:2),1:2)
+  expect_equal(compute_moment(thequadrature,ff = function(theta) 1:10),1:10)
+
+  expect_equal(compute_moment(thequadrature,ff = function(theta) rep(1,2),method='correct'),rep(1,2))
+  expect_equal(compute_moment(thequadrature,ff = function(theta) rep(1,10),method='correct'),rep(1,10))
+  expect_equal(compute_moment(thequadrature,ff = function(theta) 1:2,method='correct'),1:2)
+  expect_equal(compute_moment(thequadrature,ff = function(theta) 1:10,method='correct'),1:10)
+
+  expect_equal(compute_moment(thequadrature,gg = make_moment_function(function(x) log(2))),2)
+  expect_equal(compute_moment(thequadrature,ff=NULL,gg = make_moment_function(function(x) log(2))),2)
+  expect_equal(compute_moment(thequadrature,gg = make_moment_function(function(x) log(2)),method='correct'),2)
+  expect_equal(compute_moment(thequadrature,ff=NULL,gg = make_moment_function(function(x) log(2)),method='correct'),2)
+  expect_equal(compute_moment(thequadrature,gg = make_moment_function(function(x) 0),method='correct'),1)
+  expect_equal(compute_moment(thequadrature,gg = make_moment_function(function(theta) log(rep(1,2)))),rep(1,2))
+  expect_equal(compute_moment(thequadrature,gg = make_moment_function(function(theta) log(rep(1,10)))),rep(1,10))
+  expect_equal(compute_moment(thequadrature,gg = make_moment_function(function(x) log(2)),method='correct'),2)
+
+  expect_lt(abs(aghqexpmean1d_correct - trueexpmean1d),1e-05)
+  expect_lt(abs(aghqexpmean2d_correct - trueexpmean2d)[1],1e-04)
+  expect_lt(abs(aghqexpmean2d_correct - trueexpmean2d)[2],1e-04)
+
+  expect_lt(abs(aghqexpmean3d_correct - trueexpmean3d)[1],1e-04)
+  expect_lt(abs(aghqexpmean3d_correct - trueexpmean3d)[2],1e-04)
+  expect_lt(abs(aghqexpmean3d_correct - trueexpmean3d)[3],1e-04)
+
+  expect_lt(abs(aghqexpmean1d_correct2_1 - trueexpmean1d),1e-05)
+  expect_lt(abs(aghqexpmean2d_correct2_1 - trueexpmean2d[1]),1e-05)
+  expect_lt(abs(aghqexpmean2d_correct2_2 - trueexpmean2d[2]),1e-05)
+  expect_lt(abs(aghqexpmean3d_correct2_1 - trueexpmean3d[1]),1e-05)
+  expect_lt(abs(aghqexpmean3d_correct2_2 - trueexpmean3d[2]),1e-05)
+  expect_lt(abs(aghqexpmean3d_correct2_3 - trueexpmean3d[3]),1e-05)
+
+
+  expect_warning(compute_moment(thequadrature$normalized_posterior,method='correct'))
+
+
+
+
   # Interpolation
   expect_is(margpostinterp,"function")
   expect_is(margpostinterp_2,"function")
@@ -210,14 +253,16 @@ test_that("Marginal posteriors computed correctly",{
   expect_true(validate_moment('exp'))
   expect_true(validate_moment(list(fn=function(x) x,gr=function(x) 1,he = function(x) 0)))
 
-
-
   expect_error(make_moment_function(mombad1))
   expect_error(make_moment_function(mombad2))
   expect_error(validate_moment(mombad1))
   expect_error(validate_moment(mombad2))
   expect_error(validate_moment(mombad3,checkpositive = c(-1,0,1)))
+  expect_error(validate_moment(NULL))
 
+  expect_error(compute_moment(norm_sparse_2d_7,method = 'foo'))
+  expect_warning(compute_moment(norm_sparse_2d_7,method = 'correct'))
+  expect_error(compute_moment(norm_sparse_2d_7,method = 'foo'))
 
 
 })

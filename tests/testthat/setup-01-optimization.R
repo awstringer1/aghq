@@ -125,6 +125,7 @@ truesd2d <- c(sqrt(1+sum(y1)) / (1 + length(y1)),sqrt(1+sum(y2)) / (1 + length(y
 aghqnormconst1d <- compute_moment(norm_sparse_7)
 aghqnormconst2d <- compute_moment(norm_sparse_2d_7)
 
+
 aghqmean1d <- compute_moment(norm_sparse_7,function(x) x)
 aghqmean2d <- compute_moment(norm_sparse_2d_7,function(x) x)
 
@@ -134,6 +135,9 @@ aghqexpmean2d <- compute_moment(norm_sparse_2d_7,function(x) exp(x))
 aghqexpsd1d <- sqrt(compute_moment(norm_sparse_7,function(x) (exp(x) - trueexpmean1d)^2))
 aghqexpsd2d_1 <- sqrt(compute_moment(norm_sparse_2d_7,function(x) (exp(x) - trueexpmean2d[1])^2))[1]
 aghqexpsd2d_2 <- sqrt(compute_moment(norm_sparse_2d_7,function(x) (exp(x) - trueexpmean2d[2])^2))[2]
+
+
+
 
 # Interpolation
 margpostinterp <- interpolate_marginal_posterior(margpost_2d_1)
@@ -294,6 +298,24 @@ aghqexpmean3d <- compute_moment(norm_sparse_3d_7,function(x) exp(x))
 aghqexpsd3d_1 <- sqrt(compute_moment(norm_sparse_3d_7,function(x) (exp(x) - trueexpmean3d[1])^2))[1]
 aghqexpsd3d_2 <- sqrt(compute_moment(norm_sparse_3d_7,function(x) (exp(x) - trueexpmean3d[2])^2))[2]
 aghqexpsd3d_3 <- sqrt(compute_moment(norm_sparse_3d_7,function(x) (exp(x) - trueexpmean3d[3])^2))[3]
+
+momquad <- aghq(funlist,9,0)
+momquad2 <- aghq(funlist2d,9,c(0,0))
+momquad3 <- aghq(funlist3d,9,c(0,0,0))
+
+aghqexpmean1d_correct <- compute_moment(momquad,function(x) exp(x),method='correct')
+aghqexpmean2d_correct <- compute_moment(momquad2,function(x) exp(x),method='correct')
+aghqexpmean3d_correct <- compute_moment(momquad3,function(x) exp(x),method='correct')
+aghqexpmean1d_correct2_1 <- compute_moment(momquad,gg = make_moment_function(function(x) x,method='correct'))
+aghqexpmean2d_correct2_1 <- compute_moment(momquad2,gg = make_moment_function(function(x) x[1]),method='correct')
+aghqexpmean2d_correct2_2 <- compute_moment(momquad2,gg = make_moment_function(function(x) x[2]),method='correct')
+aghqexpmean3d_correct2_1 <- compute_moment(momquad3,gg = make_moment_function(function(x) x[1]),method='correct')
+aghqexpmean3d_correct2_2 <- compute_moment(momquad3,gg = make_moment_function(function(x) x[2]),method='correct')
+aghqexpmean3d_correct2_3 <- compute_moment(momquad3,gg = make_moment_function(function(x) x[3]),method='correct')
+
+
+
+
 
 # Interpolation
 margpostinterp3d_1 <- interpolate_marginal_posterior(margpost_3d_1)
@@ -499,19 +521,6 @@ mom2 <- make_moment_function('exp')
 mom3 <- make_moment_function(list(fn=function(x) x,gr=function(x) 1,he = function(x) 0))
 mombad1 <- list(exp,exp,exp) # No names
 mombad2 <- list('exp','exp','exp') # List of not functions
-mombad3 <- make_moment_function(function(x) -exp(x)) # Not positive- but wouldn't expect to fail construction, only validation.
-
-
-## Duplicated names ##
-objfuncnames <- function(x) logfteta(x,y)
-funlist <- list(
-  fn = function(x) setNames(objfunc(x),"a"),
-  gr = function(x) numDeriv::grad(objfunc,x),
-  he = function(x) numDeriv::hessian(objfunc,x)
-)
-
-opt_sparsetrust <- optimize_theta(funlist,1.5,control = default_control(method = "sparse_trust"))
-
-
+mombad3 <- make_moment_function(function(x) NA)
 
 

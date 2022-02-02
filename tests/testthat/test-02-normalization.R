@@ -258,4 +258,10 @@ test_that("Normalization works",{
     expect_equal(normconst2,thelaplace$lognormconst)
     expect_equal(normconst3,themarginallaplace$normalized_posterior$lognormconst)
 
+    # Extraction of number of quadrature points
+    expect_equal(get_numquadpoints(thequadrature),3)
+    expect_equal(get_numquadpoints(thequadrature_k7),25)
+    expect_equal(get_numquadpoints(thequadrature3d),3)
+
+
 })

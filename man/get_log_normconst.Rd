@@ -8,6 +8,7 @@
 \alias{get_log_normconst.laplace}
 \alias{get_log_normconst.marginallaplace}
 \alias{get_nodesandweights.default}
+\alias{get_nodesandweights.list}
 \alias{get_nodesandweights.data.frame}
 \alias{get_nodesandweights.aghq}
 \alias{get_nodesandweights.laplace}
@@ -27,6 +28,8 @@ get_log_normconst(obj, ...)
 \method{get_log_normconst}{marginallaplace}(obj, ...)
 
 \method{get_nodesandweights}{default}(obj, ...)
+
+\method{get_nodesandweights}{list}(obj, ...)
 
 \method{get_nodesandweights}{data.frame}(obj, ...)
 
@@ -53,6 +56,7 @@ and for objects of class \code{aghq}, \code{laplace}, and \code{marginallaplace}
 Other quadrature: 
 \code{\link{aghq}()},
 \code{\link{get_nodesandweights}()},
+\code{\link{get_numquadpoints}()},
 \code{\link{laplace_approximation}()},
 \code{\link{marginal_laplace_tmb}()},
 \code{\link{marginal_laplace}()},

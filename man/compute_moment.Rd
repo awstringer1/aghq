@@ -2,15 +2,36 @@
 % Please edit documentation in R/03-summary-statistics.R
 \name{compute_moment}
 \alias{compute_moment}
-\alias{compute_moment.default}
+\alias{compute_moment.list}
 \alias{compute_moment.aghq}
+\alias{compute_moment.default}
 \title{Compute moments}
 \usage{
 compute_moment(obj, ...)
 
-\method{compute_moment}{default}(obj, ff = function(x) 1, gg = NULL, method = "reuse", ...)
+\method{compute_moment}{list}(
+  obj,
+  ff = function(x) 1,
+  gg = NULL,
+  method = c("auto", "reuse", "correct"),
+  ...
+)
 
-\method{compute_moment}{aghq}(obj, ff = function(x) 1, gg = NULL, method = "reuse", ...)
+\method{compute_moment}{aghq}(
+  obj,
+  ff = function(x) 1,
+  gg = NULL,
+  method = c("auto", "reuse", "correct"),
+  ...
+)
+
+\method{compute_moment}{default}(
+  obj,
+  ff = function(x) 1,
+  gg = NULL,
+  method = c("auto", "reuse", "correct"),
+  ...
+)
 }
 \arguments{
 \item{obj}{Object of class \code{aghq} output by \code{aghq::aghq()}. See \code{?aghq}.}

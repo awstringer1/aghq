@@ -248,13 +248,23 @@ compute_moment <- function(obj,...) {
   UseMethod("compute_moment")
 }
 #' @rdname compute_moment
-#' @method compute_moment default
+# #' @method compute_moment default
 #' @export
-compute_moment.default <- function(obj,ff = function(x) 1,gg = NULL,method = "reuse",...) {
+compute_moment.list <- function(obj,ff = function(x) 1,gg = NULL,method = c("auto","reuse","correct"),...) {
+  # If the user tries to pass a list but method is not "reuse", print a warning
+  method <- method[1]
+  valid_methods <- c("auto","reuse","correct")
+  if (!(method %in% valid_methods)) stop(paste0("method should be one of: ",valid_methods,", but you provided: ",method,".\n"))
+  if (method == 'auto') method <- "reuse"
+  if (method != "reuse") warning(paste0("Method = 'reuse' is the only possible option for computing moments when you have passed an object of class 'list'. You selected method = ",method,". You could try passing an object of class 'aghq' to 'compute_moment' if you want to use the more advanced options.\n" ))
   # nodesandweights <- obj$nodesandweights
   nodesandweights <- get_nodesandweights(obj)
-
-
+  if (is.null(gg) & is.null(ff)) stop("You provided NULL for ff and gg in compute_moment. You have to provide one of these.\n")
+  if (!is.null(gg)) {
+    # Use gg over ff if both provided.
+    if (!validate_moment(gg)) stop("validate_moment(gg) failed inside compute_moment.\n")
+    ff <- function(theta) exp(gg$fn(theta))
+  }
   # whereistheta <- grep('theta',colnames(nodesandweights))
   whereistheta <- 1:(ncol(nodesandweights)-3)
 
@@ -270,11 +280,51 @@ compute_moment.default <- function(obj,ff = function(x) 1,gg = NULL,method = "re
   unname(out)
 }
 #' @rdname compute_moment
-#' @method compute_moment aghq
+# #' @method compute_moment aghq
 #' @export
-compute_moment.aghq <- function(obj,ff = function(x) 1,gg = NULL,method = "reuse",...) compute_moment(obj$normalized_posterior,ff)
-# compute_moment.aghq <- function(obj,ff = function(x) 1,...) compute_moment(obj,ff,...)
+compute_moment.aghq <- function(obj,ff = function(x) 1,gg = NULL,method = c("auto","reuse","correct"),...) {
+  valid_methods <- c("auto","reuse","correct")
+  method <- method[1]
+  if (!(method %in% valid_methods)) stop(paste0("method should be one of: ",valid_methods,", but you provided: ",method,".\n"))
+  if (method == 'auto') method <- "reuse"
+  if (method == 'reuse') return(compute_moment.list(obj=obj$normalized_posterior,ff=ff,gg=gg,...))
 
+  # Proceeding as if method = 'correct'
+  if (is.null(gg)) {
+    if (!validate_moment(ff)) stop("Function ff provided to compute_moment fails validation. Run validate_moment(ff) to see why.\n")
+    p <- length(obj$optresults$mode)
+    q <- length(ff(obj$optresults$mode))
+
+    if (q>1) {
+      # if q>1, run compute_moment on each coordinate
+      out <- numeric(q)
+      for (j in 1:q) out[j] <- compute_moment(obj=obj,ff=function(theta) ff(theta)[j],gg=NULL,method='correct')
+    } else {
+      # if q=1, construct gg and then call compute_moment on that
+      out <- compute_moment(obj=obj,ff=NULL,gg=make_moment_function(function(theta) log(ff(theta))),method='correct')
+    }
+  } else {
+    if(!validate_moment(gg)) stop("Function gg provided to compute_moment fails validation. Run validate_moment(gg) to see why.\n")
+    gg <- make_moment_function(gg)
+    # out <- compute_moment.list(obj=obj$normalized_posterior,ff=function(x) exp(gg$fn(x)),gg=NULL,method='reuse')
+    newff <- list(
+      fn = function(theta) obj$optresults$ff$fn(theta) + gg$fn(theta),
+      gr = function(theta) obj$optresults$ff$gr(theta) + gg$gr(theta),
+      he = function(theta) obj$optresults$ff$he(theta) + gg$he(theta)
+    )
+    newcontrol <- obj$control
+    newcontrol$onlynormconst <- TRUE
+    out <- exp(get_log_normconst(aghq(ff = newff,k = get_numquadpoints(obj),startingvalue = obj$optresults$mode,control = newcontrol)) - get_log_normconst(obj))
+  }
+  out
+}
+# compute_moment.aghq <- function(obj,ff = function(x) 1,...) compute_moment(obj,ff,...)
+#' @rdname compute_moment
+# #' @method compute_moment default
+#' @export
+compute_moment.default <- function(obj,ff = function(x) 1,gg = NULL,method = c("auto","reuse","correct"),...) {
+  stop(paste0("Unrecognized object of class: ",class(obj)," passed to comupute_moment.\n"))
+}
 
 #' Density and Cumulative Distribution Function
 #'
@@ -897,7 +947,7 @@ default_transformation <- function() make_transformation(totheta = force,fromthe
 #' \code{aghq::make_moment_function()}, assists the user in constructing the appropriate input to \code{aghq::compute_moment()}.
 #'
 #' @param ... Used to pass arguments to methods.
-#' @param gg Function `R^p -> R^+` of which the moment is to be computed along with its two derivatives.
+#' @param gg LOGARITHM of function `R^p -> R^+` of which the moment is to be computed along with its two derivatives. So for example providing gg = function(x) x will compute the moment of exp(x).
 #' Provided either as a \code{function}, a \code{list}, an \code{aghqtrans} object, or an \code{aghqmoment} object. See details.
 #'
 #' @return Object of class \code{aghqmoment}, which is a list with elements \code{fn},
@@ -913,7 +963,7 @@ default_transformation <- function() make_transformation(totheta = force,fromthe
 #'
 #' Computation of moments is defined only for scalar-valued functions, with a vector moment just defined as a vector of moments. Consequently,
 #' the user may input to \code{aghq:compute_moment()} a function \code{g: R^p -> R^q+} for any \code{q}, and that function will return the corresponding
-#' vector of moments. This is handled within \code{aghq::compute_moment()}. The \code{aghq::make_moment_function()} interface accepts \code{gg: R^p -> R^+}, i.e.
+#' vector of moments. This is handled within \code{aghq::compute_moment()}. The \code{aghq::make_moment_function()} interface accepts the logarithm of \code{gg: R^p -> R^+}, i.e.
 #' a multivariable, scalar-valued positive function. This is mostly to keep first and second derivatives as 1d and 2d arrays (i.e. the gradient and the Hessian);
 #' I deemed it too confusing for the user and the code-base to work with Jacobians and 2nd derivative tensors (if you're confused just reading this, there you go!).
 #' But, see \code{aghq::compute_moment()} for how to handle the very common case where the *same* trasnformation is desired of all parameter coordinates; for example
@@ -928,9 +978,9 @@ default_transformation <- function() make_transformation(totheta = force,fromthe
 #' @family moments
 #'
 #' @examples
-#'
-#' mom1 <- make_moment_function(exp)
-#' mom2 <- make_moment_function('exp')
+#' # E(exp(x))
+#' mom1 <- make_moment_function(force) # force = function(x) x
+#' mom2 <- make_moment_function('force')
 #' mom3 <- make_moment_function(list(fn=function(x) x,gr=function(x) 1,he = function(x) 0))
 #'
 #' @export
@@ -940,12 +990,12 @@ make_moment_function <- function(...) UseMethod('make_moment_function')
 make_moment_function.aghqmoment <- function(gg,...) gg
 #' @rdname make_moment_function
 #' @export
-make_moment_function.aghqtrans <- function(gg,...) make_moment_function.default(gg$from_theta,...)
+make_moment_function.aghqtrans <- function(gg,...) make_moment_function.default(function(theta) log(gg$from_theta(theta)),...)
 #' @rdname make_moment_function
 #' @export
 make_moment_function.function <- function(gg,...) {
   gg <- match.fun(gg)
-  fn <- function(theta) log(gg(theta))
+  fn <- gg
   gr <- function(theta) numDeriv::grad(fn,theta)
   he <- function(theta) numDeriv::hessian(fn,theta)
   make_moment_function.list(list(fn=fn,gr=gr,he=he),...)
@@ -1072,4 +1122,7 @@ validate_moment.character <- function(moment,checkpositive = FALSE,...) {
 }
 #' @rdname validate_moment
 #' @export
-validate_moment.default <- function(...) FALSE
+validate_moment.default <- function(moment,...) {
+  if (is.null(moment)) stop("NULL function provided to validate_moment.\n")
+  FALSE
+}

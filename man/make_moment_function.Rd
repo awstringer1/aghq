@@ -27,7 +27,7 @@ make_moment_function(...)
 \arguments{
 \item{...}{Used to pass arguments to methods.}
 
-\item{gg}{Function \verb{R^p -> R^+} of which the moment is to be computed along with its two derivatives.
+\item{gg}{LOGARITHM of function \verb{R^p -> R^+} of which the moment is to be computed along with its two derivatives. So for example providing gg = function(x) x will compute the moment of exp(x).
 Provided either as a \code{function}, a \code{list}, an \code{aghqtrans} object, or an \code{aghqmoment} object. See details.}
 }
 \value{
@@ -50,7 +50,7 @@ re-using information from the original quadrature when feasible.
 
 Computation of moments is defined only for scalar-valued functions, with a vector moment just defined as a vector of moments. Consequently,
 the user may input to \code{aghq:compute_moment()} a function \code{g: R^p -> R^q+} for any \code{q}, and that function will return the corresponding
-vector of moments. This is handled within \code{aghq::compute_moment()}. The \code{aghq::make_moment_function()} interface accepts \code{gg: R^p -> R^+}, i.e.
+vector of moments. This is handled within \code{aghq::compute_moment()}. The \code{aghq::make_moment_function()} interface accepts the logarithm of \code{gg: R^p -> R^+}, i.e.
 a multivariable, scalar-valued positive function. This is mostly to keep first and second derivatives as 1d and 2d arrays (i.e. the gradient and the Hessian);
 I deemed it too confusing for the user and the code-base to work with Jacobians and 2nd derivative tensors (if you're confused just reading this, there you go!).
 But, see \code{aghq::compute_moment()} for how to handle the very common case where the \emph{same} trasnformation is desired of all parameter coordinates; for example
@@ -63,9 +63,9 @@ If \code{gg} is an object of class \code{aghqtrans} returned by \code{aghq::make
 is passed back to \code{make_moment_function()}. If \code{gg} is an object of class \code{aghqtrans} then it is just returned.
 }
 \examples{
-
-mom1 <- make_moment_function(exp)
-mom2 <- make_moment_function('exp')
+# E(exp(x))
+mom1 <- make_moment_function(force) # force = function(x) x
+mom2 <- make_moment_function('force')
 mom3 <- make_moment_function(list(fn=function(x) x,gr=function(x) 1,he = function(x) 0))
 
 }
