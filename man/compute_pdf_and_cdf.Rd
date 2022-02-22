@@ -7,7 +7,7 @@
 \alias{compute_pdf_and_cdf.aghq}
 \title{Density and Cumulative Distribution Function}
 \usage{
-compute_pdf_and_cdf(obj, transformation = default_transformation(), ...)
+compute_pdf_and_cdf(obj, ...)
 
 \method{compute_pdf_and_cdf}{default}(
   obj,
@@ -26,12 +26,12 @@ compute_pdf_and_cdf(obj, transformation = default_transformation(), ...)
 (element \code{marginals}), or an individual \code{data.frame} containing one of
 these marginal distributions as output by \code{aghq::marginal_posterior()}.}
 
+\item{...}{Used to pass additional arguments.}
+
 \item{transformation}{Optional. Calculate pdf/cdf for a transformation of the parameter
 whose posterior was normalized using adaptive quadrature.
 \code{transformation} is either: a) an \code{aghqtrans} object returned by \code{aghq::make_transformation},
 or b) a list that will be passed to that function internally. See \code{?aghq::make_transformation} for details.}
-
-\item{...}{Used to pass additional arguments.}
 
 \item{finegrid}{Optional, a grid of values on which to compute the CDF. The default makes
 use of the values in \code{margpost} but if the results are unsuitable, you may wish to

@@ -8,7 +8,13 @@
 \usage{
 marginal_posterior(...)
 
-\method{marginal_posterior}{aghq}(quad, j, method = c("auto", "reuse", "correct"), ...)
+\method{marginal_posterior}{aghq}(
+  quad,
+  j,
+  qq = NULL,
+  method = c("auto", "reuse", "correct"),
+  ...
+)
 
 \method{marginal_posterior}{list}(
   optresults,
@@ -26,6 +32,9 @@ marginal_posterior(...)
 
 \item{j}{Integer between 1 and the dimension of the parameter space. Which
 index of the parameter vector to compute the marginal posterior for.}
+
+\item{qq}{Numeric vector of length \code{>=1} giving the points at which to evaluate the marginal posterior.
+The default, \code{NULL}, chooses these points in a 'clever' way, see Details.}
 
 \item{method}{Method for computing the quadrature points used to approximate moment.
 One of 'reuse' (default) or 'correct'. See details.
@@ -56,6 +65,22 @@ for theta_j evaluated at the original quadrature points. Has columns
 \description{
 Compute the marginal posterior for a given parameter using AGHQ. This function is
 mostly called within \code{aghq()}.
+}
+\details{
+If \code{qq=NULL}, then it is set to the unique values in an adapted GHQ grid computed
+assuming that \code{j=1} (there is nothing special about this procedure, it's just a way to provide
+an apparently sensible default).
+
+If \code{method='reuse'}, then the parameter vector is reordered so \code{j=1}, and the
+approximate marginal is computed by first computing the whole AGHQ grid, then summing over the other
+indices. This is an outdated method that does not have any theory pertaining to it, and is included for
+backwards compatibility. It does not use \code{qq} if supplied.
+
+If \code{method='correct'} then the theoretically-justified approximation from Section 2.4 of the 'Stochastic Convergence Rates...'
+paper is returned.
+
+\code{method='auto'} currently chooses \code{'reuse'} for backwards compatibility, but this will be
+changed in a future release.
 }
 \examples{
 ## A 2d example ##

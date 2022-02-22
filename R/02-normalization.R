@@ -184,19 +184,19 @@ get_log_normconst.marginallaplace <- function(obj,...) get_log_normconst(obj$nor
 #' @export
 #'
 get_nodesandweights <- function(obj,...) UseMethod("get_nodesandweights")
-#' @rdname get_log_normconst
+#' @rdname get_nodesandweights
 #' @export
 get_nodesandweights.default <- function(obj,...) obj$nodesandweights
-#' @rdname get_log_normconst
+#' @rdname get_nodesandweights
 #' @export
 get_nodesandweights.list <- function(obj,...) obj$nodesandweights
-#' @rdname get_log_normconst
+#' @rdname get_nodesandweights
 #' @export
 get_nodesandweights.data.frame <- function(obj,...) obj
-#' @rdname get_log_normconst
+#' @rdname get_nodesandweights
 #' @export
 get_nodesandweights.aghq <- function(obj,...) get_nodesandweights(obj$normalized_posterior)
-#' @rdname get_log_normconst
+#' @rdname get_nodesandweights
 #' @export
 get_nodesandweights.laplace <- function(obj,...) {
   # This is never actually created, so create it here
@@ -207,7 +207,7 @@ get_nodesandweights.laplace <- function(obj,...) {
   names(out) <- c(paste0('theta',1:length(obj$optresults$mode)),'weights','logpost','logpost_normalized')
   out
 }
-#' @rdname get_log_normconst
+#' @rdname get_nodesandweights
 #' @export
 get_nodesandweights.marginallaplace <- function(obj,...) get_nodesandweights(obj$normalized_posterior)
 
@@ -239,5 +239,69 @@ get_numquadpoints <- function(obj,...) as.numeric(obj$normalized_posterior$grid$
 #'
 #' @export
 #'
-get_param_dim <- function(obj,...) length(obj$optresults$mode)
+get_param_dim <- function(obj,...) UseMethod('get_param_dim')
+#' @rdname get_param_dim
+#' @export
+get_param_dim.aghq <- function(obj,...) length(obj$optresults$mode)
+
+#' Obtain the optimization results from an aghq object
+#'
+#' Quick helper S3 method to retrieve the mode and Hessian from an aghq object. The
+#' full results of calling \code{aghq::optimize_theta} are stored in \code{obj$optresults}.
+#'
+#' @param obj Object of class \code{aghq} returned by \code{aghq::aghq}.
+#' @param ... Not used
+#'
+#' @return A named list with elements:
+#' \itemize{
+#' \item{\code{mode}: a numeric vector of length \code{dim(theta)} containing the posterior mode.}
+#' \item{\code{hessian}: a numeric matrix of dimension \code{dim(theta) x dim(theta)} containing the negative Hessian of the log-posterior evaluated at the mode.}
+#' }
+#' For objects of class \code{marginallaplace}, a third list item \code{modesandhessians} is
+#' a \code{data.frame} containing
+#' the mode and Hessian of the \code{W} parameters evaluated at each adapted quadrature point.
+#'
+#' @family quadrature
+#'
+#' @export
+#'
+get_opt_results <- function(obj,...) UseMethod('get_opt_results')
+#' @rdname get_opt_results
+#' @export
+get_opt_results.aghq <- function(obj,...) list(mode = obj$optresults$mode,hessian = obj$optresults$hessian)
+#' @rdname get_opt_results
+#' @export
+get_opt_results.marginallaplace <- function(obj,...) list(mode = obj$optresults$mode,hessian = obj$optresults$hessian)
+
+#' Obtain the mode from an aghq object
+#'
+#' Quick helper method to retrieve the mode from an aghq object. Just
+#' calls \code{aghq::get_opt_results}.
+#'
+#' @param obj Object of class \code{aghq} returned by \code{aghq::aghq}.
+#' @param ... Not used
+#'
+#' @return A numeric vector of length \code{dim(theta)} containing the posterior mode.
+#'
+#' @family quadrature
+#'
+#' @export
+#'
+get_mode <- function(obj,...) get_opt_results(obj,...)$mode
+
+#' Obtain the Hessian from an aghq object
+#'
+#' Quick helper method to retrieve the Hessian from an aghq object. Just
+#' calls \code{aghq::get_opt_results}.
+#'
+#' @param obj Object of class \code{aghq} returned by \code{aghq::aghq}.
+#' @param ... Not used
+#'
+#' @return A numeric matrix of dimension \code{dim(theta) x dim(theta)} containing the negative Hessian of the log-posterior evaluated at the mode.
+#'
+#' @family quadrature
+#'
+#' @export
+#'
+get_hessian <- function(obj,...) get_opt_results(obj,...)$hessian
 

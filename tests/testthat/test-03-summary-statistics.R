@@ -62,14 +62,14 @@ test_that("Marginal posteriors computed correctly",{
   expect_equal(nrow(margpost_3d_2_correct),3)
 
 
-  # Integration # TODO: do this differently
-  # expect_equal(sum(exp(margpost_1d_1_correct$logmargpost) * margpost_1d_1_correct$w),1)
-  # expect_equal(sum(exp(margpost_2d_1_correct$logmargpost) * margpost_2d_1_correct$w),1)
-  # expect_equal(sum(exp(margpost_2d_2_correct$logmargpost) * margpost_2d_2_correct$w),1)
-  # expect_equal(sum(exp(margpost_2d_2_k7_correct$logmargpost) * margpost_2d_2_k7_correct$w),1)
-  # expect_equal(sum(exp(margpost_3d_1_correct$logmargpost) * margpost_3d_1_correct$w),1)
-  # expect_equal(sum(exp(margpost_3d_2_correct$logmargpost) * margpost_3d_2_correct$w),1)
-  # expect_equal(sum(exp(margpost_3d_3_correct$logmargpost) * margpost_3d_3_correct$w),1)
+  # Integration
+  expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_1d_1_correct)$cdf) - c(0,1))),1e-03)
+  expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_2d_1_correct)$cdf) - c(0,1))),1e-03)
+  expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_2d_2_correct)$cdf) - c(0,1))),1e-03)
+  expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_2d_2_k7_correct)$cdf) - c(0,1))),1e-03)
+  expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_3d_1_correct)$cdf) - c(0,1))),1e-03)
+  expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_3d_2_correct)$cdf) - c(0,1))),1e-03)
+  expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_3d_3_correct)$cdf) - c(0,1))),1e-03)
 
   # Moments
   expect_equal(aghqnormconst1d,1)

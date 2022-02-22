@@ -13,6 +13,8 @@
 #' @inheritParams normalize_logpost
 #' @param j Integer between 1 and the dimension of the parameter space. Which
 #' index of the parameter vector to compute the marginal posterior for.
+#' @param qq Numeric vector of length \code{>=1} giving the points at which to evaluate the marginal posterior.
+#' The default, \code{NULL}, chooses these points in a 'clever' way, see Details.
 #' @param quad Object returned by \code{aghq::aghq}.
 #' @param method Method for computing the quadrature points used to approximate moment.
 #' One of 'reuse' (default) or 'correct'. See details.
@@ -22,6 +24,21 @@
 #' @return a data.frame containing the normalized log marginal posterior
 #' for theta_j evaluated at the original quadrature points. Has columns
 #' \code{"thetaj","logpost_normalized","weights"}, where \code{j} is the \code{j} you specified.
+#'
+#' @details If \code{qq=NULL}, then it is set to the unique values in an adapted GHQ grid computed
+#' assuming that \code{j=1} (there is nothing special about this procedure, it's just a way to provide
+#' an apparently sensible default).
+#'
+#' If \code{method='reuse'}, then the parameter vector is reordered so \code{j=1}, and the
+#' approximate marginal is computed by first computing the whole AGHQ grid, then summing over the other
+#' indices. This is an outdated method that does not have any theory pertaining to it, and is included for
+#' backwards compatibility. It does not use \code{qq} if supplied.
+#'
+#' If \code{method='correct'} then the theoretically-justified approximation from Section 2.4 of the 'Stochastic Convergence Rates...'
+#' paper is returned.
+#'
+#' \code{method='auto'} currently chooses \code{'reuse'} for backwards compatibility, but this will be
+#' changed in a future release.
 #'
 #' @family summaries
 #'
@@ -106,7 +123,7 @@ marginal_posterior.aghq <- function(quad,j,qq=NULL,method = c('auto','reuse','co
     ffm <- list(fn=fn,gr=gr,he=he)
     newcontrol <- quad$control
     newcontrol$onlynormconst <- TRUE
-    lognumerator <- get_log_normconst(aghq(ffm,get_numquadpoints(quad),quad$optresults$mode[-j],control = newcontrol))
+    lognumerator <- get_log_normconst(aghq(ffm,get_numquadpoints(quad),get_mode(quad)[-j],control = newcontrol))
     out <- data.frame(qq,lognumerator-get_log_normconst(quad))
     colnames(out) <- c(cname,'logmargpost')
   }
@@ -382,6 +399,18 @@ compute_moment.default <- function(obj,ff = function(x) 1,gg = NULL,method = c("
   stop(paste0("Unrecognized object of class: ",class(obj)," passed to comupute_moment.\n"))
 }
 
+#' Correct the marginals of a fitted aghq object
+#'
+#' The default method of computation for aghq objects computes approximate marginals using an outdated algorithm
+#' with no known theoretical properties. The updated algorithm computes pointwise approximate marginals that
+#' satisfy the same rate of convergence as the original approximate marginal likelihood. This function takes
+#' a fitted aghq object and recomputes its marginals using the updated algorithm
+#'
+#' @param quad An object of class \code{aghq} returned by \code{aghq::aghq()}.
+#' @param ... Not used
+#'
+correct_marginals <- function(quad,...) 0
+
 #' Density and Cumulative Distribution Function
 #'
 #' Compute the density and cumulative distribution function of the approximate posterior.
@@ -449,7 +478,7 @@ compute_moment.default <- function(obj,ff = function(x) 1,gg = NULL,method = c("
 #'
 #' @export
 #'
-compute_pdf_and_cdf <- function(obj,transformation = default_transformation(),...) UseMethod("compute_pdf_and_cdf")
+compute_pdf_and_cdf <- function(obj,...) UseMethod("compute_pdf_and_cdf")
 #' @rdname compute_pdf_and_cdf
 #' @export
 compute_pdf_and_cdf.default <- function(obj,transformation = default_transformation(),finegrid = NULL,interpolation = 'auto',...) {

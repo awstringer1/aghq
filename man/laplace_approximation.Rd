@@ -106,9 +106,12 @@ thequadrature <- aghq(funlist2d,3,c(0,0))
 \seealso{
 Other quadrature: 
 \code{\link{aghq}()},
+\code{\link{get_hessian}()},
 \code{\link{get_log_normconst}()},
+\code{\link{get_mode}()},
 \code{\link{get_nodesandweights}()},
 \code{\link{get_numquadpoints}()},
+\code{\link{get_opt_results}()},
 \code{\link{get_param_dim}()},
 \code{\link{marginal_laplace_tmb}()},
 \code{\link{marginal_laplace}()},

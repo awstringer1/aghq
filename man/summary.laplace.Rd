@@ -57,9 +57,12 @@ summary(thelaplace)
 \seealso{
 Other quadrature: 
 \code{\link{aghq}()},
+\code{\link{get_hessian}()},
 \code{\link{get_log_normconst}()},
+\code{\link{get_mode}()},
 \code{\link{get_nodesandweights}()},
 \code{\link{get_numquadpoints}()},
+\code{\link{get_opt_results}()},
 \code{\link{get_param_dim}()},
 \code{\link{laplace_approximation}()},
 \code{\link{marginal_laplace_tmb}()},
@@ -77,9 +80,12 @@ Other quadrature:
 
 Other quadrature: 
 \code{\link{aghq}()},
+\code{\link{get_hessian}()},
 \code{\link{get_log_normconst}()},
+\code{\link{get_mode}()},
 \code{\link{get_nodesandweights}()},
 \code{\link{get_numquadpoints}()},
+\code{\link{get_opt_results}()},
 \code{\link{get_param_dim}()},
 \code{\link{laplace_approximation}()},
 \code{\link{marginal_laplace_tmb}()},

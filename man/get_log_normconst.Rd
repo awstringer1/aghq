@@ -7,12 +7,6 @@
 \alias{get_log_normconst.aghq}
 \alias{get_log_normconst.laplace}
 \alias{get_log_normconst.marginallaplace}
-\alias{get_nodesandweights.default}
-\alias{get_nodesandweights.list}
-\alias{get_nodesandweights.data.frame}
-\alias{get_nodesandweights.aghq}
-\alias{get_nodesandweights.laplace}
-\alias{get_nodesandweights.marginallaplace}
 \title{Obtain the log-normalizing constant from a fitted quadrature object}
 \usage{
 get_log_normconst(obj, ...)
@@ -26,18 +20,6 @@ get_log_normconst(obj, ...)
 \method{get_log_normconst}{laplace}(obj, ...)
 
 \method{get_log_normconst}{marginallaplace}(obj, ...)
-
-\method{get_nodesandweights}{default}(obj, ...)
-
-\method{get_nodesandweights}{list}(obj, ...)
-
-\method{get_nodesandweights}{data.frame}(obj, ...)
-
-\method{get_nodesandweights}{aghq}(obj, ...)
-
-\method{get_nodesandweights}{laplace}(obj, ...)
-
-\method{get_nodesandweights}{marginallaplace}(obj, ...)
 }
 \arguments{
 \item{obj}{A list returned by \code{aghq::normalize_posterior} or an object of class \code{aghq}, \code{laplace}, or \code{marginallaplace}.}
@@ -55,8 +37,11 @@ and for objects of class \code{aghq}, \code{laplace}, and \code{marginallaplace}
 \seealso{
 Other quadrature: 
 \code{\link{aghq}()},
+\code{\link{get_hessian}()},
+\code{\link{get_mode}()},
 \code{\link{get_nodesandweights}()},
 \code{\link{get_numquadpoints}()},
+\code{\link{get_opt_results}()},
 \code{\link{get_param_dim}()},
 \code{\link{laplace_approximation}()},
 \code{\link{marginal_laplace_tmb}()},
