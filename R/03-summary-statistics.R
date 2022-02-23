@@ -393,7 +393,6 @@ compute_moment.aghq <- function(obj,ff = function(x) 1,gg = NULL,method = c("aut
 }
 # compute_moment.aghq <- function(obj,ff = function(x) 1,...) compute_moment(obj,ff,...)
 #' @rdname compute_moment
-# #' @method compute_moment default
 #' @export
 compute_moment.default <- function(obj,ff = function(x) 1,gg = NULL,method = c("auto","reuse","correct"),...) {
   stop(paste0("Unrecognized object of class: ",class(obj)," passed to comupute_moment.\n"))
@@ -409,7 +408,16 @@ compute_moment.default <- function(obj,ff = function(x) 1,gg = NULL,method = c("
 #' @param quad An object of class \code{aghq} returned by \code{aghq::aghq()}.
 #' @param ... Not used
 #'
-correct_marginals <- function(quad,...) 0
+#' @return An object of class \code{aghq} equal to the provided object, but with its
+#' \code{marginals} component replaced with one calculated using \code{method='correct'}.
+#' See \code{marginal_posterior}.
+correct_marginals <- function(quad,...) {
+  p <- length(quad$marginals)
+  margout <- vector(mode='list',length = p)
+  for (j in 1:p) margout[[j]] <- marginal_posterior(quad,j,method = 'correct')
+  quad$marginals <- margout
+  quad
+}
 
 #' Density and Cumulative Distribution Function
 #'

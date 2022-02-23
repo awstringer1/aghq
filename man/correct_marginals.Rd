@@ -11,6 +11,11 @@ correct_marginals(quad, ...)
 
 \item{...}{Not used}
 }
+\value{
+An object of class \code{aghq} equal to the provided object, but with its
+\code{marginals} component replaced with one calculated using \code{method='correct'}.
+See \code{marginal_posterior}.
+}
 \description{
 The default method of computation for aghq objects computes approximate marginals using an outdated algorithm
 with no known theoretical properties. The updated algorithm computes pointwise approximate marginals that

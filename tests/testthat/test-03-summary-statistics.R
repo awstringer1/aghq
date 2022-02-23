@@ -52,7 +52,6 @@ test_that("Marginal posteriors computed correctly",{
   expect_equal(colnames(margpost_3d_2_correct),c("theta2","logmargpost"))
   expect_equal(colnames(margpost_3d_3_correct),c("theta3","logmargpost"))
 
-
   expect_equal(nrow(margpost_1d_1_correct),3)
   expect_equal(nrow(margpost_2d_1_correct),3)
   expect_equal(nrow(margpost_2d_2_correct),3)
@@ -70,6 +69,27 @@ test_that("Marginal posteriors computed correctly",{
   expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_3d_1_correct)$cdf) - c(0,1))),1e-03)
   expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_3d_2_correct)$cdf) - c(0,1))),1e-03)
   expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_3d_3_correct)$cdf) - c(0,1))),1e-03)
+
+  # Corrections
+  expect_equal(colnames(margpost_thequadrature_original[[1]]),c("theta1","logmargpost","w"))
+  expect_equal(colnames(margpost_thequadrature_original[[2]]),c("theta2","logmargpost","w"))
+  expect_equal(colnames(margpost_thequadrature_correct[[1]]),c("theta1","logmargpost"))
+  expect_equal(colnames(margpost_thequadrature_correct[[2]]),c("theta2","logmargpost"))
+  expect_equal(nrow(margpost_thequadrature_original[[1]]),3)
+  expect_equal(nrow(margpost_thequadrature_original[[2]]),3)
+  expect_equal(nrow(margpost_thequadrature_correct[[1]]),3)
+  expect_equal(nrow(margpost_thequadrature_correct[[2]]),3)
+  expect_is(margpost_thequadrature_original[[1]],'data.frame')
+  expect_is(margpost_thequadrature_original[[2]],'data.frame')
+  expect_is(margpost_thequadrature_correct[[1]],'data.frame')
+  expect_is(margpost_thequadrature_correct[[2]],'data.frame')
+  expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_thequadrature_original[[1]])$cdf) - c(0,1))),1e-03)
+  expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_thequadrature_original[[2]])$cdf) - c(0,1))),1e-03)
+  expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_thequadrature_correct[[1]])$cdf) - c(0,1))),1e-03)
+  expect_lt(sum(abs(range(compute_pdf_and_cdf(margpost_thequadrature_correct[[2]])$cdf) - c(0,1))),1e-03)
+
+
+
 
   # Moments
   expect_equal(aghqnormconst1d,1)

@@ -326,6 +326,12 @@ margpost_3d_1_correct <- marginal_posterior(margquad3,1,method='correct')
 margpost_3d_2_correct <- marginal_posterior(margquad3,2,method='correct')
 margpost_3d_3_correct <- marginal_posterior(margquad3,3,method='correct')
 
+# check the correction of marginals
+margpost_thequadrature_original <- thequadrature$marginals
+thequadrature_correct <- correct_marginals(thequadrature)
+margpost_thequadrature_correct <- thequadrature_correct$marginals
+
+
 # Interpolation
 margpostinterp3d_1 <- interpolate_marginal_posterior(margpost_3d_1)
 margpostinterp3d_2 <- interpolate_marginal_posterior(margpost_3d_2)
