@@ -573,3 +573,93 @@ nummom_aghq_correct1 <- compute_moment(momshiftquad1,nn=1,method = 'correct')
 nummom_aghq_correct2 <- compute_moment(momshiftquad1,nn=2,method = 'correct')
 nummom_aghq_correct_central1 <- compute_moment(momshiftquad1,nn=1,method = 'correct',type='central')
 nummom_aghq_correct_central2 <- compute_moment(momshiftquad1,nn=2,method = 'correct',type='central')
+
+# POSITIVE mode, with no negative quad points
+# There should be NO shift
+set.seed(4378)
+n <- 100
+lambda <- 20
+y <- rpois(n,lambda)
+
+momobjfunc2 <- function(eta) {
+  sum(y) * eta - (length(y) + 1) * exp(eta) - sum(lgamma(y+1)) + eta
+}
+momfunlist2 <- list(
+  fn = momobjfunc2,
+  gr = function(x) numDeriv::grad(momobjfunc2,x),
+  he = function(x) numDeriv::hessian(momobjfunc2,x)
+)
+momshiftquad2 <- aghq(momfunlist2,7,0)
+truemoment2 <- digamma(sum(y) + 1) - log(length(y) + 1)
+truesecondcentralmoment2 <- trigamma(sum(y)+1)
+truesecondrawmoment2 <- truesecondcentralmoment2 + truemoment2^2
+
+# Test that the moment functions are created without shift
+ggmomshift2 <- make_numeric_moment_function(1,1,momshiftquad2,0,NULL)
+ggmomshift2_withcentre <- make_numeric_moment_function(1,1,momshiftquad2,1,NULL)
+
+
+# Moments
+nummom_aghq_correct1_2 <- compute_moment(momshiftquad2,nn=1,method = 'correct')
+nummom_aghq_correct2_2 <- compute_moment(momshiftquad2,nn=2,method = 'correct')
+nummom_aghq_correct_central1_2 <- compute_moment(momshiftquad2,nn=1,method = 'correct',type='central')
+nummom_aghq_correct_central2_2 <- compute_moment(momshiftquad2,nn=2,method = 'correct',type='central')
+
+# NEGATIVE mode, with some negative quad points
+set.seed(4378)
+n <- 10
+lambda <- 2
+y <- rpois(n,lambda)
+
+momobjfunc3 <- function(eta) {
+  eta <- -1*eta
+  sum(y) * eta - (length(y) + 1) * exp(eta) - sum(lgamma(y+1)) + eta
+}
+momfunlist3 <- list(
+  fn = momobjfunc3,
+  gr = function(x) numDeriv::grad(momobjfunc3,x),
+  he = function(x) numDeriv::hessian(momobjfunc3,x)
+)
+momshiftquad3 <- aghq(momfunlist3,7,0)
+truemoment3 <- -1*(digamma(sum(y) + 1) - log(length(y) + 1))
+truesecondcentralmoment3 <- trigamma(sum(y)+1) # Still positive
+truesecondrawmoment3 <- truesecondcentralmoment3 + truemoment3^2
+
+# Moments
+nummom_aghq_correct1_3 <- compute_moment(momshiftquad3,nn=1,method = 'correct')
+nummom_aghq_correct2_3 <- compute_moment(momshiftquad3,nn=2,method = 'correct')
+nummom_aghq_correct_central1_3 <- compute_moment(momshiftquad3,nn=1,method = 'correct',type='central')
+nummom_aghq_correct_central2_3 <- compute_moment(momshiftquad3,nn=2,method = 'correct',type='central')
+
+# EXTREMELY NEGATIVE mode, with no positive quad points
+# This is a test for accuracy.
+set.seed(4378)
+n <- 100
+lambda <- 20000
+y <- rpois(n,lambda)
+
+momobjfunc4 <- function(eta) {
+  eta <- -1*eta
+  sum(y) * eta - (length(y) + 1) * exp(eta) - sum(lgamma(y+1)) + eta
+}
+momfunlist4 <- list(
+  fn = momobjfunc4,
+  gr = function(x) numDeriv::grad(momobjfunc4,x),
+  he = function(x) numDeriv::hessian(momobjfunc4,x)
+)
+momshiftquad4 <- aghq(momfunlist4,7,0)
+truemoment4 <- -1*(digamma(sum(y) + 1) - log(length(y) + 1))
+truesecondcentralmoment4 <- trigamma(sum(y)+1) # Still positive
+truesecondrawmoment4 <- truesecondcentralmoment4 + truemoment4^2
+
+# Moments
+nummom_aghq_correct1_4 <- compute_moment(momshiftquad4,nn=1,method = 'correct')
+nummom_aghq_correct2_4 <- compute_moment(momshiftquad4,nn=2,method = 'correct')
+nummom_aghq_correct_central1_4 <- compute_moment(momshiftquad4,nn=1,method = 'correct',type='central')
+nummom_aghq_correct_central2_4 <- compute_moment(momshiftquad4,nn=2,method = 'correct',type='central')
+
+
+
+
+
+## TODO: indexing of moments. Need a 2d example. ##

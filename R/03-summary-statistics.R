@@ -1309,6 +1309,7 @@ make_numeric_moment_function <- function(nn,j,quad = NULL,centre = 0,shift = NUL
   if (as.integer(j) != j) stop(paste0("You must provide an integer index, j. You provided: ",j,"\n."))
   p <- get_param_dim(quad)
   if (j < 1 | j > p) stop(paste0("You must provide an index j such that 1 <= j <= dim(theta). You provided: ",j,", but dim(theta) = ",p,"\n."))
+
   if (centre==0 & 'center' %in% names(list(...))) centre <- list(...)$center # For the Americans
   if (is.null(shift)) {
     if (is.null(quad)) {
@@ -1316,8 +1317,12 @@ make_numeric_moment_function <- function(nn,j,quad = NULL,centre = 0,shift = NUL
     } else {
       # Get the shift
       nodes <- as.numeric(get_nodesandweights(quad)[ ,j]) # Take the jth column
-      buffer <- 10*diff(range(nodes)) # Pretty arbitrary, until someone comes up with something better
-      shift <- -1*min(nodes) + buffer + centre # This will be ADDED
+      if (min(nodes > 0)) {
+        shift <- centre
+      } else {
+        buffer <- 10*diff(range(nodes)) # Pretty arbitrary, until someone comes up with something better
+        shift <- -1*min(nodes) + buffer + centre # This will be ADDED
+      }
     }
   }
   # Create the function
