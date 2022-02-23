@@ -262,12 +262,48 @@ interpolate_marginal_posterior <- function(margpost,method = c('auto','polynomia
 #' without warning.
 #' @param gg The output of, or an object which may be input to \code{aghq::make_moment_function()}. See documentation of that function. Exactly one of \code{ff} or \code{gg} must be provided. If both are provided, \code{aghq::compute_moment()} will use \code{gg},
 #' without warning.
+#' @param nn A numeric scalar. Compute the approximate moment of this order, \code{E(theta^nn|Y)}. See details.
+#' If \code{nn} is provided, \code{compute_moment} will use it over \code{ff} or \code{gg},
+#' without warning.
+#' @param type Either \code{'raw'} (default) or \code{'central'}, see details.
 #' @param method Method for computing the quadrature points used to approximate moment. One of \code{'reuse'} (default) or \code{'correct'}. See details. The default SHOULD be \code{'correct'}; it is currently
 #' set to \code{'reuse'} to maintain compatibility of results with previous versions. This will be switched in a future major release.
 #' @param ... Used to pass additional argument \code{ff}.
 #'
 #' @return A numeric vector containing the moment(s) of ff with respect to the joint
 #' distribution being approximated using AGHQ.
+#'
+#' @details If mutliple of \code{nn}, \code{gg}, and \code{ff} are provided, then \code{compute_moment}
+#' will use \code{nn}, \code{gg}, or \code{ff}, in that order, without warning.
+#'
+#' There are several approximations available. The "best" one is obtained by specifying \code{gg}
+#' and using \code{method = 'correct'}. This recomputes the mode and curvature for the
+#' function \code{g(theta)posterior(theta)}, and takes the ratio of the AGHQ approximation
+#' to this function to the AGHQ approximation to the marginal likelihood. This obtains the
+#' same relative rate of convergence as the AGHQ approximation to the marginal likelihood. It
+#' may take a little extra time, and only works for **positive, scalar-valued** functions \code{g}.
+#'
+#' \code{method = 'reuse'} re-uses the AGHQ adapted points and weights. It's faster than the
+#' correct method, because it does not involve any new optimization, it's just a weighted sum.
+#' No convergence theory. Seems to work ok in "practice". "Works" for arbitrary \code{g}.
+#'
+#' Specifying \code{ff} instead of \code{gg} automatically uses \code{method = 'reuse'}. This
+#' interface is provided for backwards compatibility mostly. However, one advantage is that
+#' it allows for **vector-valued** functions, in which case it just returns the corresponding
+#' vector of approximate moments. Also, it only requires the adapted nodes and weights, not
+#' the ability to evaluate the log-posterior and its derivatives, although this is unlikely
+#' to be a practical concern.
+#'
+#' Specifying a numeric value \code{nn} will return the moment \code{E(theta^nn|Y)}.
+#' This automatically does some internal shifting to get the evaluations away from zero,
+#' to avoid the inherent problem of multi-modal "posteriors" that occurs when the posterior
+#' mode is near zero, and account for the fact that some of the new adapted quadrature points
+#' may be negative. So, the actual return value is \code{E(theta^nn + a|Y) - a} for a cleverly-chosen
+#' value \code{a}.
+#'
+#' Finally, \code{type='raw'} computes raw moments \code{E(g(theta)|Y)}, where \code{type='central'}
+#' computes central moments, \code{E(g(theta - E(g(theta)|Y))|Y)}. See examples.
+#'
 #'
 #' @examples
 #' logfteta2d <- function(eta,y) {
@@ -296,24 +332,8 @@ interpolate_marginal_posterior <- function(margpost,method = c('auto','polynomia
 #'   gr = function(x) numDeriv::grad(objfunc2d,x),
 #'   he = function(x) numDeriv::hessian(objfunc2d,x)
 #' )
-#
-#' opt_sparsetrust_2d <- optimize_theta(funlist2d,c(1.5,1.5))
-#' norm_sparse_2d_7 <- normalize_logpost(opt_sparsetrust_2d,7,1)
+#' quad <- aghq(funlist2d,7,c(0,0))
 #'
-#' # ff = function(x) 1 should return 1,
-#' # the normalizing constant of the (already normalized) posterior:
-#' compute_moment(norm_sparse_2d_7)
-#' # Compute the mean of theta1 and theta2
-#' compute_moment(norm_sparse_2d_7,ff = function(x) x)
-#' # Compute the mean of lambda1 = exp(theta1) and lambda2 = exp(theta2)
-#' lambdameans <- compute_moment(norm_sparse_2d_7,ff = function(x) exp(x))
-#' lambdameans
-#' # Compare them to the truth:
-#' (sum(y1) + 1)/(length(y1) + 1)
-#' (sum(y2) + 1)/(length(y2) + 1)
-#' # Compute the standard deviation of lambda1
-#' lambda1sd <- sqrt(compute_moment(norm_sparse_2d_7,ff = function(x) (exp(x) - lambdameans[1])^2))[1]
-#' # ...and so on.
 #' @family summaries moments
 #' @export
 #'
@@ -323,15 +343,28 @@ compute_moment <- function(obj,...) {
 #' @rdname compute_moment
 # #' @method compute_moment default
 #' @export
-compute_moment.list <- function(obj,ff = function(x) 1,gg = NULL,method = c("auto","reuse","correct"),...) {
+compute_moment.list <- function(obj,ff = function(x) 1,gg = NULL,nn = NULL,type = c('raw','central'),method = c("auto","reuse","correct"),...) {
+  valid_types <- c('raw','central')
+  type <- type[1]
+  if (!(type %in% valid_types)) stop(paste0("type should be one of: ",valid_types,", but you provided: ",type,".\n"))
   # If the user tries to pass a list but method is not "reuse", print a warning
   method <- method[1]
   valid_methods <- c("auto","reuse","correct")
   if (!(method %in% valid_methods)) stop(paste0("method should be one of: ",valid_methods,", but you provided: ",method,".\n"))
   if (method == 'auto') method <- "reuse"
   if (method != "reuse") warning(paste0("Method = 'reuse' is the only possible option for computing moments when you have passed an object of class 'list'. You selected method = ",method,". You could try passing an object of class 'aghq' to 'compute_moment' if you want to use the more advanced options.\n" ))
-  # nodesandweights <- obj$nodesandweights
+
   nodesandweights <- get_nodesandweights(obj)
+  # Prepare the numeric moment. Nothing fancy to do here, since method = 'reuse'
+  if (!is.null(nn)) {
+    if (type == 'central') {
+      if (nn == 1) return(0) # Central moment of first order is zero by definition
+      mm <- compute_moment(obj,nn=1,type='raw')
+    } else {
+      mm <- 0
+    }
+    ff <- function(theta) (theta-mm)^nn
+  }
   if (is.null(gg) & is.null(ff)) stop("You provided NULL for ff and gg in compute_moment. You have to provide one of these.\n")
   if (!is.null(gg)) {
     # Use gg over ff if both provided.
@@ -350,23 +383,44 @@ compute_moment.list <- function(obj,ff = function(x) 1,gg = NULL,method = c("aut
     out <- apply(out,1,function(x) sum(x * exp(nodesandweights$logpost_normalized) * nodesandweights$weights))
   }
 
+  # If shifting was applied, unshift
+  if (!is.null(get_shift(gg))) out <- out - get_shift(gg)
+
   unname(out)
 }
 #' @rdname compute_moment
 # #' @method compute_moment aghq
 #' @export
-compute_moment.aghq <- function(obj,ff = function(x) 1,gg = NULL,method = c("auto","reuse","correct"),...) {
+compute_moment.aghq <- function(obj,ff = function(x) 1,gg = NULL,nn = NULL,type = c('raw','central'),method = c("auto","reuse","correct"),...) {
+  valid_types <- c('raw','central')
+  type <- type[1]
+  if (!(type %in% valid_types)) stop(paste0("type should be one of: ",valid_types,", but you provided: ",type,".\n"))
   valid_methods <- c("auto","reuse","correct")
   method <- method[1]
   if (!(method %in% valid_methods)) stop(paste0("method should be one of: ",valid_methods,", but you provided: ",method,".\n"))
   if (method == 'auto') method <- "reuse"
-  if (method == 'reuse') return(compute_moment.list(obj=obj$normalized_posterior,ff=ff,gg=gg,...))
+  if (method == 'reuse') return(compute_moment.list(obj=obj$normalized_posterior,ff=ff,gg=gg,nn=nn,type=type,...))
 
   # Proceeding as if method = 'correct'
-  if (is.null(gg)) {
+  if (is.null(nn) & is.null(gg) & is.null(ff)) stop("You provided NULL for ff, gg, and nn in compute_moment. You have to provide one of these.\n")
+  if (!is.null(nn)) {
+    if (type == 'central') {
+      if (nn == 1) return(0) # Central moment of first order is zero by definition
+      mm <- compute_moment(obj,nn=1,type='raw',method = 'correct')
+    } else {
+      mm <- 0
+    }
+    p <- get_param_dim(obj)
+    out <- numeric(p)
+    for (j in 1:p) {
+      gg <- make_numeric_moment_function(nn,j,quad = obj,centre = mm,shift = NULL)
+      out[j] <- compute_moment(obj,gg = gg,method = 'correct',type = 'raw') # Type=raw because already centred
+      out[j] <- out[j] - get_shift(gg)
+    }
+  } else if (is.null(gg)) {
     if (!validate_moment(ff)) stop("Function ff provided to compute_moment fails validation. Run validate_moment(ff) to see why.\n")
-    p <- length(obj$optresults$mode)
-    q <- length(ff(obj$optresults$mode))
+    p <- get_param_dim(obj)
+    q <- length(ff(get_mode(obj)))
 
     if (q>1) {
       # if q>1, run compute_moment on each coordinate
@@ -387,7 +441,7 @@ compute_moment.aghq <- function(obj,ff = function(x) 1,gg = NULL,method = c("aut
     )
     newcontrol <- obj$control
     newcontrol$onlynormconst <- TRUE
-    out <- exp(get_log_normconst(aghq(ff = newff,k = get_numquadpoints(obj),startingvalue = obj$optresults$mode,control = newcontrol)) - get_log_normconst(obj))
+    out <- exp(get_log_normconst(aghq(ff = newff,k = get_numquadpoints(obj),startingvalue = get_mode(obj),control = newcontrol)) - get_log_normconst(obj))
   }
   out
 }
@@ -1170,13 +1224,14 @@ validate_moment <- function(...) UseMethod('validate_moment')
 #' @export
 validate_moment.aghqmoment <- function(moment,checkpositive = FALSE,...) {
   # Check names
-  valid_names <- c("fn","gr","he")
-  if (!all(names(moment) == valid_names)) {
-    stop(paste0("Moment object should have names: ",valid_names,". The provided object has names: ",names(moment),"."))
-  }
+  valid_names <- c("fn","gr","he","shift")
+  if (!all(names(moment) %in% valid_names)) {
+    stop(paste0("Moment object should have names: ",paste0(valid_names,sep=","),
+                ". The provided object has names: ",paste0(names(moment),sep=","),"."))  }
   # Check functions
+  function_names <- c("fn","gr","he")
   for (fn in names(moment)) {
-    if (!is.function(moment[[fn]])) stop("Moment object should be a list of functions, but element ",fn," inherits from class ",class(fn),".")
+    if (fn %in% function_names & !is.function(moment[[fn]])) stop("Moment object should be a list of functions, but element ",fn," inherits from class ",class(fn),".")
   }
   # Check positive
   if (checkpositive[1] | (!is.logical(checkpositive[1]) & checkpositive[1]==0)) {
@@ -1197,7 +1252,8 @@ validate_moment.list <- function(moment,checkpositive = FALSE,...) {
   if (all(valid_names %in% names(moment))) {
     return(validate_moment(make_moment_function(moment)))
   }
-  stop(paste0("Moment object should have names: ",valid_names,". The provided object has names: ",names(moment),"."))
+  stop(paste0("Moment object should have names: ",paste0(valid_names,sep=","),
+              ". The provided object has names: ",paste0(names(moment),sep=","),"."))
 }
 #' @rdname validate_moment
 #' @export
@@ -1219,3 +1275,69 @@ validate_moment.default <- function(moment,...) {
   if (is.null(moment)) stop("NULL function provided to validate_moment.\n")
   FALSE
 }
+
+#' Compute numeric moments
+#'
+#' Create a function suitable for computation of numeric moments. This function is
+#' used internally by \code{compute_moment} when the user chooses \code{nn}, and is
+#' unlikely to need to be called by a user directly.
+#'
+#' @param nn Order of moment to be computed, see \code{nn} argument of \code{compute_moment}.
+#' @param quad Optional, object of class \code{aghq}, only used if \code{shift} is not \code{NULL}.
+#' @param j Numeric, positive integer, index of parameter vector to compute the numeric
+#' moment for.
+#' @param centre Numeric scalar, added to \code{shift} to ensure that central moments
+#' remain far from zero.
+#' @param shift Numeric scalar, amount by which to shift \code{theta}. The function that this
+#' outputs is \code{g(theta) = (theta)^nn + shift}, and \code{shift} is returned with the
+#' object so that it may later be subtracted. Default of \code{NULL} chooses this value
+#' internally.
+#' @param gg Object of class \code{aghqmoment}. Returns the \code{shift} applied to
+#' the moment function. Returns \code{0} if no shift applied.
+#' @param ... Not used.
+#'
+#' @return Object of class \code{aghqmoment}, see \code{make_moment_function}
+#'
+#' @export
+#'
+make_numeric_moment_function <- function(nn,j,quad = NULL,centre = 0,shift = NULL,...) {
+  if (nn==0) return(make_moment_function(function(x) 1))
+  if (nn < 0) stop("Moments of order < 0 currently not supported by the numeric moment interface. You could construct this yourself using make_moment_function.")
+  if (!is.null(quad)) {
+    if (!inherits(quad,'aghq')) stop(paste0("You must provide an aghq quadrature object. Your quad object has class: ",class(quad),".\n"))
+  }
+  if (as.integer(j) != j) stop(paste0("You must provide an integer index, j. You provided: ",j,"\n."))
+  p <- get_param_dim(quad)
+  if (j < 1 | j > p) stop(paste0("You must provide an index j such that 1 <= j <= dim(theta). You provided: ",j,", but dim(theta) = ",p,"\n."))
+  if (centre==0 & 'center' %in% names(list(...))) centre <- list(...)$center # For the Americans
+  if (is.null(shift)) {
+    if (is.null(quad)) {
+      shift <- 0 # Can't do much if no information provided
+    } else {
+      # Get the shift
+      nodes <- as.numeric(get_nodesandweights(quad)[ ,j]) # Take the jth column
+      buffer <- 10*diff(range(nodes)) # Pretty arbitrary, until someone comes up with something better
+      shift <- -1*min(nodes) + buffer + centre # This will be ADDED
+    }
+  }
+  # Create the function
+  fn <- function(theta) log((theta-centre)^nn + shift) # Supposed to be positive...
+  gr <- function(theta) ( nn * (theta - centre)^(nn-1) ) / ( (theta-centre)^nn + shift )
+  if (nn == 1) {
+    # Avoid division by 0 when theta = centre
+    he <- function(theta) -1 / ( (theta-centre)^nn + shift )^2
+  } else {
+    he <- function(theta) ( -nn*(theta-centre)^(nn-1) ) / ( (theta-centre)^nn + shift )^2 + ( nn*(nn-1)*(theta-centre)^(nn-2) ) / ( (theta-centre)^nn + shift )
+  }
+  gg <- make_moment_function(list(fn=fn,gr=gr,he=he))
+  gg$shift <- shift
+  gg
+}
+#' @rdname make_numeric_moment_function
+#' @export
+get_shift <- function(gg) {
+  if (is.null(gg$shift)) return(0)
+  gg$shift
+}
+
+

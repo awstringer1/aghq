@@ -538,4 +538,38 @@ mombad1 <- list(exp,exp,exp) # No names
 mombad2 <- list('exp','exp','exp') # List of not functions
 mombad3 <- make_moment_function(function(x) NA)
 
+## New integer moments ##
+set.seed(4378)
+n <- 10
+lambda <- 2
+y <- rpois(n,lambda)
+# POSITIVE mode, with some negative quad points
+momobjfunc1 <- function(eta) {
+  sum(y) * eta - (length(y) + 1) * exp(eta) - sum(lgamma(y+1)) + eta
+}
+momfunlist1 <- list(
+  fn = momobjfunc1,
+  gr = function(x) numDeriv::grad(momobjfunc1,x),
+  he = function(x) numDeriv::hessian(momobjfunc1,x)
+)
+momshiftquad1 <- aghq(momfunlist1,7,0)
+truemoment <- digamma(sum(y) + 1) - log(length(y) + 1)
+truesecondcentralmoment <- trigamma(sum(y)+1)
+truesecondrawmoment <- truesecondcentralmoment + truemoment^2
+# Make numeric moment function
+ggmomnum_manual <- make_numeric_moment_function(1,1,momshiftquad1,shift = 20)
+ggmomnum_auto <- make_numeric_moment_function(1,1,momshiftquad1)
 
+# Old way
+nummom_list1 <- compute_moment(momshiftquad1$normalized_posterior,nn=1)
+nummom_aghq1 <- compute_moment(momshiftquad1,nn=1) # Should call compute_moment.list
+nummom_aghq2 <- compute_moment(momshiftquad1,nn=2)
+# Central
+nummom_aghq_central1 <- compute_moment(momshiftquad1,nn=1,type='central')
+nummom_aghq_central2 <- compute_moment(momshiftquad1,nn=2,type='central')
+nummom_aghq2 - nummom_aghq1^2
+# New way
+nummom_aghq_correct1 <- compute_moment(momshiftquad1,nn=1,method = 'correct')
+nummom_aghq_correct2 <- compute_moment(momshiftquad1,nn=2,method = 'correct')
+nummom_aghq_correct_central1 <- compute_moment(momshiftquad1,nn=1,method = 'correct',type='central')
+nummom_aghq_correct_central2 <- compute_moment(momshiftquad1,nn=2,method = 'correct',type='central')

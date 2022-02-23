@@ -319,6 +319,23 @@ test_that("Marginal posteriors computed correctly",{
   expect_warning(compute_moment(norm_sparse_2d_7,method = 'correct'))
   expect_error(compute_moment(norm_sparse_2d_7,method = 'foo'))
 
+  # Shifting/integer moments
+  expect_equal(get_shift(ggmomnum_manual),20)
+  expect_gt(get_shift(ggmomnum_auto),0)
+  expect_lt(abs(nummom_list1 - truemoment),1e-04)
+  expect_lt(abs(nummom_aghq1 - truemoment),1e-04)
+  expect_equal(nummom_aghq_central1,0)
+  expect_equal(nummom_aghq_correct_central1,0)
+  expect_lt(abs(nummom_aghq_central2 - truesecondcentralmoment),1e-04)
+  expect_equal(nummom_aghq_central2,nummom_aghq2 - nummom_aghq1^2)
+
+  expect_lt(abs(nummom_aghq_correct1 - truemoment),1e-05)
+  expect_lt(abs(nummom_aghq_correct1 - truemoment),abs(nummom_aghq1 - truemoment)) # "correct" should be better
+  expect_lt(abs(nummom_aghq_correct_central2 - truesecondcentralmoment),1e-05)
+  expect_lt(abs(nummom_aghq_correct_central2 - truesecondcentralmoment),abs(nummom_aghq_central2 - truesecondcentralmoment))
+  expect_lt(abs(nummom_aghq_correct_central2- (nummom_aghq_correct2 - nummom_aghq_correct1^2)),1e-05)
+  expect_lt(abs(nummom_aghq_correct2 - truesecondrawmoment),1e-05)
+
 
 })
 

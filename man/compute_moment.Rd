@@ -13,6 +13,8 @@ compute_moment(obj, ...)
   obj,
   ff = function(x) 1,
   gg = NULL,
+  nn = NULL,
+  type = c("raw", "central"),
   method = c("auto", "reuse", "correct"),
   ...
 )
@@ -21,6 +23,8 @@ compute_moment(obj, ...)
   obj,
   ff = function(x) 1,
   gg = NULL,
+  nn = NULL,
+  type = c("raw", "central"),
   method = c("auto", "reuse", "correct"),
   ...
 )
@@ -44,6 +48,12 @@ without warning.}
 \item{gg}{The output of, or an object which may be input to \code{aghq::make_moment_function()}. See documentation of that function. Exactly one of \code{ff} or \code{gg} must be provided. If both are provided, \code{aghq::compute_moment()} will use \code{gg},
 without warning.}
 
+\item{nn}{A numeric scalar. Compute the approximate moment of this order, \code{E(theta^nn|Y)}. See details.
+If \code{nn} is provided, \code{compute_moment} will use it over \code{ff} or \code{gg},
+without warning.}
+
+\item{type}{Either \code{'raw'} (default) or \code{'central'}, see details.}
+
 \item{method}{Method for computing the quadrature points used to approximate moment. One of \code{'reuse'} (default) or \code{'correct'}. See details. The default SHOULD be \code{'correct'}; it is currently
 set to \code{'reuse'} to maintain compatibility of results with previous versions. This will be switched in a future major release.}
 }
@@ -53,6 +63,38 @@ distribution being approximated using AGHQ.
 }
 \description{
 Compute the moment of any function ff using AGHQ.
+}
+\details{
+If mutliple of \code{nn}, \code{gg}, and \code{ff} are provided, then \code{compute_moment}
+will use \code{nn}, \code{gg}, or \code{ff}, in that order, without warning.
+
+There are several approximations available. The "best" one is obtained by specifying \code{gg}
+and using \code{method = 'correct'}. This recomputes the mode and curvature for the
+function \code{g(theta)posterior(theta)}, and takes the ratio of the AGHQ approximation
+to this function to the AGHQ approximation to the marginal likelihood. This obtains the
+same relative rate of convergence as the AGHQ approximation to the marginal likelihood. It
+may take a little extra time, and only works for \strong{positive, scalar-valued} functions \code{g}.
+
+\code{method = 'reuse'} re-uses the AGHQ adapted points and weights. It's faster than the
+correct method, because it does not involve any new optimization, it's just a weighted sum.
+No convergence theory. Seems to work ok in "practice". "Works" for arbitrary \code{g}.
+
+Specifying \code{ff} instead of \code{gg} automatically uses \code{method = 'reuse'}. This
+interface is provided for backwards compatibility mostly. However, one advantage is that
+it allows for \strong{vector-valued} functions, in which case it just returns the corresponding
+vector of approximate moments. Also, it only requires the adapted nodes and weights, not
+the ability to evaluate the log-posterior and its derivatives, although this is unlikely
+to be a practical concern.
+
+Specifying a numeric value \code{nn} will return the moment \code{E(theta^nn|Y)}.
+This automatically does some internal shifting to get the evaluations away from zero,
+to avoid the inherent problem of multi-modal "posteriors" that occurs when the posterior
+mode is near zero, and account for the fact that some of the new adapted quadrature points
+may be negative. So, the actual return value is \code{E(theta^nn + a|Y) - a} for a cleverly-chosen
+value \code{a}.
+
+Finally, \code{type='raw'} computes raw moments \code{E(g(theta)|Y)}, where \code{type='central'}
+computes central moments, \code{E(g(theta - E(g(theta)|Y))|Y)}. See examples.
 }
 \examples{
 logfteta2d <- function(eta,y) {
@@ -80,22 +122,7 @@ funlist2d <- list(
   gr = function(x) numDeriv::grad(objfunc2d,x),
   he = function(x) numDeriv::hessian(objfunc2d,x)
 )
-opt_sparsetrust_2d <- optimize_theta(funlist2d,c(1.5,1.5))
-norm_sparse_2d_7 <- normalize_logpost(opt_sparsetrust_2d,7,1)
+quad <- aghq(funlist2d,7,c(0,0))
 
-# ff = function(x) 1 should return 1,
-# the normalizing constant of the (already normalized) posterior:
-compute_moment(norm_sparse_2d_7)
-# Compute the mean of theta1 and theta2
-compute_moment(norm_sparse_2d_7,ff = function(x) x)
-# Compute the mean of lambda1 = exp(theta1) and lambda2 = exp(theta2)
-lambdameans <- compute_moment(norm_sparse_2d_7,ff = function(x) exp(x))
-lambdameans
-# Compare them to the truth:
-(sum(y1) + 1)/(length(y1) + 1)
-(sum(y2) + 1)/(length(y2) + 1)
-# Compute the standard deviation of lambda1
-lambda1sd <- sqrt(compute_moment(norm_sparse_2d_7,ff = function(x) (exp(x) - lambdameans[1])^2))[1]
-# ...and so on.
 }
 \concept{summaries moments}
