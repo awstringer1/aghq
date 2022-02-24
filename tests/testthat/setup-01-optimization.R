@@ -658,8 +658,42 @@ nummom_aghq_correct2_4 <- compute_moment(momshiftquad4,nn=2,method = 'correct')
 nummom_aghq_correct_central1_4 <- compute_moment(momshiftquad4,nn=1,method = 'correct',type='central')
 nummom_aghq_correct_central2_4 <- compute_moment(momshiftquad4,nn=2,method = 'correct',type='central')
 
+## Indexing of moments, 2d example. ##
+logfteta2d <- function(eta,y) {
+  n <- length(y)
+  n1 <- ceiling(n/2)
+  n2 <- floor(n/2)
+  y1 <- y[1:n1]
+  y2 <- y[(n1+1):(n1+n2)]
+  eta1 <- eta[1]
+  eta2 <- eta[2]
+  sum(y1) * eta1 - (length(y1) + 1) * exp(eta1) - sum(lgamma(y1+1)) + eta1 +
+    sum(y2) * eta2 - (length(y2) + 1) * exp(eta2) - sum(lgamma(y2+1)) + eta2
+}
+set.seed(57380)
+n11 <- 10
+n22 <- 10
+lambda11 <- 5
+lambda22 <- 5
+nn <- n11+n22
+y11 <- rpois(n11,5)
+y22 <- rpois(n22,5)
 
+truemoment_2d <- digamma(c(sum(y11) + 1,sum(y22) + 1)) - log(c(n11 + 1,n22+1))
+truesecondcentralmoment_2d <- trigamma(c(sum(y11)+1,sum(y22) + 1)) # Still positive
+truesecondrawmoment_2d <- truesecondcentralmoment_2d + truemoment_2d^2
 
+momobjfunc_2d <- function(x) logfteta2d(x,c(y11,y22))
+momfunlist_2d <- list(
+  fn = momobjfunc_2d,
+  gr = function(x) numDeriv::grad(momobjfunc_2d,x),
+  he = function(x) numDeriv::hessian(momobjfunc_2d,x)
+)
+momquad_2d <- aghq(momfunlist_2d,7,c(0,0))
 
+nummom_aghq_correct1_2d <- compute_moment(momquad_2d,nn=1,method = 'correct')
+nummom_aghq_correct2_2d <- compute_moment(momquad_2d,nn=2,method = 'correct')
+nummom_aghq_correct_central1_2d <- compute_moment(momquad_2d,nn=1,method = 'correct',type='central')
+nummom_aghq_correct_central2_2d <- compute_moment(momquad_2d,nn=2,method = 'correct',type='central')
 
-## TODO: indexing of moments. Need a 2d example. ##
+## TODO: add "correct" option into aghq and control ##

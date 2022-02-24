@@ -353,6 +353,13 @@ test_that("Marginal posteriors computed correctly",{
   expect_equal(nummom_aghq_correct_central1_4,0)
   expect_lt(abs(nummom_aghq_correct_central2_4 - truesecondcentralmoment4),1e-11)
 
+  expect_lt(abs(nummom_aghq_correct1_2d[1] - truemoment_2d[1]),1e-06)
+  expect_lt(abs(nummom_aghq_correct1_2d[2] - truemoment_2d[2]),1e-06)
+  expect_lt(abs(nummom_aghq_correct2_2d[1] - truesecondrawmoment_2d[1]),1e-06)
+  expect_lt(abs(nummom_aghq_correct2_2d[2] - truesecondrawmoment_2d[2]),1e-05)
+  expect_equal(nummom_aghq_correct_central1_2d,c(0,0))
+  expect_lt(abs(nummom_aghq_correct_central2_2d[1] - truesecondcentralmoment_2d[1]),1e-05)
+  expect_lt(abs(nummom_aghq_correct_central2_2d[2] - truesecondcentralmoment_2d[2]),1e-06)
 
 })
 

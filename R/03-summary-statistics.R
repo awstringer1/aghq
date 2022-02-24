@@ -404,16 +404,16 @@ compute_moment.aghq <- function(obj,ff = function(x) 1,gg = NULL,nn = NULL,type 
   # Proceeding as if method = 'correct'
   if (is.null(nn) & is.null(gg) & is.null(ff)) stop("You provided NULL for ff, gg, and nn in compute_moment. You have to provide one of these.\n")
   if (!is.null(nn)) {
+    p <- get_param_dim(obj)
     if (type == 'central') {
-      if (nn == 1) return(0) # Central moment of first order is zero by definition
+      if (nn == 1) return(rep(0,p)) # Central moment of first order is zero by definition
       mm <- compute_moment(obj,nn=1,type='raw',method = 'correct')
     } else {
-      mm <- 0
+      mm <- rep(0,p)
     }
-    p <- get_param_dim(obj)
     out <- numeric(p)
     for (j in 1:p) {
-      gg <- make_numeric_moment_function(nn,j,quad = obj,centre = mm,shift = NULL)
+      gg <- make_numeric_moment_function(nn,j,quad = obj,centre = mm[j],shift = NULL)
       out[j] <- compute_moment(obj,gg = gg,method = 'correct',type = 'raw') # Type=raw because already centred
       out[j] <- out[j] - get_shift(gg)
     }
@@ -1326,13 +1326,13 @@ make_numeric_moment_function <- function(nn,j,quad = NULL,centre = 0,shift = NUL
     }
   }
   # Create the function
-  fn <- function(theta) log((theta-centre)^nn + shift) # Supposed to be positive...
-  gr <- function(theta) ( nn * (theta - centre)^(nn-1) ) / ( (theta-centre)^nn + shift )
+  fn <- function(theta) log((theta[j]-centre)^nn + shift) # Supposed to be positive...
+  gr <- function(theta) ( nn * (theta[j] - centre)^(nn-1) ) / ( (theta[j]-centre)^nn + shift )
   if (nn == 1) {
     # Avoid division by 0 when theta = centre
-    he <- function(theta) -1 / ( (theta-centre)^nn + shift )^2
+    he <- function(theta) -1 / ( (theta[j]-centre)^nn + shift )^2
   } else {
-    he <- function(theta) ( -nn*(theta-centre)^(nn-1) ) / ( (theta-centre)^nn + shift )^2 + ( nn*(nn-1)*(theta-centre)^(nn-2) ) / ( (theta-centre)^nn + shift )
+    he <- function(theta) ( -nn*(theta[j]-centre)^(nn-1) ) / ( (theta[j]-centre)^nn + shift )^2 + ( nn*(nn-1)*(theta[j]-centre)^(nn-2) ) / ( (theta[j]-centre)^nn + shift )
   }
   gg <- make_moment_function(list(fn=fn,gr=gr,he=he))
   gg$shift <- shift
