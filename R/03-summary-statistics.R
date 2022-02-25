@@ -95,12 +95,16 @@ marginal_posterior.aghq <- function(quad,j,qq=NULL,method = c('auto','reuse','co
   if (is.null(qq)) {
     # If q not provided, choose some clever q's and then re-call the function at those q's
     # Choose evaluation points
-    mm <- quad$optresults$mode[idxorder]
-    HH <- quad$optresults$hessian[idxorder,idxorder]
-    LL <- t(solve(chol(HH)))
-    gg <- mvQuad::createNIGrid(S,'GHe',get_numquadpoints(quad))
-    nn <- as.matrix(mvQuad::getNodes(gg))
-    qqq <- unique(sweep(LL%*%t(nn),1,mm,'+')[1, ])
+    mm <- get_mode(quad)[idxorder]
+    HH <- get_hessian(quad)[idxorder,idxorder]
+    # LL <- t(solve(chol(HH)))
+    # gg <- mvQuad::createNIGrid(S,'GHe',get_numquadpoints(quad))
+    # nn <- as.matrix(mvQuad::getNodes(gg))
+    # qqq <- unique(sweep(LL%*%t(nn),1,mm,'+')[1, ])
+
+    gg <- mvQuad::createNIGrid(1,'GHe',get_numquadpoints(quad))
+    mvQuad::rescale(gg,m = mm[1],C = solve(HH)[1,1],dec.type=2)
+    qqq <- as.numeric(mvQuad::getNodes(gg))
 
     out <- vector(mode='list',length=length(qqq))
     for (i in 1:length(qqq)) {
@@ -123,6 +127,10 @@ marginal_posterior.aghq <- function(quad,j,qq=NULL,method = c('auto','reuse','co
     ffm <- list(fn=fn,gr=gr,he=he)
     newcontrol <- quad$control
     newcontrol$onlynormconst <- TRUE
+    # NOTE: if the original ff$fn was the negative logpost, and control$negate = TRUE passed
+    # to aghq, then inside aghq, the ff attached to optresults is NEGATED.
+    # So regardless of what control$negate was, set it to FALSE for the following:
+    newcontrol$negate <- FALSE
     lognumerator <- get_log_normconst(aghq(ffm,get_numquadpoints(quad),get_mode(quad)[-j],control = newcontrol))
     out <- data.frame(qq,lognumerator-get_log_normconst(quad))
     colnames(out) <- c(cname,'logmargpost')
@@ -441,6 +449,10 @@ compute_moment.aghq <- function(obj,ff = function(x) 1,gg = NULL,nn = NULL,type 
     )
     newcontrol <- obj$control
     newcontrol$onlynormconst <- TRUE
+    # NOTE: if the original ff$fn was the negative logpost, and control$negate = TRUE passed
+    # to aghq, then inside aghq, the ff attached to optresults is NEGATED.
+    # So regardless of what control$negate was, set it to FALSE for the following:
+    newcontrol$negate <- FALSE
     out <- exp(get_log_normconst(aghq(ff = newff,k = get_numquadpoints(obj),startingvalue = get_mode(obj),control = newcontrol)) - get_log_normconst(obj))
   }
   out
@@ -1310,6 +1322,7 @@ make_numeric_moment_function <- function(nn,j,quad = NULL,centre = 0,shift = NUL
   p <- get_param_dim(quad)
   if (j < 1 | j > p) stop(paste0("You must provide an index j such that 1 <= j <= dim(theta). You provided: ",j,", but dim(theta) = ",p,"\n."))
 
+  if (length(centre) > 1) stop(paste0("centre must be a scalar, you provided:",centre,".\n"))
   if (centre==0 & 'center' %in% names(list(...))) centre <- list(...)$center # For the Americans
   if (is.null(shift)) {
     if (is.null(quad)) {
@@ -1317,24 +1330,32 @@ make_numeric_moment_function <- function(nn,j,quad = NULL,centre = 0,shift = NUL
     } else {
       # Get the shift
       nodes <- as.numeric(get_nodesandweights(quad)[ ,j]) # Take the jth column
-      if (min(nodes > 0)) {
-        shift <- centre
+      # Apply the transformation
+      nodes <- quad$transformation$fromtheta(nodes)
+      if (min(nodes) > 0) {
+        shift <- abs(centre)
       } else {
         buffer <- 10*diff(range(nodes)) # Pretty arbitrary, until someone comes up with something better
         shift <- -1*min(nodes) + buffer + centre # This will be ADDED
       }
     }
   }
-  # Create the function
-  fn <- function(theta) log((theta[j]-centre)^nn + shift) # Supposed to be positive...
-  gr <- function(theta) ( nn * (theta[j] - centre)^(nn-1) ) / ( (theta[j]-centre)^nn + shift )
-  if (nn == 1) {
-    # Avoid division by 0 when theta = centre
-    he <- function(theta) -1 / ( (theta[j]-centre)^nn + shift )^2
+  # If quadrature object provided, compute moment for transformed parameter
+  if (is.null(quad)) {
+    fn <- function(theta) log((theta[j]-centre)^nn + shift) # Supposed to be positive...
+    gr <- function(theta) ( nn * (theta[j] - centre)^(nn-1) ) / ( (theta[j]-centre)^nn + shift )
+    if (nn == 1) {
+      # Avoid division by 0 when theta = centre
+      he <- function(theta) -1 / ( (theta[j]-centre)^nn + shift )^2
+    } else {
+      he <- function(theta) ( -nn*(theta[j]-centre)^(nn-1) ) / ( (theta[j]-centre)^nn + shift )^2 + ( nn*(nn-1)*(theta[j]-centre)^(nn-2) ) / ( (theta[j]-centre)^nn + shift )
+    }
+    gg <- make_moment_function(list(fn=fn,gr=gr,he=he))
   } else {
-    he <- function(theta) ( -nn*(theta[j]-centre)^(nn-1) ) / ( (theta[j]-centre)^nn + shift )^2 + ( nn*(nn-1)*(theta[j]-centre)^(nn-2) ) / ( (theta[j]-centre)^nn + shift )
+    transfunc <- quad$transformation$fromtheta
+    fn <- function(theta) log((transfunc(theta)[j]-centre)^nn + shift)
+    gg <- make_moment_function(fn)
   }
-  gg <- make_moment_function(list(fn=fn,gr=gr,he=he))
   gg$shift <- shift
   gg
 }

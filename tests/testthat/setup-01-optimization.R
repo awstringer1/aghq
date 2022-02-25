@@ -635,7 +635,7 @@ nummom_aghq_correct_central2_3 <- compute_moment(momshiftquad3,nn=2,method = 'co
 # This is a test for accuracy.
 set.seed(4378)
 n <- 100
-lambda <- 20000
+lambda <- 10
 y <- rpois(n,lambda)
 
 momobjfunc4 <- function(eta) {
@@ -709,4 +709,6 @@ thequadrature_reuse <- aghq(funlist_correct,3,c(0,0),control = default_control(m
 thequadrature_correct <- aghq(funlist_correct,3,c(0,0),control = default_control(method_summaries='correct'))
 thesummary_reuse <- summary(thequadrature_reuse)
 thesummary_correct <- summary(thequadrature_correct)
+truemean_correct <- digamma(c(sum(y_correct[1:5]) + 1,sum(y_correct[6:10]) + 1)) - log(c(5 + 1,5+1))
+truesd_correct <- sqrt(trigamma(c(sum(y_correct[1:5])+1,sum(y_correct[6:10]) + 1)))
 
