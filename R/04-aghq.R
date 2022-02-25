@@ -102,8 +102,8 @@ aghq <- function(ff,k,startingvalue,transformation = default_transformation(),op
   validate_control(control)
   validate_transformation(transformation)
   transformation <- make_transformation(transformation)
-  ff <- make_moment_function(ff)
-  validate_moment(ff)
+  # ff <- make_moment_function(ff)
+  # validate_moment(ff)
 
   # If they provided a basegrid, get the k from that. If they also provided a k, compare them and issue a warning
   if (!is.null(basegrid)) {
