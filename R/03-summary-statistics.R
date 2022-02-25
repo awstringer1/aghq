@@ -452,7 +452,7 @@ compute_moment.default <- function(obj,ff = function(x) 1,gg = NULL,method = c("
   stop(paste0("Unrecognized object of class: ",class(obj)," passed to comupute_moment.\n"))
 }
 
-#' Correct the marginals of a fitted aghq object
+#' Correct the posterior marginals of a fitted aghq object
 #'
 #' The default method of computation for aghq objects computes approximate marginals using an outdated algorithm
 #' with no known theoretical properties. The updated algorithm computes pointwise approximate marginals that

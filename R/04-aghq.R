@@ -102,6 +102,8 @@ aghq <- function(ff,k,startingvalue,transformation = default_transformation(),op
   validate_control(control)
   validate_transformation(transformation)
   transformation <- make_transformation(transformation)
+  ff <- make_moment_function(ff)
+  validate_moment(ff)
 
   # If they provided a basegrid, get the k from that. If they also provided a k, compare them and issue a warning
   if (!is.null(basegrid)) {
@@ -124,19 +126,23 @@ aghq <- function(ff,k,startingvalue,transformation = default_transformation(),op
 
   if (control$onlynormconst) return(normalized_posterior$lognormconst)
 
-  # Marginals
-  d <- length(startingvalue)
-  marginals <- vector(mode = "list",length = d)
-  for (j in 1:d) marginals[[j]] <- marginal_posterior(optresults,k,j,basegrid,control$ndConstruction)
-
   out <- list(
     normalized_posterior = normalized_posterior,
-    marginals = marginals,
+    # marginals = marginals,
     optresults = optresults,
     control = control,
     transformation = transformation
   )
   class(out) <- "aghq"
+  # Marginals
+  d <- length(startingvalue)
+  marginals <- vector(mode = "list",length = d)
+  if (control$method_summaries[1] == 'correct') {
+    for (j in 1:d) marginals[[j]] <- marginal_posterior.aghq(out,j,method = 'correct')
+  } else {
+    for (j in 1:d) marginals[[j]] <- marginal_posterior.aghq(out,j,method = 'reuse')
+  }
+  out$marginals <- marginals
   out
 }
 
@@ -206,18 +212,23 @@ aghq <- function(ff,k,startingvalue,transformation = default_transformation(),op
 #' @export
 #'
 summary.aghq <- function(object,...) {
-  d <- length(object$optresults$mode)
+  d <- get_param_dim(object)
 
   thetanames <- colnames(object$normalized_posterior$nodesandweights)[1:d]
 
-  # Moments
-  # themeans <- compute_moment(object$normalized_posterior,function(x) x)
-  themeans <- compute_moment(object$normalized_posterior,object$transformation$fromtheta)
+  do_correct <- object$control$method_summaries[1] == 'correct'
 
-  thesds <- numeric(d)
-  # for (j in 1:d) thesds[j] <- sqrt(compute_moment(object$normalized_posterior,function(x) (x - themeans[j])^2)[j])
-  for (j in 1:d) thesds[j] <- sqrt(compute_moment(object$normalized_posterior,function(x) (object$transformation$fromtheta(x) - themeans[j])^2)[j])
-  names(thesds) <- names(themeans) <- thetanames
+  # Moments
+  if (do_correct) {
+    themeans <- compute_moment(object,nn = 1,type = 'raw',method = 'correct')
+    thesds <- sqrt(compute_moment(object,nn = 2,type = 'central',method = 'correct'))
+  } else {
+    themeans <- compute_moment(object$normalized_posterior,object$transformation$fromtheta)
+    thesds <- numeric(d)
+    for (j in 1:d) thesds[j] <- sqrt(compute_moment(object$normalized_posterior,function(x) (object$transformation$fromtheta(x) - themeans[j])^2)[j])
+    names(thesds) <- names(themeans) <- thetanames
+  }
+
 
   themoments <- cbind(themeans,thesds)
   colnames(themoments) <- c('mean','sd')
@@ -225,7 +236,6 @@ summary.aghq <- function(object,...) {
 
   # Quantiles
   thequants <- vector(mode = 'list',length = d)
-  # for (j in 1:d) thequants[[j]] <- compute_quantiles(object$marginals[[j]],c(.025,.5,.975),interpolation = object$control$interpolation)
   for (j in 1:d) thequants[[j]] <- compute_quantiles(object$marginals[[j]],q = c(.025,.5,.975),transformation = object$transformation,interpolation = object$control$interpolation)
 
   names(thequants) <- thetanames
@@ -245,7 +255,7 @@ summary.aghq <- function(object,...) {
   out$hessian <- object$optresults$hessian
   out$lognormconst <- object$normalized_posterior$lognormconst
   out$covariance <- solve(out$hessian)
-  out$cholesky <- chol(out$covariance)
+  # out$cholesky <- chol(out$covariance)
   out$quadpoints <- as.numeric(object$normalized_posterior$grid$level)
   out$dim <- length(out$quadpoints)
   out$summarytable <- thesummary

@@ -1,38 +1,39 @@
 context("Quadrature")
 
-quadnames <- c("normalized_posterior","marginals","optresults","control","transformation")
-quadnamesmarg <- c("normalized_posterior","marginals","optresults","modesandhessians","control","transformation")
+quadnames <- c("normalized_posterior","optresults","control","transformation","marginals")
+quadnamesmarg <- c("normalized_posterior","optresults","modesandhessians","control","transformation","marginals")
 
 
 test_that("Quadrature works",{
   # AGHQ
   expect_is(thequadrature,"aghq")
-  expect_equal(names(thequadrature),quadnames)
+  expect_true(setequal(names(thequadrature),quadnames))
   expect_is(summary(thequadrature),"aghqsummary")
+  expect_is(thequadrature_correct,"aghq")
+  expect_true(setequal(names(thequadrature_correct),quadnames))
+  expect_is(summary(thequadrature_correct),"aghqsummary")
 
   expect_is(thequadrature3d,"aghq")
-  expect_equal(names(thequadrature3d),quadnames)
+  expect_true(setequal(names(thequadrature3d),quadnames))
   expect_is(summary(thequadrature3d),"aghqsummary")
-
-
 
   # Laplace approximation
   expect_is(thelaplace,"laplace")
-  expect_equal(names(thelaplace),c("lognormconst","optresults"))
+  expect_true(setequal(names(thelaplace),c("lognormconst","optresults")))
   expect_is(summary(thelaplace),"laplacesummary")
 
   # Marginal laplace approximation
   expect_is(themarginallaplace,"marginallaplace")
   expect_is(themarginallaplace,"aghq")
-  expect_equal(names(themarginallaplace),quadnamesmarg)
+  expect_true(setequal(names(themarginallaplace),quadnamesmarg))
 
   expect_is(themarginallaplace3d_1,"marginallaplace")
   expect_is(themarginallaplace3d_1,"aghq")
-  expect_equal(names(themarginallaplace3d_1),quadnamesmarg)
+  expect_true(setequal(names(themarginallaplace3d_1),quadnamesmarg))
 
   expect_is(themarginallaplace3d_2,"marginallaplace")
   expect_is(themarginallaplace3d_2,"aghq")
-  expect_equal(names(themarginallaplace3d_2),quadnamesmarg)
+  expect_true(setequal(names(themarginallaplace3d_2),quadnamesmarg))
 
   # Sampling from marginal Laplace approximation
   expect_is(themargsamps,"list")
@@ -161,5 +162,23 @@ test_that("Quadrature works",{
   # Test naming in marginallaplace
   expect_equal(names(themarginallaplace$modesandhessians$mode[[1]]),"W1")
   expect_equal(names(themarginallaplace3d_1$modesandhessians$mode[[1]]),c("W1","W2"))
+
+  # Summaries with corrections
+  expect_equal(thesummary_reuse$mode,thesummary_correct$mode)
+  expect_equal(thesummary_reuse$lognormconst,thesummary_correct$lognormconst)
+  expect_equal(thesummary_reuse$hessian,thesummary_correct$hessian)
+  expect_equal(thesummary_reuse$covariance,thesummary_correct$covariance)
+  expect_equal(thesummary_reuse$quadpoints,thesummary_correct$quadpoints)
+  expect_equal(thesummary_reuse$dim,thesummary_correct$dim)
+  expect_lt(sum(abs(thesummary_reuse$summarytable$mean - thesummary_correct$summarytable$mean)),1e-03)
+  expect_lt(sum(abs(thesummary_reuse$summarytable$sd - thesummary_correct$summarytable$sd)),1e-02)
+  expect_equal(thesummary_reuse$summarytable$mean == thesummary_correct$summarytable$mean,c(FALSE,FALSE))
+  expect_equal(thesummary_reuse$summarytable$sd == thesummary_correct$summarytable$sd,c(FALSE,FALSE))
+  expect_setequal(thequadrature_reuse$marginals[[1]]$theta1,thequadrature_correct$marginals[[1]]$theta1)
+  expect_equal(thequadrature_reuse$marginals[[1]]$logmargpost==thequadrature_correct$marginals[[1]]$logmargpost,c(FALSE,FALSE,FALSE))
+  expect_lt(sum(abs(thequadrature_reuse$marginals[[2]]$theta2 - thequadrature_correct$marginals[[2]]$theta2)),1e-15)
+  expect_equal(thequadrature_reuse$marginals[[2]]$logmargpost==thequadrature_correct$marginals[[2]]$logmargpost,c(FALSE,FALSE,FALSE))
+
+
 
 })

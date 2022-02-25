@@ -2,7 +2,7 @@
 % Please edit documentation in R/03-summary-statistics.R
 \name{correct_marginals}
 \alias{correct_marginals}
-\title{Correct the marginals of a fitted aghq object}
+\title{Correct the posterior marginals of a fitted aghq object}
 \usage{
 correct_marginals(quad, ...)
 }

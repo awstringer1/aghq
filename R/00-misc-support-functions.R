@@ -46,6 +46,9 @@
 #' \item{onlynormconst}: logical, default \code{FALSE}. Skip everything after the calculation of the log integral,
 #' and just return the numeric value of the log integral. Saves computation time, and most useful in cases
 #' where \code{aghq} is being used as a step in a more complicated procedure.
+#' \item{method_summaries}: default \code{'reuse'}, method to use to compute moments and marginals. Choosing
+#' \code{'correct'} corresponds to the approximations suggested in the *Stochastic Convergence...* paper,
+#' which attain the same rate of convergence as the approximation to the marginal likelihood. See \code{?compute_moment}.
 #' }
 #'
 #' @examples
@@ -63,7 +66,8 @@ default_control <- function(...) {
     ndConstruction = "product",
     interpolation = 'auto',
     numhessian = FALSE,
-    onlynormconst = FALSE
+    onlynormconst = FALSE,
+    method_summaries = c('reuse','correct')
   )
   specialargs <- list(...)
   for (arg in names(specialargs)) out[arg] <- specialargs[arg]
@@ -117,6 +121,9 @@ default_control <- function(...) {
 #' \item{onlynormconst}: logical, default \code{FALSE}. Skip everything after the calculation of the log integral,
 #' and just return the numeric value of the log integral. Saves computation time, and most useful in cases
 #' where \code{aghq} is being used as a step in a more complicated procedure.
+#' \item{method_summaries}: default \code{'reuse'}, method to use to compute moments and marginals. Choosing
+#' \code{'correct'} corresponds to the approximations suggested in the *Stochastic Convergence...* paper,
+#' which attain the same rate of convergence as the approximation to the marginal likelihood. See \code{?compute_moment}.
 #' }
 #'
 #' @examples
@@ -136,7 +143,8 @@ default_control_marglaplace <- function(...) {
     ndConstruction = "product",
     interpolation = 'auto',
     numhessian = FALSE,
-    onlynormconst = FALSE
+    onlynormconst = FALSE,
+    method_summaries = c('reuse','correct')
   )
   specialargs <- list(...)
   for (arg in names(specialargs)) out[arg] <- specialargs[arg]
@@ -178,14 +186,15 @@ default_control_marglaplace <- function(...) {
 #' \item{onlynormconst}: logical, default \code{FALSE}. Skip everything after the calculation of the log integral,
 #' and just return the numeric value of the log integral. Saves computation time, and most useful in cases
 #' where \code{aghq} is being used as a step in a more complicated procedure.
+#' \item{method_summaries}: default \code{'reuse'}, method to use to compute moments and marginals. Choosing
+#' \code{'correct'} corresponds to the approximations suggested in the *Stochastic Convergence...* paper,
+#' which attain the same rate of convergence as the approximation to the marginal likelihood. See \code{?compute_moment}.
 #' }
 #'
 #' @examples
 #'
-#' default_control_marglaplace()
-#' default_control_marglaplace(method = "trust")
-#' default_control_marglaplace(method = "trust",inner_method = "trust")
-#' default_control_marglaplace(negate = TRUE)
+#' default_control_tmb()
+#' default_control_tmb(method = "trust")
 #'
 #' @export
 #'
@@ -196,7 +205,8 @@ default_control_tmb <- function(...) {
     numhessian = TRUE,
     ndConstruction = 'product',
     interpolation = 'auto',
-    onlynormconst = FALSE
+    onlynormconst = FALSE,
+    method_summaries = c('reuse','correct')
   )
   specialargs <- list(...)
   for (arg in names(specialargs)) out[arg] <- specialargs[arg]

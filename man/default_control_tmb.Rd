@@ -43,13 +43,14 @@ Laplace approximation, which does not have an automatic Hessian.
 \item{onlynormconst}: logical, default \code{FALSE}. Skip everything after the calculation of the log integral,
 and just return the numeric value of the log integral. Saves computation time, and most useful in cases
 where \code{aghq} is being used as a step in a more complicated procedure.
+\item{method_summaries}: default \code{'reuse'}, method to use to compute moments and marginals. Choosing
+\code{'correct'} corresponds to the approximations suggested in the \emph{Stochastic Convergence...} paper,
+which attain the same rate of convergence as the approximation to the marginal likelihood. See \code{?compute_moment}.
 }
 }
 \examples{
 
-default_control_marglaplace()
-default_control_marglaplace(method = "trust")
-default_control_marglaplace(method = "trust",inner_method = "trust")
-default_control_marglaplace(negate = TRUE)
+default_control_tmb()
+default_control_tmb(method = "trust")
 
 }

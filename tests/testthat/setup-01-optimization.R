@@ -697,3 +697,16 @@ nummom_aghq_correct_central1_2d <- compute_moment(momquad_2d,nn=1,method = 'corr
 nummom_aghq_correct_central2_2d <- compute_moment(momquad_2d,nn=2,method = 'correct',type='central')
 
 ## TODO: add "correct" option into aghq and control ##
+set.seed(84343124)
+y_correct <- rpois(10,5) # Mode should be sum(y) / (10 + 1)
+objfunc_correct <- function(x) logfteta2d(x,y_correct)
+funlist_correct <- list(
+  fn = objfunc_correct,
+  gr = function(x) numDeriv::grad(objfunc_correct,x),
+  he = function(x) numDeriv::hessian(objfunc_correct,x)
+)
+thequadrature_reuse <- aghq(funlist_correct,3,c(0,0),control = default_control(method_summaries='reuse'))
+thequadrature_correct <- aghq(funlist_correct,3,c(0,0),control = default_control(method_summaries='correct'))
+thesummary_reuse <- summary(thequadrature_reuse)
+thesummary_correct <- summary(thequadrature_correct)
+
