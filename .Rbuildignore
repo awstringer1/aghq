@@ -17,3 +17,4 @@
 ^.Rproj.user$
 ^.git$
 ^aghq_0.2.1.tar.gz$
+^.*\.rds$

@@ -1,4 +1,4 @@
-# aghq 0.3.2
+# aghq 0.4.0
 
 ## New features
 
@@ -10,6 +10,8 @@ will return results for the transformed parameters.
 
 - added an `S3` interface for computing moments of positive functions, see `make_moment_function`,
 `validate_moment`, and the updated `compute_moment`.
+
+- added algorithms for moments and marginal posteriors that are now proved to recover the same rate of convergence of the marginal likelihood/normalizing constant. See the updated documentation and options for the `default_control()` family of functions.
 
 
 
