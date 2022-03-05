@@ -16,7 +16,7 @@ pdf and cdf of \code{x$transformation$fromtheta(theta)}.}
 Silently plots.
 }
 \description{
-Plot the marginal pdf and cdfof the transformed parameter from an \code{aghq} object.
+Plot the marginal pdf and cdf of the transformed parameter from an \code{aghq} object.
 }
 \examples{
 

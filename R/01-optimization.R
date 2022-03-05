@@ -97,6 +97,20 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
   }
 
   method <- control$method[1]
+  # Check method and switch if package not installed
+  if (method %in% c('sparse_trust','SR1')) {
+    if (!requireNamespace("trustOptim", quietly = TRUE)) {
+      method <- 'BFGS'
+      warning("Methods c(sparse_trust,SR1) require the trustOptim package, but you do not have this package installed. Switching to method = BFGS")
+    }
+  }
+  if (method == 'trust') {
+    if (!requireNamespace("trust", quietly = TRUE)) {
+      method <- 'BFGS'
+      warning("Method = trust requires the trust package, but you do not have this package installed. Switching to method = BFGS")
+    }
+  }
+
 
   if (method == "sparse_trust") {
     if (!requireNamespace("trustOptim", quietly = TRUE)) stop("Method = sparse_trust requires the trustOptim package, but you do not have this package installed.")

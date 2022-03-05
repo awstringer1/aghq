@@ -73,7 +73,7 @@ users do not have the `trust` or `trustOptim` packages installed.
 
 - Fixed `optimize_theta` so that `control` arguments are passed correctly. 
 
-- Removed several unit tests that were failing on M1 Macs. These tests werre actually
+- Removed several unit tests that were failing on M1 Macs. These tests were actually
 testing that polynomial interpolation of marginal posteriors FAILs, so apparently
 this isn't failing on these new Macs, but that's better, not worse. Will re-test
 and potentially add back once I have local access to this hardware.

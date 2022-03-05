@@ -163,7 +163,7 @@ aghq <- function(ff,k,startingvalue,transformation = default_transformation(),op
 #' \item{mode: }{the mode of the log posterior}
 #' \item{hessian: }{the hessian of the log posterior at the mode}
 #' \item{covariance: }{the inverse of the hessian of the log posterior at the mode}
-#' \item{cholesky: }{the upper cholesky trinagle of the hessian of the log posterior at the mode}
+#' \item{cholesky: }{the upper Cholesky triangle of the hessian of the log posterior at the mode}
 #' \item{quadpoints: }{the number of quadrature points used in each dimension}
 #' \item{dim: }{the dimension of the parameter space}
 #' \item{summarytable: }{a table containing the mean, median, mode, standard deviation
@@ -385,7 +385,7 @@ print.aghqsummary <- function(x,...) {
 
 #' Plot method for AGHQ objects
 #'
-#' Plot the marginal pdf and cdfof the transformed parameter from an \code{aghq} object.
+#' Plot the marginal pdf and cdf of the transformed parameter from an \code{aghq} object.
 #'
 #' @param x The return value of \code{aghq::aghq}. Plots are created for the marginal
 #' pdf and cdf of \code{x$transformation$fromtheta(theta)}.

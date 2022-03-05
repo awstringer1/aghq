@@ -281,7 +281,7 @@ interpolate_marginal_posterior <- function(margpost,method = c('auto','polynomia
 #' @return A numeric vector containing the moment(s) of ff with respect to the joint
 #' distribution being approximated using AGHQ.
 #'
-#' @details If mutliple of \code{nn}, \code{gg}, and \code{ff} are provided, then \code{compute_moment}
+#' @details If multiple of \code{nn}, \code{gg}, and \code{ff} are provided, then \code{compute_moment}
 #' will use \code{nn}, \code{gg}, or \code{ff}, in that order, without warning.
 #'
 #' There are several approximations available. The "best" one is obtained by specifying \code{gg}
@@ -915,7 +915,7 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = quad$transfo
 #' for which inferences are to be made. Suppose quadrature is done on the posterior for parameter \code{theta},
 #' but interest lies in parameter \code{lambda = g(theta)} for smooth, monotone, univariate
 #' \code{g}. This interface lets the user provide \code{g}, \code{g^-1}, and (optionally)
-#' the jacobian \code{dtheta/dlambda}, and \code{aghq} will do quadrature on the \code{theta} scale
+#' the Jacobian \code{dtheta/dlambda}, and \code{aghq} will do quadrature on the \code{theta} scale
 #' but report summaries on the \code{lambda} scale. See a note in the Details below about
 #' multidimensional parameters.
 #'
@@ -958,7 +958,7 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = quad$transfo
 #' then inferences are made for \code{lambda = g(theta)}. In the case that \code{theta} is
 #' \code{p}-dimensional, \code{p > 1}, the supplied function \code{g} is understood to
 #' take in \code{theta_1...theta_p} and return \code{g_1(theta_1)...g_p(theta_p)}. The
-#' jacobian is diagonal.
+#' Jacobian is diagonal.
 #'
 #' To reiterate, all of this discussion applies only to *marginal* parameter transformations.
 #' For the full joint parameter, the only summary statistics you can even calculate at all
@@ -1125,7 +1125,7 @@ default_transformation <- function() make_transformation(totheta = force,fromthe
 #' vector of moments. This is handled within \code{aghq::compute_moment()}. The \code{aghq::make_moment_function()} interface accepts the logarithm of \code{gg: R^p -> R^+}, i.e.
 #' a multivariable, scalar-valued positive function. This is mostly to keep first and second derivatives as 1d and 2d arrays (i.e. the gradient and the Hessian);
 #' I deemed it too confusing for the user and the code-base to work with Jacobians and 2nd derivative tensors (if you're confused just reading this, there you go!).
-#' But, see \code{aghq::compute_moment()} for how to handle the very common case where the *same* trasnformation is desired of all parameter coordinates; for example
+#' But, see \code{aghq::compute_moment()} for how to handle the very common case where the *same* transformation is desired of all parameter coordinates; for example
 #' when all parameters are on the log-scale and you want to compute \code{E(exp(theta))} for *vector* \code{theta}.
 #'
 #' If \code{gg} is a \code{function} or a \code{character} (like \code{'exp'}) it is first passed to \code{match.fun}, and then the output

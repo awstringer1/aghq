@@ -18,7 +18,7 @@ A list of class \code{aghqsummary}, which has a print method. Elements:
 \item{mode: }{the mode of the log posterior}
 \item{hessian: }{the hessian of the log posterior at the mode}
 \item{covariance: }{the inverse of the hessian of the log posterior at the mode}
-\item{cholesky: }{the upper cholesky trinagle of the hessian of the log posterior at the mode}
+\item{cholesky: }{the upper Cholesky triangle of the hessian of the log posterior at the mode}
 \item{quadpoints: }{the number of quadrature points used in each dimension}
 \item{dim: }{the dimension of the parameter space}
 \item{summarytable: }{a table containing the mean, median, mode, standard deviation

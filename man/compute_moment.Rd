@@ -65,7 +65,7 @@ distribution being approximated using AGHQ.
 Compute the moment of any function ff using AGHQ.
 }
 \details{
-If mutliple of \code{nn}, \code{gg}, and \code{ff} are provided, then \code{compute_moment}
+If multiple of \code{nn}, \code{gg}, and \code{ff} are provided, then \code{compute_moment}
 will use \code{nn}, \code{gg}, or \code{ff}, in that order, without warning.
 
 There are several approximations available. The "best" one is obtained by specifying \code{gg}

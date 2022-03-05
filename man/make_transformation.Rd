@@ -47,7 +47,7 @@ These functions make it easier for the user to represent marginal parameter tran
 for which inferences are to be made. Suppose quadrature is done on the posterior for parameter \code{theta},
 but interest lies in parameter \code{lambda = g(theta)} for smooth, monotone, univariate
 \code{g}. This interface lets the user provide \code{g}, \code{g^-1}, and (optionally)
-the jacobian \code{dtheta/dlambda}, and \code{aghq} will do quadrature on the \code{theta} scale
+the Jacobian \code{dtheta/dlambda}, and \code{aghq} will do quadrature on the \code{theta} scale
 but report summaries on the \code{lambda} scale. See a note in the Details below about
 multidimensional parameters.
 }
@@ -71,7 +71,7 @@ is done on parameter \code{theta} and \code{g(theta)} is a univariate, smooth, m
 then inferences are made for \code{lambda = g(theta)}. In the case that \code{theta} is
 \code{p}-dimensional, \code{p > 1}, the supplied function \code{g} is understood to
 take in \code{theta_1...theta_p} and return \code{g_1(theta_1)...g_p(theta_p)}. The
-jacobian is diagonal.
+Jacobian is diagonal.
 
 To reiterate, all of this discussion applies only to \emph{marginal} parameter transformations.
 For the full joint parameter, the only summary statistics you can even calculate at all

@@ -53,7 +53,7 @@ the user may input to \code{aghq:compute_moment()} a function \code{g: R^p -> R^
 vector of moments. This is handled within \code{aghq::compute_moment()}. The \code{aghq::make_moment_function()} interface accepts the logarithm of \code{gg: R^p -> R^+}, i.e.
 a multivariable, scalar-valued positive function. This is mostly to keep first and second derivatives as 1d and 2d arrays (i.e. the gradient and the Hessian);
 I deemed it too confusing for the user and the code-base to work with Jacobians and 2nd derivative tensors (if you're confused just reading this, there you go!).
-But, see \code{aghq::compute_moment()} for how to handle the very common case where the \emph{same} trasnformation is desired of all parameter coordinates; for example
+But, see \code{aghq::compute_moment()} for how to handle the very common case where the \emph{same} transformation is desired of all parameter coordinates; for example
 when all parameters are on the log-scale and you want to compute \code{E(exp(theta))} for \emph{vector} \code{theta}.
 
 If \code{gg} is a \code{function} or a \code{character} (like \code{'exp'}) it is first passed to \code{match.fun}, and then the output
