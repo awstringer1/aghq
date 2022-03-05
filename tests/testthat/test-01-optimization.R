@@ -13,11 +13,6 @@ test_that("optimizations works", {
   expect_true(all(eigen(opt_sr1$hessian)$values > 0))
   expect_true(all(eigen(opt_trust$hessian)$values > 0))
   expect_true(all(eigen(opt_bfgs$hessian)$values > 0))
-  # Convergence
-  expect_true(opt_sparsetrust$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
-  expect_true(opt_sr1$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
-  expect_true(opt_trust$convergence)
-  expect_equal(opt_bfgs$convergence,0)
   # Methods
   expect_error(optimize_theta(funlist,1.5,control = list(method = "foo")))
 
@@ -33,11 +28,7 @@ test_that("optimizations works", {
   expect_true(all(eigen(opt_sr1_2d$hessian)$values > 0))
   expect_true(all(eigen(opt_trust_2d$hessian)$values > 0))
   expect_true(all(eigen(opt_bfgs_2d$hessian)$values > 0))
-  # Convergence
-  expect_true(opt_sparsetrust_2d$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
-  expect_true(opt_sr1_2d$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
-  expect_true(opt_trust_2d$convergence)
-  expect_equal(opt_bfgs_2d$convergence,0)
+
 
   ## 3d
 
@@ -51,11 +42,7 @@ test_that("optimizations works", {
   expect_true(all(eigen(opt_sr1_3d$hessian)$values > 0))
   expect_true(all(eigen(opt_trust_3d$hessian)$values > 0))
   expect_true(all(eigen(opt_bfgs_3d$hessian)$values > 0))
-  # Convergence
-  expect_true(opt_sparsetrust_3d$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
-  expect_true(opt_sr1_3d$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
-  expect_true(opt_trust_3d$convergence)
-  expect_equal(opt_bfgs_3d$convergence,0)
+
 
   # Control arguments pass correctly
   expect_equal(opt_controlworks1$convergence,0)
@@ -89,6 +76,23 @@ test_that("optimizations works", {
   expect_equal(with(aghq_controlworks2$optresults,ff$fn(mode)),-1*funlist3dneg$fn(opt_controlworks2$mode))
   expect_equal(with(aghq_controlworks3$optresults,ff$fn(mode)),-1*funlist3dneg$fn(opt_controlworks3$mode))
 
+  # Tests that require suggests packages
+  skip_if_not_installed('trustOptim')
+  skip_if_not_installed('trust')
 
-
+  # Convergence
+  expect_true(opt_sparsetrust$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
+  expect_true(opt_sr1$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
+  expect_true(opt_trust$convergence)
+  expect_equal(opt_bfgs$convergence,0)
+  # Convergence
+  expect_true(opt_sparsetrust_2d$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
+  expect_true(opt_sr1_2d$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
+  expect_true(opt_trust_2d$convergence)
+  expect_equal(opt_bfgs_2d$convergence,0)
+  # Convergence
+  expect_true(opt_sparsetrust_3d$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
+  expect_true(opt_sr1_3d$convergence %in% c("Success","Radius of trust region is less than stop.trust.radius"))
+  expect_true(opt_trust_3d$convergence)
+  expect_equal(opt_bfgs_3d$convergence,0)
 })
