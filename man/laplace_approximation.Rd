@@ -115,6 +115,7 @@ Other quadrature:
 \code{\link{get_param_dim}()},
 \code{\link{marginal_laplace_tmb}()},
 \code{\link{marginal_laplace}()},
+\code{\link{nested_quadrature}()},
 \code{\link{normalize_logpost}()},
 \code{\link{optimize_theta}()},
 \code{\link{plot.aghq}()},

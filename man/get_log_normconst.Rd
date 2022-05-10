@@ -46,6 +46,7 @@ Other quadrature:
 \code{\link{laplace_approximation}()},
 \code{\link{marginal_laplace_tmb}()},
 \code{\link{marginal_laplace}()},
+\code{\link{nested_quadrature}()},
 \code{\link{normalize_logpost}()},
 \code{\link{optimize_theta}()},
 \code{\link{plot.aghq}()},

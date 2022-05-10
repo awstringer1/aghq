@@ -712,3 +712,102 @@ thesummary_correct <- summary(thequadrature_correct)
 truemean_correct <- digamma(c(sum(y_correct[1:5]) + 1,sum(y_correct[6:10]) + 1)) - log(c(5 + 1,5+1))
 truesd_correct <- sqrt(trigamma(c(sum(y_correct[1:5])+1,sum(y_correct[6:10]) + 1)))
 
+## Nested ##
+quadtable_p1_k1_prod <- get_quadtable(1,1)
+quadtable_p2_k1_prod <- get_quadtable(2,1)
+quadtable_p3_k1_prod <- get_quadtable(3,1)
+quadtable_p4_k1_prod <- get_quadtable(4,1)
+quadtable_p5_k1_prod <- get_quadtable(5,1)
+
+quadtable_p1_k3_prod <- get_quadtable(1,3)
+quadtable_p2_k3_prod <- get_quadtable(2,3)
+quadtable_p3_k3_prod <- get_quadtable(3,3)
+quadtable_p4_k3_prod <- get_quadtable(4,3)
+quadtable_p5_k3_prod <- get_quadtable(5,3)
+
+quadtable_p1_k5_prod <- get_quadtable(1,5)
+quadtable_p2_k5_prod <- get_quadtable(2,5)
+quadtable_p3_k5_prod <- get_quadtable(3,5)
+quadtable_p4_k5_prod <- get_quadtable(4,5)
+quadtable_p5_k5_prod <- get_quadtable(5,5)
+
+quadtable_p1_k1_sparse <- get_quadtable(1,1,'sparse')
+quadtable_p2_k1_sparse <- get_quadtable(2,1,'sparse')
+quadtable_p3_k1_sparse <- get_quadtable(3,1,'sparse')
+quadtable_p4_k1_sparse <- get_quadtable(4,1,'sparse')
+quadtable_p5_k1_sparse <- get_quadtable(5,1,'sparse')
+
+quadtable_p1_k3_sparse <- get_quadtable(1,3,'sparse')
+quadtable_p2_k3_sparse <- get_quadtable(2,3,'sparse')
+quadtable_p3_k3_sparse <- get_quadtable(3,3,'sparse')
+quadtable_p4_k3_sparse <- get_quadtable(4,3,'sparse')
+quadtable_p5_k3_sparse <- get_quadtable(5,3,'sparse')
+
+quadtable_p1_k5_sparse <- get_quadtable(1,5,'sparse')
+quadtable_p2_k5_sparse <- get_quadtable(2,5,'sparse')
+quadtable_p3_k5_sparse <- get_quadtable(3,5,'sparse')
+quadtable_p4_k5_sparse <- get_quadtable(4,5,'sparse')
+quadtable_p5_k5_sparse <- get_quadtable(5,5,'sparse')
+
+nestedoptlist1 <- list(
+  fn = function(x) prod(dnorm(x)),
+  mode = rep(0,1)
+)
+nestedoptlist2 <- list(
+  fn = function(x) prod(dnorm(x)),
+  mode = rep(0,2)
+)
+nestedoptlist3 <- list(
+  fn = function(x) prod(dnorm(x)),
+  mode = rep(0,3)
+)
+nestedoptlist4 <- list(
+  fn = function(x) prod(dnorm(x)),
+  mode = rep(0,4)
+)
+nestedoptlist5 <- list(
+  fn = function(x) prod(dnorm(x)),
+  mode = rep(0,5)
+)
+
+nq_p1_k1_prod <- nested_quadrature(nestedoptlist1,1,'product')
+nq_p2_k1_prod <- nested_quadrature(nestedoptlist2,1,'product')
+nq_p3_k1_prod <- nested_quadrature(nestedoptlist3,1,'product')
+nq_p4_k1_prod <- nested_quadrature(nestedoptlist4,1,'product')
+nq_p5_k1_prod <- nested_quadrature(nestedoptlist5,1,'product')
+
+nq_p1_k3_prod <- nested_quadrature(nestedoptlist1,3,'product')
+nq_p2_k3_prod <- nested_quadrature(nestedoptlist2,3,'product')
+nq_p3_k3_prod <- nested_quadrature(nestedoptlist3,3,'product')
+nq_p4_k3_prod <- nested_quadrature(nestedoptlist4,3,'product')
+nq_p5_k3_prod <- nested_quadrature(nestedoptlist5,3,'product')
+
+nq_p1_k5_prod <- nested_quadrature(nestedoptlist1,5,'product')
+nq_p2_k5_prod <- nested_quadrature(nestedoptlist2,5,'product')
+nq_p3_k5_prod <- nested_quadrature(nestedoptlist3,5,'product')
+nq_p4_k5_prod <- nested_quadrature(nestedoptlist4,5,'product')
+nq_p5_k5_prod <- nested_quadrature(nestedoptlist5,5,'product')
+
+nq_p1_k1_sparse <- nested_quadrature(nestedoptlist1,1,'sparse')
+nq_p2_k1_sparse <- nested_quadrature(nestedoptlist2,1,'sparse')
+nq_p3_k1_sparse <- nested_quadrature(nestedoptlist3,1,'sparse')
+nq_p4_k1_sparse <- nested_quadrature(nestedoptlist4,1,'sparse')
+nq_p5_k1_sparse <- nested_quadrature(nestedoptlist5,1,'sparse')
+
+nq_p1_k3_sparse <- nested_quadrature(nestedoptlist1,3,'sparse')
+nq_p2_k3_sparse <- nested_quadrature(nestedoptlist2,3,'sparse')
+nq_p3_k3_sparse <- nested_quadrature(nestedoptlist3,3,'sparse')
+nq_p4_k3_sparse <- nested_quadrature(nestedoptlist4,3,'sparse')
+nq_p5_k3_sparse <- nested_quadrature(nestedoptlist5,3,'sparse')
+
+nq_p1_k5_sparse <- nested_quadrature(nestedoptlist1,5,'sparse')
+nq_p2_k5_sparse <- nested_quadrature(nestedoptlist2,5,'sparse')
+nq_p3_k5_sparse <- nested_quadrature(nestedoptlist3,5,'sparse')
+nq_p4_k5_sparse <- nested_quadrature(nestedoptlist4,5,'sparse')
+nq_p5_k5_sparse <- nested_quadrature(nestedoptlist5,5,'sparse')
+
+
+
+
+
+

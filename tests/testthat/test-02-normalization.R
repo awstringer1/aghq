@@ -264,4 +264,115 @@ test_that("Normalization works",{
     expect_equal(get_numquadpoints(thequadrature3d),3)
 
 
+
+    ## Nested, possibly sparse, quadrature ##
+    expect_is(quadtable_p1_k1_prod,'data.frame')
+    expect_is(quadtable_p2_k1_prod,'data.frame')
+    expect_is(quadtable_p3_k1_prod,'data.frame')
+    expect_is(quadtable_p4_k1_prod,'data.frame')
+    expect_is(quadtable_p5_k1_prod,'data.frame')
+
+    expect_is(quadtable_p1_k3_prod,'data.frame')
+    expect_is(quadtable_p2_k3_prod,'data.frame')
+    expect_is(quadtable_p3_k3_prod,'data.frame')
+    expect_is(quadtable_p4_k3_prod,'data.frame')
+    expect_is(quadtable_p5_k3_prod,'data.frame')
+
+    expect_is(quadtable_p1_k5_prod,'data.frame')
+    expect_is(quadtable_p2_k5_prod,'data.frame')
+    expect_is(quadtable_p3_k5_prod,'data.frame')
+    expect_is(quadtable_p4_k5_prod,'data.frame')
+    expect_is(quadtable_p5_k5_prod,'data.frame')
+
+    expect_equal(dim(quadtable_p1_k1_prod),c(1,2))
+    expect_equal(dim(quadtable_p2_k1_prod),c(1,3))
+    expect_equal(dim(quadtable_p3_k1_prod),c(1,4))
+    expect_equal(dim(quadtable_p4_k1_prod),c(1,5))
+    expect_equal(dim(quadtable_p5_k1_prod),c(1,6))
+
+    expect_equal(dim(quadtable_p1_k3_prod),c(3,3))
+    expect_equal(dim(quadtable_p2_k3_prod),c(9,4))
+    expect_equal(dim(quadtable_p3_k3_prod),c(27,5))
+    expect_equal(dim(quadtable_p4_k3_prod),c(81,6))
+    expect_equal(dim(quadtable_p5_k3_prod),c(243,7))
+
+    expect_equal(dim(quadtable_p1_k5_prod),c(9,4))
+    expect_equal(dim(quadtable_p2_k5_prod),c(81,5))
+    expect_equal(dim(quadtable_p3_k5_prod),c(729,6))
+    expect_equal(dim(quadtable_p4_k5_prod),c(6561,7))
+    expect_equal(dim(quadtable_p5_k5_prod),c(59049,8))
+
+    expect_is(quadtable_p1_k1_sparse,'data.frame')
+    expect_is(quadtable_p2_k1_sparse,'data.frame')
+    expect_is(quadtable_p3_k1_sparse,'data.frame')
+    expect_is(quadtable_p4_k1_sparse,'data.frame')
+    expect_is(quadtable_p5_k1_sparse,'data.frame')
+
+    expect_is(quadtable_p1_k3_sparse,'data.frame')
+    expect_is(quadtable_p2_k3_sparse,'data.frame')
+    expect_is(quadtable_p3_k3_sparse,'data.frame')
+    expect_is(quadtable_p4_k3_sparse,'data.frame')
+    expect_is(quadtable_p5_k3_sparse,'data.frame')
+
+    expect_is(quadtable_p1_k5_sparse,'data.frame')
+    expect_is(quadtable_p2_k5_sparse,'data.frame')
+    expect_is(quadtable_p3_k5_sparse,'data.frame')
+    expect_is(quadtable_p4_k5_sparse,'data.frame')
+    expect_is(quadtable_p5_k5_sparse,'data.frame')
+
+    expect_equal(dim(quadtable_p1_k1_sparse),c(1,2))
+    expect_equal(dim(quadtable_p2_k1_sparse),c(1,3))
+    expect_equal(dim(quadtable_p3_k1_sparse),c(1,4))
+    expect_equal(dim(quadtable_p4_k1_sparse),c(1,5))
+    expect_equal(dim(quadtable_p5_k1_sparse),c(1,6))
+
+    expect_equal(dim(quadtable_p1_k3_sparse),c(3,3))
+    expect_equal(dim(quadtable_p2_k3_sparse),c(9,4))
+    expect_equal(dim(quadtable_p3_k3_sparse),c(19,5))
+    expect_equal(dim(quadtable_p4_k3_sparse),c(33,6))
+    expect_equal(dim(quadtable_p5_k3_sparse),c(51,7))
+
+    expect_equal(dim(quadtable_p1_k5_sparse),c(9,4))
+    expect_equal(dim(quadtable_p2_k5_sparse),c(37,5))
+    expect_equal(dim(quadtable_p3_k5_sparse),c(93,6))
+    expect_equal(dim(quadtable_p4_k5_sparse),c(201,7))
+    expect_equal(dim(quadtable_p5_k5_sparse),c(433,8))
+
+    expect_equal(nq_p1_k1_prod,c('w1'=1))
+    expect_equal(nq_p2_k1_prod,c('w1'=1))
+    expect_equal(nq_p3_k1_prod,c('w1'=1))
+    expect_equal(nq_p4_k1_prod,c('w1'=1))
+    expect_equal(nq_p5_k1_prod,c('w1'=1))
+
+    expect_equal(nq_p1_k3_prod,c('w3'=1,'w1'=1))
+    expect_equal(nq_p2_k3_prod,c('w3'=1,'w1'=1))
+    expect_equal(nq_p3_k3_prod,c('w3'=1,'w1'=1))
+    expect_equal(nq_p4_k3_prod,c('w3'=1,'w1'=1))
+    expect_equal(nq_p5_k3_prod,c('w3'=1,'w1'=1))
+
+    expect_equal(nq_p1_k5_prod,c('w5'=1,'w3'=1,'w1'=1))
+    expect_equal(nq_p2_k5_prod,c('w5'=1,'w3'=1,'w1'=1))
+    expect_equal(nq_p3_k5_prod,c('w5'=1,'w3'=1,'w1'=1))
+    expect_equal(nq_p4_k5_prod,c('w5'=1,'w3'=1,'w1'=1))
+    expect_equal(nq_p5_k5_prod,c('w5'=1,'w3'=1,'w1'=1))
+
+    expect_equal(nq_p1_k1_sparse,c('w1'=1))
+    expect_equal(nq_p2_k1_sparse,c('w1'=1))
+    expect_equal(nq_p3_k1_sparse,c('w1'=1))
+    expect_equal(nq_p4_k1_sparse,c('w1'=1))
+    expect_equal(nq_p5_k1_sparse,c('w1'=1))
+
+    expect_equal(nq_p1_k3_sparse,c('w3'=1,'w1'=1))
+    expect_equal(nq_p2_k3_sparse,c('w3'=1,'w1'=1))
+    expect_equal(nq_p3_k3_sparse,c('w3'=1,'w1'=1))
+    expect_equal(nq_p4_k3_sparse,c('w3'=1,'w1'=1))
+    expect_equal(nq_p5_k3_sparse,c('w3'=1,'w1'=1))
+
+    expect_equal(nq_p1_k5_sparse,c('w5'=1,'w3'=1,'w1'=1))
+    expect_equal(nq_p2_k5_sparse,c('w5'=1,'w3'=1,'w1'=1))
+    expect_equal(nq_p3_k5_sparse,c('w5'=1,'w3'=1,'w1'=1))
+    expect_equal(nq_p4_k5_sparse,c('w5'=1,'w3'=1,'w1'=1))
+    expect_equal(nq_p5_k5_sparse,c('w5'=1,'w3'=1,'w1'=1))
+
+
 })

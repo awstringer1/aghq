@@ -18,3 +18,4 @@
 ^.git$
 ^aghq_0.2.1.tar.gz$
 ^.*\.rds$
+^CRAN-SUBMISSION$
