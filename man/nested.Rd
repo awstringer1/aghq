@@ -32,9 +32,16 @@ with weights for the points from each of the \code{1,3,...,k}-point rules, for p
 values for each \code{k}.
 }
 \description{
-Compute a whole sequence of objective function values at a specified point
+Compute a whole sequence of log normalizing constants
 for \code{1,3,5,...,k} points,
-using only the function evaluations from the \code{k}-point rule.
+using only the function evaluations from the \code{k}-point nested rule.
+}
+\details{
+\code{get_quadtable} currently uses \code{mvQuad} to compute the nodes and weights. This will be replaced
+by a manual reading of the pre-tabulated nodes and weights.
+
+\code{nested_quadrature} and \code{adaptive_nested_quadrature} take the \strong{log} function values, just like \code{optimize_theta()},
+and return the \strong{log} of the base/adapted quadrature rule.
 }
 \examples{
 # Same setup as optimize_theta

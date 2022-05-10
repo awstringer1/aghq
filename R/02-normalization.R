@@ -122,10 +122,12 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,basegrid = NULL,ndCons
 
   # lognormconst <- logsumexp(log(ww) + pp)
   # Account for negative weights (doesn't happen with GHQ but happens for e.g. sparse rules)
-  lognormconst <- logdiffexp(
-    logsumexp(log(ww[ww>0]) + pp[ww>0]),
-    logsumexp(log(-ww[ww<0]) + pp[ww<0])
-  )
+  # lognormconst <- logdiffexp(
+  #   logsumexp(log(ww[ww>0]) + pp[ww>0]),
+  #   logsumexp(log(-ww[ww<0]) + pp[ww<0])
+  # )
+  lognormconst <- logsumexpweights(pp,ww)
+
 
   nodesandweights$logpost_normalized <- nodesandweights$logpost - lognormconst
 
@@ -138,9 +140,9 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,basegrid = NULL,ndCons
 
 #' Nested, sparse Gaussian quadrature in AGHQ
 #'
-#' Compute a whole sequence of normalizing constants
+#' Compute a whole sequence of log normalizing constants
 #' for \code{1,3,5,...,k} points,
-#' using only the function evaluations from the \code{k}-point rule.
+#' using only the function evaluations from the \code{k}-point nested rule.
 #'
 #' @param optresults The results of calling \code{aghq::optimize_theta()}: see return value of that function.
 #' The dimension of the parameter \code{p} will be taken from \code{optresults$mode}.
@@ -154,6 +156,12 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,basegrid = NULL,ndCons
 #' with weights for the points from each of the \code{1,3,...,k}-point rules, for passing to
 #' \code{nested_quadrature}. For \code{nested_quadrature} and \code{adaptive_nested_quadrature}, a named numeric vector of \code{optresults$fn}
 #' values for each \code{k}.
+#'
+#' @details \code{get_quadtable} currently uses \code{mvQuad} to compute the nodes and weights. This will be replaced
+#' by a manual reading of the pre-tabulated nodes and weights.
+#'
+#' \code{nested_quadrature} and \code{adaptive_nested_quadrature} take the **log** function values, just like \code{optimize_theta()},
+#' and return the **log** of the base/adapted quadrature rule.
 #'
 #' @family quadrature
 #'
@@ -185,7 +193,10 @@ nested_quadrature <- function(optresults,k,ndConstruction = 'product',...) {
   # TODO: speed and memory comparisons/optimization. Or just store the tables...
   # quadtable <- as(as.matrix(quadtable),'sparseMatrix')
   quadtable[is.na(quadtable)] <- 0
-  colSums(quadtable[grep('w',colnames(quadtable))]*apply(quadtable[grep('V',colnames(quadtable))],1,optresults$fn,...))
+  quadtable$lfval <- apply(quadtable[grep('V',colnames(quadtable))],1,optresults$fn)
+  # colSums(quadtable[grep('w',colnames(quadtable))]*exp(quadtable$lfval))
+
+  apply(quadtable[ ,grep('w',colnames(quadtable)),drop = FALSE],2,function(x) logsumexpweights(quadtable$lfval,x))
 }
 #' @rdname nested
 #' @export
@@ -198,7 +209,18 @@ adaptive_nested_quadrature <- function(optresults,k,ndConstruction = 'product',.
   # quadtable <- as(as.matrix(quadtable),'sparseMatrix')
   quadtable[is.na(quadtable)] <- 0
   # TODO: adaptation
-  0
+  nodeidx <- grep('V',colnames(quadtable))
+  weightidx <- grep('w',colnames(quadtable))
+  # Scale
+  Lt <- chol(solve(optresults$hessian))
+  quadtable[ ,nodeidx] <- as.matrix(quadtable[ ,nodeidx]) %*% Lt
+  # Shift
+  quadtable[ ,nodeidx] <- sweep(quadtable[ ,nodeidx],2,optresults$mode,'+')
+  # function evals
+  quadtable$lfval <- apply(quadtable[nodeidx],1,function(x) optresults$fn(x))
+
+  detterm <- 0.5*as.numeric(determinant(optresults$hessian,logarithm = TRUE)$modulus)
+  apply(quadtable[ ,grep('w',colnames(quadtable)),drop = FALSE],2,function(x) logsumexpweights(quadtable$lfval,x)) - detterm
 }
 #' @rdname nested
 #' @export

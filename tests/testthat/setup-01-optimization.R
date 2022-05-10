@@ -750,23 +750,23 @@ quadtable_p4_k5_sparse <- get_quadtable(4,5,'sparse')
 quadtable_p5_k5_sparse <- get_quadtable(5,5,'sparse')
 
 nestedoptlist1 <- list(
-  fn = function(x) prod(dnorm(x)),
+  fn = function(x) sum(dnorm(x,log=TRUE)),
   mode = rep(0,1)
 )
 nestedoptlist2 <- list(
-  fn = function(x) prod(dnorm(x)),
+  fn = function(x) sum(dnorm(x,log=TRUE)),
   mode = rep(0,2)
 )
 nestedoptlist3 <- list(
-  fn = function(x) prod(dnorm(x)),
+  fn = function(x) sum(dnorm(x,log=TRUE)),
   mode = rep(0,3)
 )
 nestedoptlist4 <- list(
-  fn = function(x) prod(dnorm(x)),
+  fn = function(x) sum(dnorm(x,log=TRUE)),
   mode = rep(0,4)
 )
 nestedoptlist5 <- list(
-  fn = function(x) prod(dnorm(x)),
+  fn = function(x) sum(dnorm(x,log=TRUE)),
   mode = rep(0,5)
 )
 
@@ -806,6 +806,90 @@ nq_p3_k5_sparse <- nested_quadrature(nestedoptlist3,5,'sparse')
 nq_p4_k5_sparse <- nested_quadrature(nestedoptlist4,5,'sparse')
 nq_p5_k5_sparse <- nested_quadrature(nestedoptlist5,5,'sparse')
 
+# Adaptive nested quadrature
+man1 <- 1
+man2 <- 1:2
+man3 <- 1:3
+man4 <- 1:4
+man5 <- 1:5
+
+Han1 <- as.matrix(2)
+Han2 <- Matrix::crossprod(matrix(rnorm(2^2),nrow=2))
+Han3 <- Matrix::crossprod(matrix(rnorm(3^2),nrow=3))
+Han4 <- Matrix::crossprod(matrix(rnorm(4^2),nrow=4))
+Han5 <- Matrix::crossprod(matrix(rnorm(5^2),nrow=5))
+
+
+dmnorm <- function(x,man,Han) { # multivariate normal
+  p <- length(man)
+  if (p == 1) return(dnorm(x,man,1/sqrt(Han),log = TRUE))
+  up <- -0.5 * as.numeric(crossprod(x-man,crossprod(Han,x-man)))
+  down <- -0.5*p*log(2*pi) + 0.5*as.numeric(determinant(Han,logarithm = TRUE)$modulus)
+  up + down
+}
+adaptivenestedoptlist1 <- list(
+  fn = function(x) dmnorm(x,man1,Han1),
+  mode = man1,
+  hessian = as.matrix(Han1)
+)
+adaptivenestedoptlist2 <- list(
+  fn = function(x) dmnorm(x,man2,Han2),
+  mode = man2,
+  hessian = Han2
+)
+adaptivenestedoptlist3 <- list(
+  fn = function(x) dmnorm(x,man3,Han3),
+  mode = man3,
+  hessian = Han3
+)
+adaptivenestedoptlist4 <- list(
+  fn = function(x) dmnorm(x,man4,Han4),
+  mode = man4,
+  hessian = Han4
+)
+adaptivenestedoptlist5 <- list(
+  fn = function(x) dmnorm(x,man5,Han5),
+  mode = man5,
+  hessian = Han5
+)
+
+
+
+anq_p1_k1_prod <- adaptive_nested_quadrature(adaptivenestedoptlist1,1,'product')
+anq_p2_k1_prod <- adaptive_nested_quadrature(adaptivenestedoptlist2,1,'product')
+anq_p3_k1_prod <- adaptive_nested_quadrature(adaptivenestedoptlist3,1,'product')
+anq_p4_k1_prod <- adaptive_nested_quadrature(adaptivenestedoptlist4,1,'product')
+anq_p5_k1_prod <- adaptive_nested_quadrature(adaptivenestedoptlist5,1,'product')
+
+anq_p1_k3_prod <- adaptive_nested_quadrature(adaptivenestedoptlist1,3,'product')
+anq_p2_k3_prod <- adaptive_nested_quadrature(adaptivenestedoptlist2,3,'product')
+anq_p3_k3_prod <- adaptive_nested_quadrature(adaptivenestedoptlist3,3,'product')
+anq_p4_k3_prod <- adaptive_nested_quadrature(adaptivenestedoptlist4,3,'product')
+anq_p5_k3_prod <- adaptive_nested_quadrature(adaptivenestedoptlist5,3,'product')
+
+anq_p1_k5_prod <- adaptive_nested_quadrature(adaptivenestedoptlist1,5,'product')
+anq_p2_k5_prod <- adaptive_nested_quadrature(adaptivenestedoptlist2,5,'product')
+anq_p3_k5_prod <- adaptive_nested_quadrature(adaptivenestedoptlist3,5,'product')
+anq_p4_k5_prod <- adaptive_nested_quadrature(adaptivenestedoptlist4,5,'product')
+anq_p5_k5_prod <- adaptive_nested_quadrature(adaptivenestedoptlist5,5,'product')
+
+anq_p1_k1_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist1,1,'sparse')
+anq_p2_k1_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist2,1,'sparse')
+anq_p3_k1_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist3,1,'sparse')
+anq_p4_k1_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist4,1,'sparse')
+anq_p5_k1_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist5,1,'sparse')
+
+anq_p1_k3_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist1,3,'sparse')
+anq_p2_k3_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist2,3,'sparse')
+anq_p3_k3_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist3,3,'sparse')
+anq_p4_k3_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist4,3,'sparse')
+anq_p5_k3_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist5,3,'sparse')
+
+anq_p1_k5_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist1,5,'sparse')
+anq_p2_k5_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist2,5,'sparse')
+anq_p3_k5_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist3,5,'sparse')
+anq_p4_k5_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist4,5,'sparse')
+anq_p5_k5_sparse <- adaptive_nested_quadrature(adaptivenestedoptlist5,5,'sparse')
 
 
 

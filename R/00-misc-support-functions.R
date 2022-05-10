@@ -296,6 +296,13 @@ logdiffexp <- function(a,b) {
   b + log(expm1(a-b))
 }
 
+logsumexpweights <- function(pp,ww) {
+  logdiffexp(
+    logsumexp(log(ww[ww>0]) + pp[ww>0]),
+    logsumexp(log(-ww[ww<0]) + pp[ww<0])
+  )
+}
+
 # Splice a vector
 splice <- function(v,t,j) {
   # Insert t into v such that if vnew = splice(v,t,j) then vnew[j] == t
