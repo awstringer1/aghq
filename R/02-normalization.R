@@ -34,10 +34,6 @@
 #' \item{\code{lognormconst}: }{the actual result of the quadrature: the log of the normalizing constant of the posterior.}
 #' }
 #'
-#' If k = 1, then the method returns
-#' a numeric value representing the log of the normalizing constant computed using
-#' a Laplace approximation.
-#'
 #' @family quadrature
 #'
 #' @examples
@@ -80,10 +76,6 @@
 #'
 normalize_logpost <- function(optresults,k,whichfirst = 1,basegrid = NULL,ndConstruction = "product",...) {
   if (as.integer(k) != k) stop(paste0("Please provide an integer k, the number of quadrature points. You provided ",k,"which does not satisfy as.integer(k) == k"))
-  if (k == 1) {
-    # Laplace approx: just return the normalizing constant
-    return(optresults$ff$fn(optresults$mode,...) - as.numeric(.5 * determinant(optresults$hessian,logarithm = TRUE)$modulus) + .5*dim(optresults$hessian)[1]*log(2*pi))
-  }
   # Create the grid
   S <- length(optresults$mode) # Dimension
   if (!is.null(basegrid)) {
