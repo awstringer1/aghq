@@ -21,24 +21,25 @@ opt_sr1 <- optimize_theta(funlist,1.5,control = default_control(method = "SR1"))
 opt_trust <- optimize_theta(funlist,1.5,control = default_control(method = "trust"))
 opt_bfgs <- optimize_theta(funlist,1.5,control = default_control(method = "BFGS"))
 
+norm_sparse_1 <- normalize_logpost(opt_sparsetrust,1,1)
 norm_sparse_3 <- normalize_logpost(opt_sparsetrust,3,1)
 norm_sparse_5 <- normalize_logpost(opt_sparsetrust,5,1)
 norm_sparse_7 <- normalize_logpost(opt_sparsetrust,7,1)
 
+norm_trust_1 <- normalize_logpost(opt_trust,3,1)
 norm_trust_3 <- normalize_logpost(opt_trust,3,1)
 norm_trust_5 <- normalize_logpost(opt_trust,5,1)
 norm_trust_7 <- normalize_logpost(opt_trust,7,1)
 
+norm_bfgs_1 <- normalize_logpost(opt_bfgs,3,1)
 norm_bfgs_3 <- normalize_logpost(opt_bfgs,3,1)
 norm_bfgs_5 <- normalize_logpost(opt_bfgs,5,1)
 norm_bfgs_7 <- normalize_logpost(opt_bfgs,7,1)
 
+norm_sr1_1 <- normalize_logpost(opt_sr1,3,1)
 norm_sr1_3 <- normalize_logpost(opt_sr1,3,1)
 norm_sr1_5 <- normalize_logpost(opt_sr1,5,1)
 norm_sr1_7 <- normalize_logpost(opt_sr1,7,1)
-
-
-
 
 margpost_3 <- marginal_posterior(opt_sparsetrust,3,1)
 pdfwithtrans <- compute_pdf_and_cdf(
@@ -88,18 +89,22 @@ opt_trust_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = default_control(me
 opt_sr1_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = default_control(method = "SR1"))
 opt_bfgs_2d <- optimize_theta(funlist2d,c(1.5,1.5),control = default_control(method = "BFGS"))
 
+norm_sparse_2d_1 <- normalize_logpost(opt_sparsetrust_2d,1,1)
 norm_sparse_2d_3 <- normalize_logpost(opt_sparsetrust_2d,3,1)
 norm_sparse_2d_5 <- normalize_logpost(opt_sparsetrust_2d,5,1)
 norm_sparse_2d_7 <- normalize_logpost(opt_sparsetrust_2d,7,1)
 
+norm_trust_2d_1 <- normalize_logpost(opt_trust_2d,1,1)
 norm_trust_2d_3 <- normalize_logpost(opt_trust_2d,3,1)
 norm_trust_2d_5 <- normalize_logpost(opt_trust_2d,5,1)
 norm_trust_2d_7 <- normalize_logpost(opt_trust_2d,7,1)
 
+norm_bfgs_2d_1 <- normalize_logpost(opt_bfgs_2d,1,1)
 norm_bfgs_2d_3 <- normalize_logpost(opt_bfgs_2d,3,1)
 norm_bfgs_2d_5 <- normalize_logpost(opt_bfgs_2d,5,1)
 norm_bfgs_2d_7 <- normalize_logpost(opt_bfgs_2d,7,1)
 
+norm_sr1_2d_1 <- normalize_logpost(opt_sr1_2d,1,1)
 norm_sr1_2d_3 <- normalize_logpost(opt_sr1_2d,3,1)
 norm_sr1_2d_5 <- normalize_logpost(opt_sr1_2d,5,1)
 norm_sr1_2d_7 <- normalize_logpost(opt_sr1_2d,7,1)
@@ -253,18 +258,22 @@ opt_trust_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = default_contro
 opt_sr1_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = default_control(method = "SR1"))
 opt_bfgs_3d <- optimize_theta(funlist3d,c(1.5,1.5,1.5),control = default_control(method = "BFGS"))
 
+norm_sparse_3d_1 <- normalize_logpost(opt_sparsetrust_3d,1,1)
 norm_sparse_3d_3 <- normalize_logpost(opt_sparsetrust_3d,3,1)
 norm_sparse_3d_5 <- normalize_logpost(opt_sparsetrust_3d,5,1)
 norm_sparse_3d_7 <- normalize_logpost(opt_sparsetrust_3d,7,1)
 
+norm_trust_3d_1 <- normalize_logpost(opt_trust_3d,1,1)
 norm_trust_3d_3 <- normalize_logpost(opt_trust_3d,3,1)
 norm_trust_3d_5 <- normalize_logpost(opt_trust_3d,5,1)
 norm_trust_3d_7 <- normalize_logpost(opt_trust_3d,7,1)
 
+norm_bfgs_3d_1 <- normalize_logpost(opt_bfgs_3d,1,1)
 norm_bfgs_3d_3 <- normalize_logpost(opt_bfgs_3d,3,1)
 norm_bfgs_3d_5 <- normalize_logpost(opt_bfgs_3d,5,1)
 norm_bfgs_3d_7 <- normalize_logpost(opt_bfgs_3d,7,1)
 
+norm_sr1_3d_1 <- normalize_logpost(opt_sr1_3d,1,1)
 norm_sr1_3d_3 <- normalize_logpost(opt_sr1_3d,3,1)
 norm_sr1_3d_5 <- normalize_logpost(opt_sr1_3d,5,1)
 norm_sr1_3d_7 <- normalize_logpost(opt_sr1_3d,7,1)
