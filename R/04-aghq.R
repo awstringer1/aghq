@@ -246,7 +246,7 @@ summary.aghq <- function(object,...) {
   thesummary <- cbind(themoments,thequants)
 
   # thesummary <- thesummary[ ,c('mean','median','mode','sd','2.5%','97.5%')]
-  thesummary <- thesummary[ ,c('mean','sd','2.5%','median','97.5%')]
+  # thesummary <- thesummary[ ,c('mean','sd','2.5%','median','97.5%')]
 
 
   out <- list()
@@ -1214,19 +1214,19 @@ summary.marginallaplace <- function(object,M=1e03,max_print=30,...) {
   sds <- apply(samps$samps,1,stats::sd)
   quants <- t(apply(samps$samps,1,stats::quantile,probs = c(.025,.975)))
 
-  modes <- with(object,mapply(modesandhessians$mode,exp(normalized_posterior$nodesandweights$logpost_normalized)*normalized_posterior$nodesandweights$weights,FUN = '*'))
-  if (is.array(modes)) {
-    modes <- apply(modes,1,sum)
-  } else {
-    modes <- sum(modes)
-  }
+  # modes <- with(object,mapply(modesandhessians$mode,exp(normalized_posterior$nodesandweights$logpost_normalized)*normalized_posterior$nodesandweights$weights,FUN = '*'))
+  # if (is.array(modes)) {
+  #   modes <- apply(modes,1,sum)
+  # } else {
+  #   modes <- sum(modes)
+  # }
 
   randomeffectsummary <- data.frame(
     mean = means,
-    median = medians,
-    mode = modes,
+    # mode = modes,
     sd = sds,
     `2.5%` = quants[ ,1],
+    median = medians,
     `97.5%` = quants[ ,2]
   )
   colnames(randomeffectsummary) <- colnames(summ$summarytable)

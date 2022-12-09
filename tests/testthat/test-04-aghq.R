@@ -163,6 +163,13 @@ test_that("Quadrature works",{
   expect_equal(names(themarginallaplace$modesandhessians$mode[[1]]),"W1")
   expect_equal(names(themarginallaplace3d_1$modesandhessians$mode[[1]]),c("W1","W2"))
 
+  # Test summary of marginallaplace
+  expect_length(colnames(summary(themarginallaplace)$randomeffectsummary),6)
+  expect_true(all(colnames(summary(themarginallaplace)$randomeffectsummary)==c("mean","sd","2.5%","median","97.5%","variable")))
+  expect_length(colnames(summary(themarginallaplace)$aghqsummary$summarytable),5)
+  expect_true(all(colnames(summary(themarginallaplace)$aghqsummary$summarytable)==c("mean","sd","2.5%","median","97.5%")))
+
+
   # Summaries with corrections
   expect_equal(thesummary_reuse$mode,thesummary_correct$mode)
   expect_equal(thesummary_reuse$lognormconst,thesummary_correct$lognormconst)

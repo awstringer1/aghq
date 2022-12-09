@@ -833,12 +833,12 @@ sample_marginal.aghq <- function(quad,M,transformation = quad$transformation,int
 #' @rdname sample_marginal
 #' @export
 sample_marginal.marginallaplace <- function(quad,M,transformation = quad$transformation,interpolation = 'auto',...) {
-  numcores = getOption('mc.cores',1L)
-  K <- as.numeric(quad$normalized_posterior$grid$level)[1]
-  d <- dim(quad$modesandhessians$H[[1]])[1]
-  simlist <- quad$modesandhessians
+  numcores <- getOption('mc.cores',1L)
   # Avoid use of parallel computing on Windows
   if (.Platform$OS.type == 'windows') numcores <- 1
+  # K <- as.numeric(quad$normalized_posterior$grid$level)[1]
+  d <- dim(quad$modesandhessians$H[[1]])[1]
+  simlist <- quad$modesandhessians
   if (numcores > 1) {
     # mclapply does not preserve the order of its arguments
     # simlist$L <- parallel::mclapply(simlist$H,function(h) chol(Matrix::forceSymmetric(h),perm = FALSE),mc.cores = numcores)
@@ -857,7 +857,7 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = quad$transfo
   } else {
     k <- apply(stats::rmultinom(M,1,simlist$lambda),2,function(x) which(x == 1))
   }
-  tt <- table(k) # Values are number of samples to draw for each k
+  # tt <- table(k) # Values are number of samples to draw for each k
 
   # Big Gaussian mixture matrix
   Z <- lapply(split(matrix(stats::rnorm(M*d),nrow = M),k),matrix,nrow = d)
@@ -888,8 +888,8 @@ sample_marginal.marginallaplace <- function(quad,M,transformation = quad$transfo
   # BUG FIX: these lines were ad-hoc, and didn't return the correct columns
   # theta <- simlist[k, paste0("theta", seq(1, length(grep("theta",colnames(simlist)))))]
   # theta <- simlist[k, 1:(ncol(simlist)-5)]
-  d <- length(quad$optresults$mode)
-  thetanames <- colnames(quad$normalized_posterior$nodesandweights)[1:d]
+  md <- length(quad$optresults$mode)
+  thetanames <- colnames(quad$normalized_posterior$nodesandweights)[1:md]
   theta <- simlist[k,thetanames]
   # In one dimension, R's indexing is not type consistent
   if (!is.matrix(samps)) {
