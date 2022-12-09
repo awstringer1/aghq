@@ -266,7 +266,7 @@ get_log_normconst.numeric <- function(obj,...) obj
 get_log_normconst.aghq <- function(obj,...) get_log_normconst(obj$normalized_posterior)
 #' @rdname get_log_normconst
 #' @export
-get_log_normconst.laplace <- function(obj,...) obj$lognormconst
+get_log_normconst.laplace <- function(obj,...) obj$lognormconst$lognormconst
 #' @rdname get_log_normconst
 #' @export
 get_log_normconst.marginallaplace <- function(obj,...) get_log_normconst(obj$normalized_posterior)

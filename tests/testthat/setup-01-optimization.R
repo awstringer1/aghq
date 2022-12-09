@@ -26,17 +26,17 @@ norm_sparse_3 <- normalize_logpost(opt_sparsetrust,3,1)
 norm_sparse_5 <- normalize_logpost(opt_sparsetrust,5,1)
 norm_sparse_7 <- normalize_logpost(opt_sparsetrust,7,1)
 
-norm_trust_1 <- normalize_logpost(opt_trust,3,1)
+norm_trust_1 <- normalize_logpost(opt_trust,1,1)
 norm_trust_3 <- normalize_logpost(opt_trust,3,1)
 norm_trust_5 <- normalize_logpost(opt_trust,5,1)
 norm_trust_7 <- normalize_logpost(opt_trust,7,1)
 
-norm_bfgs_1 <- normalize_logpost(opt_bfgs,3,1)
+norm_bfgs_1 <- normalize_logpost(opt_bfgs,1,1)
 norm_bfgs_3 <- normalize_logpost(opt_bfgs,3,1)
 norm_bfgs_5 <- normalize_logpost(opt_bfgs,5,1)
 norm_bfgs_7 <- normalize_logpost(opt_bfgs,7,1)
 
-norm_sr1_1 <- normalize_logpost(opt_sr1,3,1)
+norm_sr1_1 <- normalize_logpost(opt_sr1,1,1)
 norm_sr1_3 <- normalize_logpost(opt_sr1,3,1)
 norm_sr1_5 <- normalize_logpost(opt_sr1,5,1)
 norm_sr1_7 <- normalize_logpost(opt_sr1,7,1)
@@ -412,7 +412,7 @@ logaghq <- function(n) {
     gr = function(x) numDeriv::grad(logint1,x,n=n),
     he = function(x) numDeriv::hessian(logint1,x,n=n)
   )
-  aghq::laplace_approximation(ff,n)$lognormconst
+  get_log_normconst(aghq::laplace_approximation(ff,n))
 }
 logstirling <- function(n) (1/2)*log(2*pi) + (1/2)*log(n) + n*(log(n) - 1)
 la5 <- round(logaghq(5),11)

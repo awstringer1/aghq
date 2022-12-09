@@ -43,10 +43,6 @@ If k > 1, a list with elements:
 \item{\code{thegrid}: }{a \code{NIGrid} object from the \code{mvQuad} package, see \code{?mvQuad::createNIGrid}.}
 \item{\code{lognormconst}: }{the actual result of the quadrature: the log of the normalizing constant of the posterior.}
 }
-
-If k = 1, then the method returns
-a numeric value representing the log of the normalizing constant computed using
-a Laplace approximation.
 }
 \description{
 This function takes in the optimization results from \code{aghq::optimize_theta()}

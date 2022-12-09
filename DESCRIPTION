@@ -14,7 +14,7 @@ Description: Adaptive Gauss Hermite Quadrature for Bayesian inference.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Depends: R (>= 3.5.0)
 Imports:
     methods,
