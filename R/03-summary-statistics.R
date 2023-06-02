@@ -254,6 +254,8 @@ interpolate_marginal_posterior <- function(margpost,method = c('auto','polynomia
     out <- as.function(polynom::poly.calc(x = margpost$theta,y = margpost$logmargpost))
   } else if (method == 'spline') {
     ss <- with(margpost,splines::interpSpline(theta,logmargpost,bSpline = TRUE,sparse = TRUE))
+    if(isS4(co <- ss[["coefficients"]]))
+      ss[["coefficients"]] <- as.vector(co)
     out <- function(x) as.numeric(stats::predict(ss,x)$y)
   } else {
     stop(paste0("Unrecognized interpolation method ",method,", should be one of 'spline' or 'polynomial'.\n"))

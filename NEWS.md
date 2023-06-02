@@ -1,3 +1,11 @@
+# aghq 0.4.1
+
+## Bug fixes
+
+- The maintainers of package `Matrix` kindly informed me that a new release of that package would cause an error in
+`interpolate_marginal_posterior`, due to an upstream bug in `splines::interpSpline` and its `predict` method. They also
+kindly suggested a simple fix, which I implemented in this update.
+
 # aghq 0.4.0
 
 ## New features

@@ -1,7 +1,7 @@
 Package: aghq
 Type: Package
 Title: Adaptive Gauss Hermite Quadrature for Bayesian Inference
-Version: 0.4.0
+Version: 0.4.1
 Author: Alex Stringer
 Maintainer: Alex Stringer <alex.stringer@uwaterloo.ca>
 Description: Adaptive Gauss Hermite Quadrature for Bayesian inference.
