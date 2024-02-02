@@ -175,7 +175,9 @@ optimize_theta <- function(ff,startingvalue,control = default_control(),...) {
   }
   else if (method == "BFGS") {
     if (is.null(control$optcontrol)) control$optcontrol <- list()
-    opt <- optim(startingvalue,optfunc,optgrad,method = "BFGS",control = list(),...)
+    # opt <- optim(startingvalue,optfunc,optgrad,method = "BFGS",control = list(),...)
+    opt <- optim(startingvalue,optfunc,optgrad,method = "BFGS",control = control$optcontrol,...)
+
     out <- list(
       ff = ffa,
       mode = opt$par,
