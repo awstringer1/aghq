@@ -941,6 +941,9 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
   m <- outeropt$mode
   H <- outeropt$hessian
 
+
+  stuff <<- H
+
   Heigen = eigen(H, symmetric=TRUE)
   if(!all(Heigen$values>0) ) {
     warning("positive eigenvalues in H, approxmiating with pracma::nearest_spd")
@@ -953,10 +956,10 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
     }
 
   }
-  inverseFromEigen = Heigen$vectors %*% 
+  inverseFromEigen = Matrix::forceSymmetric(Heigen$vectors %*% 
     tcrossprod(
       diag(1/Heigen$values, nrow(H), nrow(H)), 
-      Heigen$vectors)
+      Heigen$vectors))
 
   mvQuad::rescale(thegrid,m = m, C = inverseFromEigen, dec.type=2)
 
