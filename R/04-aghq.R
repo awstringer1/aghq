@@ -944,7 +944,7 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
 
   Heigen = eigen(H, symmetric=TRUE)
   if(!all(Heigen$values>0) ) {
-    warning("positive eigenvalues in H, approxmiating with pracma::nearest_spd")
+    warning("negative eigenvalues in H, approxmiating with pracma::nearest_spd")
     if(requireNamespace("pracma")) {
       Hfix = pracma::nearest_spd(H)
       Heigen = eigen(Hfix, symmetric=TRUE)
