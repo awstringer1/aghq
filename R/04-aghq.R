@@ -940,7 +940,25 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
   thegrid <- mvQuad::createNIGrid(dim = S,type = "GHe",level = k)
   m <- outeropt$mode
   H <- outeropt$hessian
-  mvQuad::rescale(thegrid,m = m,C = Matrix::forceSymmetric(solve(H)),dec.type=2)
+
+  Heigen = eigen(H, symmetric=TRUE)
+  if(!all(Heigen$values)>0) {
+    warning("positive eigenvalues in H, approxmiating with pracma::nearest_spd")
+    if(requireNamespace("pracma")) {
+      Hfix = pracma::nearest_spd(H)
+      Heigen = eigen(Hfix, symmetric=TRUE)
+    } else {
+      warning("pracma package not available, taking absolute values of eigenvalues")
+      Heigen$values = abs(Heigen$values)
+    }
+
+  }
+  inverseFromEigen = Heigen$vectors %*% 
+    tcrossprod(
+      diag(1/Heigen$values, nrow(H), nrow(H)), 
+      Heigen$vectors)
+
+  mvQuad::rescale(thegrid,m = m, C = inverseFromEigen, dec.type=2)
 
   thetaorder <- paste0('theta',1:S)
 
