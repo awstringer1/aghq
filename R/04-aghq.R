@@ -942,8 +942,6 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
   H <- outeropt$hessian
 
 
-  stuff <<- H
-
   Heigen = eigen(H, symmetric=TRUE)
   if(!all(Heigen$values>0) ) {
     warning("positive eigenvalues in H, approxmiating with pracma::nearest_spd")
