@@ -804,7 +804,11 @@ print.laplacesummary <- function(x,...) {
 # themarginallaplace <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 0))
 #' @export
 #'
-marginal_laplace <- function(ff,k,startingvalue,transformation = default_transformation(),optresults = NULL,control = default_control_marglaplace(),...) {
+marginal_laplace <- function(ff,k,startingvalue,
+  transformation = default_transformation(),
+  optresults = NULL,
+  control = default_control_marglaplace(),
+  ...) {
 
   validate_control(control,type = 'marglaplace')
   validate_transformation(transformation)
@@ -943,6 +947,10 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
 
 
   Heigen = eigen(H, symmetric=TRUE)
+  if(identical(control$verbose, TRUE)) {
+    cat("hessian eigenvalues", paste(Heigen$vaules, collapse=', '), '\n')
+  }
+
   if(!all(Heigen$values>0) ) {
     warning("negative eigenvalues in H, approxmiating with pracma::nearest_spd")
     if(requireNamespace("pracma")) {
@@ -959,9 +967,15 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
       diag(1/Heigen$values, nrow(H), nrow(H)), 
       Heigen$vectors))
 
+  if(identical(control$verbose, TRUE)) {
+    cat("finding mvQuad grid...")
+  }
   mvQuadRes = mvQuad::rescale(thegrid,m = m, C = inverseFromEigen, dec.type=2)
   if(any(class(mvQuadRes) == 'try-error')) {
     warning("problem with mvQuad::rescale")
+  }
+  if(identical(control$verbose, TRUE)) {
+    cat("done\n")
   }
 
 
@@ -990,7 +1004,13 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
   modesandhessians$H <- vector(mode = 'list',length = nrow(distinctthetas))
   modesandhessians$logpost <- numeric(nrow(distinctthetas))
 
+    if(identical(control$verbose, TRUE)) {
+      cat('looping through quad points:')
+    }
   for (i in 1:length(lp)) {
+    if(identical(control$verbose, TRUE)) {
+      cat(i, ', ')
+    }
     theta <- as.numeric(distinctthetas[i,thetaorder])
     # Re-use the starting values
     Wstart <- get_Wstart(theta,envtouse)
@@ -1010,6 +1030,10 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
 
     lp[i] <- as.numeric(get_log_normconst(lap))
   }
+   if(identical(control$verbose, TRUE)) {
+      cat('\n')
+    }
+
 
   # Get the normalization constant
   ww <- nodesandweights$weights
