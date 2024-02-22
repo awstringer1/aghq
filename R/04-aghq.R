@@ -959,7 +959,11 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
       diag(1/Heigen$values, nrow(H), nrow(H)), 
       Heigen$vectors))
 
-  mvQuad::rescale(thegrid,m = m, C = inverseFromEigen, dec.type=2)
+  mvQuadRes = mvQuad::rescale(thegrid,m = m, C = inverseFromEigen, dec.type=2)
+  if(any(class(mvQuadRes) == 'try-error')) {
+    warning("problem with mvQuad::rescale")
+  }
+
 
   thetaorder <- paste0('theta',1:S)
 
