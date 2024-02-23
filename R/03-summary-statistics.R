@@ -105,7 +105,13 @@ marginal_posterior.aghq <- function(quad,j,qq=NULL,method = c('auto','reuse','co
     gg <- mvQuad::createNIGrid(1,'GHe',get_numquadpoints(quad))
 
     Hinv = safeInverse(HH, ...)
-    mvQuadRes = mvQuad::rescale(gg,m = mm[1],C = drop(as.matrix(Hinv[1,1])), dec.type=2)
+    mvQuadRes = try(mvQuad::rescale(gg,m = mm[1],C = drop(as.matrix(Hinv[1,1])), dec.type=2))
+    if(any(class(mvQuadRes) == 'try-error')) {
+      print("HH")
+      print(HH)
+      print("Hinv")
+      print(Hinv)
+    }
 
     qqq <- as.numeric(mvQuad::getNodes(gg))
 
