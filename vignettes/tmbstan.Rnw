@@ -32,7 +32,6 @@ funlist2d <- list(
 )
 
 thequadrature <- aghq(funlist2d,3,c(0,0))
-
 @
 
 

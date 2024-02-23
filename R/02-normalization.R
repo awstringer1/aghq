@@ -94,8 +94,9 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,basegrid = NULL,ndCons
   idxorder <- c(whichfirst,(1:S)[-whichfirst])
   m <- optresults$mode[idxorder]
   H <- optresults$hessian[idxorder,idxorder]
+  Hinv = safeInverse(H, ...)
   mvQuad::rescale(thegrid,m = m,
-    C = safeInverse(H, ...),
+    C = Hinv,
     dec.type=2) # forceSymmetric for numerical asymmetries
 
   nodesandweights <- cbind(mvQuad::getNodes(thegrid),mvQuad::getWeights(thegrid))

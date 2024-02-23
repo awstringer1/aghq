@@ -338,10 +338,13 @@ safeInverse = function(H, control=list(), ...) {
     }
 
   }
-  result = Matrix::forceSymmetric(Heigen$vectors %*% 
-    tcrossprod(
-      diag(1/Heigen$values, nrow(H), nrow(H)), 
-      Heigen$vectors))
+
+  result = Matrix::forceSymmetric(
+    Heigen$vectors %*%
+      Matrix::Diagonal(x=1/Heigen$values) %*%
+      t(Heigen$vectors)
+  )
+
   attributes(result)$logDet = -sum(log(Heigen$values))
   result
 }
