@@ -95,9 +95,16 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,basegrid = NULL,ndCons
   m <- optresults$mode[idxorder]
   H <- optresults$hessian[idxorder,idxorder]
   Hinv = safeInverse(H, ...)
-  mvQuad::rescale(thegrid,m = m,
+  mvQuadRes = try(mvQuad::rescale(thegrid,m = m,
     C = Hinv,
-    dec.type=2) # forceSymmetric for numerical asymmetries
+    dec.type=2))
+
+  if(any(class(mvQuadRes) == 'try-error')) {
+      print("H")
+      print(H)
+      print("Hinv")
+      print(Hinv)
+    }
 
   nodesandweights <- cbind(mvQuad::getNodes(thegrid),mvQuad::getWeights(thegrid))
   colnames(nodesandweights) <- c(paste0("theta",idxorder),"weights")
