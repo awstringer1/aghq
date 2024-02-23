@@ -29,6 +29,13 @@ Suggests:
     trust,
     testthat (>= 2.1.0),
     parallel,
-    pracma
+    pracma,
+    utils
+Enhances: 
+    TMB,
+    tmbstan,
+    EpiILMCT,
+    rstan
+VignetteBuilder: utils
 Language: en-US
 Roxygen: list(markdown = TRUE)
