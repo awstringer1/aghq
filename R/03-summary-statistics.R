@@ -106,9 +106,6 @@ marginal_posterior.aghq <- function(quad,j,qq=NULL,method = c('auto','reuse','co
 
     Hinv = safeInverse(HH, ...)
     mvQuadRes = mvQuad::rescale(gg,m = mm[1],C = drop(as.matrix(Hinv[1,1])), dec.type=2)
-  if(any(class(mvQuadRes) == 'try-error')) {
-    warning("problem with mvQuad::rescale for marginal posteriors")
-  }
 
     qqq <- as.numeric(mvQuad::getNodes(gg))
 

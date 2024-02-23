@@ -952,7 +952,7 @@ marginal_laplace <- function(ff,k,startingvalue,
   if(identical(control$verbose, TRUE)) {
     cat("finding mvQuad grid...")
   }
-  mvQuadRes = mvQuad::rescale(thegrid,m = m, C = inverseFromEigen, dec.type=2)
+  mvQuadRes <- try(mvQuad::rescale(thegrid,m = m, C = inverseFromEigen, dec.type=2))
   if(any(class(mvQuadRes) == 'try-error')) {
     warning("problem with mvQuad::rescale")
   }
