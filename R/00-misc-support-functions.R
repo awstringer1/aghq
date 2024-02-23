@@ -70,7 +70,8 @@ default_control <- function(...) {
     interpolation = 'auto',
     numhessian = FALSE,
     onlynormconst = FALSE,
-    method_summaries = c('reuse','correct')
+    method_summaries = c('reuse','correct'),
+    verbose=FALSE
   )
   specialargs <- list(...)
   for (arg in names(specialargs)) out[arg] <- specialargs[arg]
