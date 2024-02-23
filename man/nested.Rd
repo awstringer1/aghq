@@ -58,9 +58,6 @@ funlist <- list(
   he = function(x) numDeriv::hessian(objfunc,x)
 )
 opt_sparsetrust <- optimize_theta(funlist,1.5)
-
-adaptive_nested_quadrature(funlist, 7, ndConstruction = "product")
-
 }
 \seealso{
 Other quadrature: 
