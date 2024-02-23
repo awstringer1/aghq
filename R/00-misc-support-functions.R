@@ -210,7 +210,8 @@ default_control_tmb <- function(...) {
     ndConstruction = 'product',
     interpolation = 'auto',
     onlynormconst = FALSE,
-    method_summaries = c('reuse','correct')
+    method_summaries = c('reuse','correct'),
+    verbose = FALSE
   )
   specialargs <- list(...)
   for (arg in names(specialargs)) out[arg] <- specialargs[arg]
