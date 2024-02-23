@@ -1,3 +1,6 @@
+
+
+
 ### Misc functions ###
 # This script contains miscillaneous functions for supporting the functions
 # in the AGHQ package. Some, but nort all, are exported.
@@ -315,3 +318,30 @@ splice <- function(v,t,j) {
   c(v[1:(j-1)],t,v[j:n])
 }
 
+# invert positive def matrix using eigenvalues
+# approximate by nearest pos def matrix if necessary
+# resulting matrix wont produce errors with mvQuad::rescale
+safeInverse = function(H, control=list(), ...) {
+  Heigen = eigen(H, symmetric=TRUE)
+  if(identical(control$verbose, TRUE)) {
+    cat("hessian eigenvalues", paste(Heigen$vaules, collapse=', '), '\n')
+  }
+
+  if(!all(Heigen$values>0) ) {
+    warning("negative eigenvalues in H, approxmiating with pracma::nearest_spd")
+    if(requireNamespace("pracma")) {
+      Hfix = pracma::nearest_spd(H)
+      Heigen = eigen(Hfix, symmetric=TRUE)
+    } else {
+      warning("pracma package not available, taking absolute values of eigenvalues")
+      Heigen$values = abs(Heigen$values)
+    }
+
+  }
+  result = Matrix::forceSymmetric(Heigen$vectors %*% 
+    tcrossprod(
+      diag(1/Heigen$values, nrow(H), nrow(H)), 
+      Heigen$vectors))
+  attributes(result)$logDet = -sum(log(Heigen$values))
+  result
+}

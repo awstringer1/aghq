@@ -255,7 +255,7 @@ summary.aghq <- function(object,...) {
   out$hessian <- object$optresults$hessian
   # out$lognormconst <- object$normalized_posterior$lognormconst
   out$lognormconst <- get_log_normconst(object)
-  out$covariance <- solve(out$hessian)
+  out$covariance <- safeInverse(out$hessian, ...)#solve(out$hessian)
   # out$cholesky <- chol(out$covariance)
   out$quadpoints <- as.numeric(object$normalized_posterior$grid$level)
   out$dim <- length(out$quadpoints)
@@ -946,26 +946,8 @@ marginal_laplace <- function(ff,k,startingvalue,
   H <- outeropt$hessian
 
 
-  Heigen = eigen(H, symmetric=TRUE)
-  if(identical(control$verbose, TRUE)) {
-    cat("hessian eigenvalues", paste(Heigen$vaules, collapse=', '), '\n')
-  }
+  inverseFromEigen = safeInverse(H, control)
 
-  if(!all(Heigen$values>0) ) {
-    warning("negative eigenvalues in H, approxmiating with pracma::nearest_spd")
-    if(requireNamespace("pracma")) {
-      Hfix = pracma::nearest_spd(H)
-      Heigen = eigen(Hfix, symmetric=TRUE)
-    } else {
-      warning("pracma package not available, taking absolute values of eigenvalues")
-      Heigen$values = abs(Heigen$values)
-    }
-
-  }
-  inverseFromEigen = Matrix::forceSymmetric(Heigen$vectors %*% 
-    tcrossprod(
-      diag(1/Heigen$values, nrow(H), nrow(H)), 
-      Heigen$vectors))
 
   if(identical(control$verbose, TRUE)) {
     cat("finding mvQuad grid...")

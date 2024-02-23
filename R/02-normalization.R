@@ -94,7 +94,9 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,basegrid = NULL,ndCons
   idxorder <- c(whichfirst,(1:S)[-whichfirst])
   m <- optresults$mode[idxorder]
   H <- optresults$hessian[idxorder,idxorder]
-  mvQuad::rescale(thegrid,m = m,C = Matrix::forceSymmetric(solve(H)),dec.type=2) # forceSymmetric for numerical asymmetries
+  mvQuad::rescale(thegrid,m = m,
+    C = safeInverse(H, ...),
+    dec.type=2) # forceSymmetric for numerical asymmetries
 
   nodesandweights <- cbind(mvQuad::getNodes(thegrid),mvQuad::getWeights(thegrid))
   colnames(nodesandweights) <- c(paste0("theta",idxorder),"weights")
@@ -204,14 +206,17 @@ adaptive_nested_quadrature <- function(optresults,k,ndConstruction = 'product',.
   nodeidx <- grep('V',colnames(quadtable))
   weightidx <- grep('w',colnames(quadtable))
   # Scale
-  Lt <- chol(solve(optresults$hessian))
+  inverseH = safeInverse(optresults$hessian, ...)
+  Lt <-  chol(inverseH)
   quadtable[ ,nodeidx] <- as.matrix(quadtable[ ,nodeidx]) %*% Lt
   # Shift
   quadtable[ ,nodeidx] <- sweep(quadtable[ ,nodeidx],2,optresults$mode,'+')
   # function evals
   quadtable$lfval <- apply(quadtable[nodeidx],1,function(x) optresults$fn(x))
 
-  detterm <- 0.5*as.numeric(determinant(optresults$hessian,logarithm = TRUE)$modulus)
+#  detterm <- 0.5*as.numeric(determinant(optresults$hessian,logarithm = TRUE)$modulus)
+  detterm <- -0.5*attributes(inverseH)$logDet
+
   apply(quadtable[ ,grep('w',colnames(quadtable)),drop = FALSE],2,function(x) logsumexpweights(quadtable$lfval,x)) - detterm
 }
 #' @rdname nested
