@@ -105,7 +105,7 @@ marginal_posterior.aghq <- function(quad,j,qq=NULL,method = c('auto','reuse','co
     gg <- mvQuad::createNIGrid(1,'GHe',get_numquadpoints(quad))
 
     Hinv = safeInverse(HH, ...)
-    mvQuadRes = mvQuad::rescale(gg,m = mm[1],C = drop(Hinv[1,1]), dec.type=2)
+    mvQuadRes = mvQuad::rescale(gg,m = mm[1],C = drop(as.matrix(Hinv[1,1])), dec.type=2)
   if(any(class(mvQuadRes) == 'try-error')) {
     warning("problem with mvQuad::rescale for marginal posteriors")
   }
