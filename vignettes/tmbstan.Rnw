@@ -38,7 +38,8 @@ thequadrature <- aghq(funlist2d,3,c(0,0))
 
 
 <<theExampleTmbstan>>=
-1
+library('tmbstan')
+theMcmc = tmbstan(thequadrature, chains=1)
 @
 
 \end{document}
