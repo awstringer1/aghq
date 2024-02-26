@@ -1121,7 +1121,14 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_tra
   }
   ## Do aghq ##
   # The aghq
+  if(identical(control$verbose, TRUE)) {
+    cat("aghq...")
+  }
+
   quad <- aghq(ff = ff,k = k,transformation = transformation,startingvalue = startingvalue,optresults = optresults,basegrid = basegrid,control = control,...)
+  if(identical(control$verbose, TRUE)) {
+    cat("done", '\n')
+  }
   if (control$onlynormconst) return(quad) # NOTE: control was passed to aghq here so quad should itself just be a number
 
   ## Add on the info needed for marginal Laplace ##
@@ -1145,8 +1152,14 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_tra
   #   colnames(modesandhessians)[colnames(modesandhessians) == colnames(distinctthetas)] <- thetanames
   #   colnames(quad$normalized_posterior$nodesandweights)[grep('theta',colnames(quad$normalized_posterior$nodesandweights))] <- thetanames
   # }
+    if(identical(control$verbose, TRUE)) {
+        cat("i: ")
+    }
 
     for (i in 1:nrow(distinctthetas)) {
+      if(identical(control$verbose, TRUE)) {
+        cat(i, " ")
+      }
       # Get the theta
       theta <- as.numeric(modesandhessians[i,thetanames])
       # Set up the mode and hessian of the random effects. This happens when you run
@@ -1158,6 +1171,9 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_tra
       H <- ff$env$spHess(mm,random = TRUE)
       H <- rlang::duplicate(H) # Somehow, TMB puts all evals of spHess in the same memory location.
       modesandhessians[i,'H'] <- list(list(H))
+    }
+    if(identical(control$verbose, TRUE)) {
+        cat("\n")
     }
 
   quad$modesandhessians <- modesandhessians
