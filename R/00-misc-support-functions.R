@@ -324,6 +324,11 @@ splice <- function(v,t,j) {
 # approximate by nearest pos def matrix if necessary
 # resulting matrix wont produce errors with mvQuad::rescale
 safeInverse = function(H, control=list(), ...) {
+  if(max(abs(H - t(H))) > sqrt(.Machine$double.eps)) { 
+    warning("matrix not symmetric")
+    H = (H + t(H))/2
+  }
+
   Heigen = eigen(H, symmetric=TRUE)
   if(identical(control$verbose, TRUE)) {
     cat("hessian eigenvalues", paste(Heigen$vaules, collapse=', '), '\n')
