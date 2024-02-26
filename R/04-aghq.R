@@ -119,9 +119,18 @@ aghq <- function(ff,k,startingvalue,transformation = default_transformation(),op
   }
 
   # Optimization
+    if(identical(control$verbose, TRUE)) {
+      cat("optimizing\n")
+    }
   if (is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ff,startingvalue,control,...))
-
+  if(identical(control$verbose, TRUE)) {
+        print("hessian")
+        print(optresults$hessian)
+  }
   # Normalization
+    if(identical(control$verbose, TRUE)) {
+      cat("normalizing\n")
+    }
   normalized_posterior <- normalize_logpost(optresults,k,basegrid = basegrid,ndConstruction = control$ndConstruction,...)
 
   if (control$onlynormconst) return(normalized_posterior$lognormconst)
@@ -1105,7 +1114,8 @@ marginal_laplace <- function(ff,k,startingvalue,
 #'
 #' @export
 #'
-marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_transformation(),optresults = NULL,basegrid = NULL,control = default_control_tmb(),...) {
+marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_transformation(),
+  optresults = NULL,basegrid = NULL,control = default_control_tmb(),...) {
 
   validate_control(control,type='tmb')
   validate_transformation(transformation)
@@ -1125,7 +1135,8 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_tra
     cat("aghq...")
   }
 
-  quad <- aghq(ff = ff,k = k,transformation = transformation,startingvalue = startingvalue,optresults = optresults,basegrid = basegrid,control = control,...)
+  quad <- aghq(ff = ff,k = k,transformation = transformation,startingvalue = startingvalue,
+    optresults = optresults,basegrid = basegrid,control = control,...)
   if(identical(control$verbose, TRUE)) {
     cat("done", '\n')
   }
