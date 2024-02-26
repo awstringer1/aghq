@@ -100,6 +100,9 @@ normalize_logpost <- function(optresults,k,whichfirst = 1,basegrid = NULL,ndCons
     dec.type=2))
 
   if(any(class(mvQuadRes) == 'try-error')) {
+    stuff <<- optresults
+    print("optresults")
+      print(optresuls$hessian)
       print("H")
       print(H)
       print("Hinv")
