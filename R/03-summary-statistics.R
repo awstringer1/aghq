@@ -103,7 +103,18 @@ marginal_posterior.aghq <- function(quad,j,qq=NULL,method = c('auto','reuse','co
     # qqq <- unique(sweep(LL%*%t(nn),1,mm,'+')[1, ])
 
     gg <- mvQuad::createNIGrid(1,'GHe',get_numquadpoints(quad))
-    mvQuad::rescale(gg,m = mm[1],C = solve(HH)[1,1],dec.type=2)
+
+    Hinv = safeInverse(HH, ...)
+    mvQuadRes = try(mvQuad::rescale(gg,m = mm[1],C = drop(as.matrix(Hinv[1,1])), dec.type=2))
+    if(any(class(mvQuadRes) == 'try-error')) {
+      print("idxorder")
+      print(idxorder)
+      print("HH")
+      print(HH)
+      print("Hinv")
+      print(Hinv)
+    }
+
     qqq <- as.numeric(mvQuad::getNodes(gg))
 
     out <- vector(mode='list',length=length(qqq))

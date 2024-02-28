@@ -6,3 +6,4 @@ inst/doc
 doc
 Meta
 ..Rcheck/*
+inst/.DS_Store

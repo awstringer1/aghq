@@ -58,7 +58,6 @@ funlist <- list(
   he = function(x) numDeriv::hessian(objfunc,x)
 )
 opt_sparsetrust <- optimize_theta(funlist,1.5)
-
 }
 \seealso{
 Other quadrature: 

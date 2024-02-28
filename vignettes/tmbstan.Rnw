@@ -1,0 +1,132 @@
+
+%\VignetteIndexEntry{TMBstan example}
+%\VignettePackage{utils}
+
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\begin{document}
+
+
+
+<<theData>>=
+theCppFile = tempfile(fileext='.cpp')
+file.copy(system.file('extsrc/02_disease.cpp',package='aghq'),theCppFile)
+
+# set the seed
+set.seed(563478)
+
+if(requireNamespace("EpiILMCT", quietly=TRUE)) {
+  # Create the functions
+data("tswv", package = "EpiILMCT")
+dat <- tswv$tswvsir
+dat$epidat <- dat$epidat[order(dat$epidat[ ,4]), ]
+
+I <- dat$epidat[ ,4]
+R <- dat$epidat[ ,2]
+infected <- !is.infinite(I)
+
+datlist <- list(
+  D = as.matrix(dist(dat$location[dat$epidat[ ,1], ])),
+  I = I,
+  R = R,
+  infected = as.numeric(infected[infected])
+)
+
+} else {
+  print("missing EpiILMCT package, running model without data")
+  datalist = list()
+}
+@
+
+
+
+<<thePackages>>=
+haveTmbstan = requireNamespace('tmbstan', quietly=TRUE)
+haveTMB = requireNamespace("TMB", quietly=TRUE)
+if(haveTmbstan & haveTMB) {
+  print("have the packages, will run vignette")
+} else {
+  print("missing some packages, vignette won't run.")
+}
+@
+
+<<theModels>>=
+if(haveTMB) {
+
+# Compile TMB template-- only need to do once
+  TMB::compile(theCppFile)
+  theDll <- dyn.load(TMB::dynlib(gsub("[.]cpp$", "", theCppFile)))[[1]]
+
+# Function and its derivatives
+  ff <- TMB::MakeADFun(data = datlist,
+                parameters = list(theta1 = 0,
+                                  theta2 = 0),
+                DLL = theDll,
+                ADreport = FALSE,
+                silent = TRUE)
+}
+@
+
+
+<<runModels>>=
+if(haveTMB) {
+  quadmod <- aghq::aghq(ff,9,c(0,0),control = aghq::default_control(negate = TRUE, verbose=TRUE))
+}
+if(haveTmbstan & haveTMB) {
+stanmod <- tmbstan::tmbstan(
+  ff,
+  chains = 2,
+  cores = 2,
+  iter = 2e03,
+  warmup = 1e03,
+  init = quadmod$optresults$mode,
+  seed = 124698,
+  algorithm = "NUTS"
+)
+} else{
+	stanmod = NULL
+	print("need packages installed to build this vignette")
+}  
+@
+
+<<traceplot, fig=TRUE>>=
+if(!is.null(stanmod) & requireNamespace("rstan", quietly=TRUE) ) {
+  rstan::traceplot(stanmod)
+} else {
+  plot(1)
+}
+@
+
+
+<<compare>>=
+if(!is.null(stanmod)) {
+stansamps <- as.data.frame(stanmod)
+stansamps$alpha <- exp(stansamps$`par[1]`)
+stansamps$beta <- exp(stansamps$`par[2]`)
+
+posttrans <- list(totheta = log,fromtheta = exp)
+quaddens <- aghq::compute_pdf_and_cdf(quadmod,posttrans)
+}
+@
+
+<<alpha, fig=TRUE>>=
+if(!is.null(stanmod)) {
+	hist(stansamps$alpha,freq=FALSE,breaks=50,main = "",xlab = "",cex.lab=1.5,cex.axis = 1.5)
+	with(quaddens[[1]],lines(transparam,pdf_transparam))
+} else {
+  plot(1)
+}
+@
+
+<<beta, fig=TRUE>>=
+if(!is.null(stanmod)) {
+	hist(stansamps$beta,freq=FALSE,breaks=50,main = "",xlab = "",cex.lab=1.5,cex.axis = 1.5)
+	with(quaddens[[2]],lines(transparam,pdf_transparam))
+} else {
+  plot(1)
+}
+@
+
+
+\end{document}

@@ -119,9 +119,18 @@ aghq <- function(ff,k,startingvalue,transformation = default_transformation(),op
   }
 
   # Optimization
+    if(identical(control$verbose, TRUE)) {
+      cat("optimizing\n")
+    }
   if (is.null(optresults)) utils::capture.output(optresults <- optimize_theta(ff,startingvalue,control,...))
-
+  if(identical(control$verbose, TRUE)) {
+        print("hessian")
+        print(optresults$hessian)
+  }
   # Normalization
+    if(identical(control$verbose, TRUE)) {
+      cat("normalizing\n")
+    }
   normalized_posterior <- normalize_logpost(optresults,k,basegrid = basegrid,ndConstruction = control$ndConstruction,...)
 
   if (control$onlynormconst) return(normalized_posterior$lognormconst)
@@ -255,7 +264,7 @@ summary.aghq <- function(object,...) {
   out$hessian <- object$optresults$hessian
   # out$lognormconst <- object$normalized_posterior$lognormconst
   out$lognormconst <- get_log_normconst(object)
-  out$covariance <- solve(out$hessian)
+  out$covariance <- safeInverse(out$hessian, ...)#solve(out$hessian)
   # out$cholesky <- chol(out$covariance)
   out$quadpoints <- as.numeric(object$normalized_posterior$grid$level)
   out$dim <- length(out$quadpoints)
@@ -804,7 +813,11 @@ print.laplacesummary <- function(x,...) {
 # themarginallaplace <- aghq::marginal_laplace(funlist2dmarg,3,list(W = 0,theta = 0))
 #' @export
 #'
-marginal_laplace <- function(ff,k,startingvalue,transformation = default_transformation(),optresults = NULL,control = default_control_marglaplace(),...) {
+marginal_laplace <- function(ff,k,startingvalue,
+  transformation = default_transformation(),
+  optresults = NULL,
+  control = default_control_marglaplace(),
+  ...) {
 
   validate_control(control,type = 'marglaplace')
   validate_transformation(transformation)
@@ -940,7 +953,22 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
   thegrid <- mvQuad::createNIGrid(dim = S,type = "GHe",level = k)
   m <- outeropt$mode
   H <- outeropt$hessian
-  mvQuad::rescale(thegrid,m = m,C = Matrix::forceSymmetric(solve(H)),dec.type=2)
+
+
+  inverseFromEigen = safeInverse(H, control)
+
+
+  if(identical(control$verbose, TRUE)) {
+    cat("finding mvQuad grid...")
+  }
+  mvQuadRes <- try(mvQuad::rescale(thegrid,m = m, C = inverseFromEigen, dec.type=2))
+  if(any(class(mvQuadRes) == 'try-error')) {
+    warning("problem with mvQuad::rescale")
+  }
+  if(identical(control$verbose, TRUE)) {
+    cat("done\n")
+  }
+
 
   thetaorder <- paste0('theta',1:S)
 
@@ -967,7 +995,13 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
   modesandhessians$H <- vector(mode = 'list',length = nrow(distinctthetas))
   modesandhessians$logpost <- numeric(nrow(distinctthetas))
 
+    if(identical(control$verbose, TRUE)) {
+      cat('looping through quad points:')
+    }
   for (i in 1:length(lp)) {
+    if(identical(control$verbose, TRUE)) {
+      cat(i, ', ')
+    }
     theta <- as.numeric(distinctthetas[i,thetaorder])
     # Re-use the starting values
     Wstart <- get_Wstart(theta,envtouse)
@@ -987,6 +1021,10 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
 
     lp[i] <- as.numeric(get_log_normconst(lap))
   }
+   if(identical(control$verbose, TRUE)) {
+      cat('\n')
+    }
+
 
   # Get the normalization constant
   ww <- nodesandweights$weights
@@ -1076,7 +1114,8 @@ marginal_laplace <- function(ff,k,startingvalue,transformation = default_transfo
 #'
 #' @export
 #'
-marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_transformation(),optresults = NULL,basegrid = NULL,control = default_control_tmb(),...) {
+marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_transformation(),
+  optresults = NULL,basegrid = NULL,control = default_control_tmb(),...) {
 
   validate_control(control,type='tmb')
   validate_transformation(transformation)
@@ -1092,7 +1131,15 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_tra
   }
   ## Do aghq ##
   # The aghq
-  quad <- aghq(ff = ff,k = k,transformation = transformation,startingvalue = startingvalue,optresults = optresults,basegrid = basegrid,control = control,...)
+  if(identical(control$verbose, TRUE)) {
+    cat("aghq...")
+  }
+
+  quad <- aghq(ff = ff,k = k,transformation = transformation,startingvalue = startingvalue,
+    optresults = optresults,basegrid = basegrid,control = control,...)
+  if(identical(control$verbose, TRUE)) {
+    cat("done", '\n')
+  }
   if (control$onlynormconst) return(quad) # NOTE: control was passed to aghq here so quad should itself just be a number
 
   ## Add on the info needed for marginal Laplace ##
@@ -1116,8 +1163,14 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_tra
   #   colnames(modesandhessians)[colnames(modesandhessians) == colnames(distinctthetas)] <- thetanames
   #   colnames(quad$normalized_posterior$nodesandweights)[grep('theta',colnames(quad$normalized_posterior$nodesandweights))] <- thetanames
   # }
+    if(identical(control$verbose, TRUE)) {
+        cat("i: ")
+    }
 
     for (i in 1:nrow(distinctthetas)) {
+      if(identical(control$verbose, TRUE)) {
+        cat(i, " ")
+      }
       # Get the theta
       theta <- as.numeric(modesandhessians[i,thetanames])
       # Set up the mode and hessian of the random effects. This happens when you run
@@ -1129,6 +1182,9 @@ marginal_laplace_tmb <- function(ff,k,startingvalue,transformation = default_tra
       H <- ff$env$spHess(mm,random = TRUE)
       H <- rlang::duplicate(H) # Somehow, TMB puts all evals of spHess in the same memory location.
       modesandhessians[i,'H'] <- list(list(H))
+    }
+    if(identical(control$verbose, TRUE)) {
+        cat("\n")
     }
 
   quad$modesandhessians <- modesandhessians
